@@ -5,19 +5,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 /**
  * Created by diviator on 16.08.2016.
  */
-public class VkGroupId {
-    @JsonProperty("id")
-    int id;
+public class Error {
 
     @JsonProperty("CODE")
     int code;
 
     @JsonProperty("TEXT")
     String result;
-
-    public int getId() {
-        return id;
-    }
 
     public int getCode() {
         return code;
@@ -26,4 +20,5 @@ public class VkGroupId {
     public String getResult() {
         return result;
     }
+
 }

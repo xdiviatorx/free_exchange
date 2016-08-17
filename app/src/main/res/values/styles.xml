@@ -1,11 +1,30 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="AppTheme.Base" >
         <!-- Customize your theme here. -->
+    </style>
+
+    <style name="LoginTheme" parent="AppTheme.Base">
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+
+        <item name="colorButtonNormal">@color/loginButtonColor</item>
+    </style>
+
+    <style name="AppTheme.Base" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
+
+
+    <style name="LoginSplashText" >
+        <item name="android:textColor">@color/colorWhite</item>
+        <item name="android:shadowColor">@color/shadowColor</item>
+        <item name="android:shadowRadius">1</item>
+        <item name="android:shadowDy">1</item>
+    </style>
+
 
 </resources>
