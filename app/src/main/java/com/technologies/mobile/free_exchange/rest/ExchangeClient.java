@@ -1,13 +1,14 @@
 package com.technologies.mobile.free_exchange.rest;
 
-import com.technologies.mobile.free_exchange.rest.model.Resp;
+import com.technologies.mobile.free_exchange.rest.model.Search;
+import com.technologies.mobile.free_exchange.rest.model.SearchResponse;
+import com.technologies.mobile.free_exchange.rest.model.VkGroupIdResponse;
 
 import retrofit2.Call;
-import retrofit2.http.Body;
 import retrofit2.http.Field;
+import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.POST;
-import retrofit2.http.Query;
 
 /**
  * Created by diviator on 16.08.2016.
@@ -18,6 +19,11 @@ public interface ExchangeClient {
 
     @FormUrlEncoded
     @POST("API/GetVKGroupId")
-    Call<Resp> getVkGroupId(@Field("APIKey") String apiKey);
+    Call<VkGroupIdResponse> getVkGroupId(@Field("APIKey") String apiKey);
 
+    @FormUrlEncoded
+    @POST("API/Search")
+    Call<Search> findExchanges(@Field("ItemsGive") String itemsGive, @Field("ItemsGet") String itemsGet,
+                               @Field("ItemsOffset") int offset, @Field("ItemsCount") int count,
+                               @Field("Category") int category, @Field("APIKey") String apiKey);
 }

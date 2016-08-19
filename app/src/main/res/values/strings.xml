@@ -12,4 +12,12 @@
     <string name="login_successfully">Вход выполнен</string>
 
     <string name="login_error">Ошибка входа</string>
+
+    <string name="give">Отдаю:</string>
+    <string name="get">Получаю:</string>
+    <string name="category">Категория:</string>
+
+    <string name="date_sample">18.08.2016 12:14</string>
+    <string name="sample">Пример</string>
+    <string name="sample_text">apple ibook g4, чистый американец, весь пакет документов и дисков!+apple камера, все без ремонтов и вскрытий!!!один хозяин, привезен из штатов!в идеальном состоянии!</string>
 </resources>

@@ -16,6 +16,8 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+
+        <item name="android:windowBackground">@color/backgroundLightGray</item>
     </style>
 
 
@@ -26,5 +28,18 @@
         <item name="android:shadowDy">1</item>
     </style>
 
+    <style name="SearchPullText" >
+        <item name="android:textColor">@color/textColorDarkGray</item>
+        <item name="android:textSize">13sp</item>
+    </style>
+
+    <style name="SearchPullCategoriesText" parent="SearchPullText" >
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="SearchPullDataText" parent="SearchPullText">
+        <item name="android:textSize">11sp</item>
+        <item name="android:fontFamily">serif-monospace</item>
+    </style>
 
 </resources>

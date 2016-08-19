@@ -5,12 +5,14 @@
     <color name="colorAccent">#f96151</color>
 
     <color name="colorWhite">#fff</color>
-
     <color name="colorTransparent">#00ffffff</color>
 
     <color name="shadowColor">#b5b5b5</color>
 
     <color name="loginButtonColor">#32393939</color>
 
+    <color name="backgroundLightGray">#dddddd</color>
+
+    <color name="textColorDarkGray">#777777</color>
     <!-- #32000000 -->
 </resources>
