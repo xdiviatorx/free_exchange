@@ -74,7 +74,6 @@ public class SearchPullAdapter extends SimpleAdapter{
         if( !imageUrl.isEmpty() ) {
             Picasso.with(context)
                     .load(imageUrl)
-                    .fit() // will explain later
                     .into(roundedImageView);
         }else{
             roundedImageView.setImageResource(R.drawable.no_photo);
