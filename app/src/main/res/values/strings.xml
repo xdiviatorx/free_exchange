@@ -8,7 +8,7 @@
     <string name="app_description">Обменяйте ненужные вещи на нужные.\nСовершенно бесплатно</string>
 
     <string name="login">Войти</string>
-    
+
     <string name="login_successfully">Вход выполнен</string>
 
     <string name="login_error">Ошибка входа</string>
@@ -16,6 +16,8 @@
     <string name="give">Отдаю:</string>
     <string name="get">Получаю:</string>
     <string name="category">Категория:</string>
+    <string name="place">Место:</string>
+    <string name="contacts">Контакты:</string>
 
     <string name="date_sample">18.08.2016 12:14</string>
     <string name="sample">Пример</string>

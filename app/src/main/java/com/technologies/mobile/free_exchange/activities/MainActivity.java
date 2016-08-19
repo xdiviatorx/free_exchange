@@ -6,11 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.AbsListView;
 import android.widget.ListView;
-import android.widget.NumberPicker;
-import android.widget.SimpleAdapter;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.technologies.mobile.free_exchange.R;
 import com.technologies.mobile.free_exchange.adapters.SearchPullAdapter;
 import com.technologies.mobile.free_exchange.rest.ExchangeClient;
@@ -25,8 +21,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -44,12 +38,16 @@ public class MainActivity extends AppCompatActivity implements AbsListView.OnScr
     private SearchPullAdapter lvAdapter;
     private ArrayList<HashMap<String,Object>> data;
 
-    private String GIVE = "GIVE";
-    private String GET = "GET";
-    private String CATEGORY = "CATEGORY";
-    private String TEXT = "TEXT";
-    private String DATE = "DATE";
-    private String IMAGE = "IMAGE";
+    public static String GIVE = "GIVE";
+    public static String GET = "GET";
+    public static String CATEGORY = "CATEGORY";
+    public static String TEXT = "TEXT";
+    public static String DATE = "DATE";
+    public static String IMAGE = "IMAGE";
+    public static String PLACE = "PLACE";
+    public static String CONTACTS = "CONTACTS";
+    public static String IMAGES = "IMAGES";
+
 
     private boolean uploading = false;
 
@@ -69,8 +67,8 @@ public class MainActivity extends AppCompatActivity implements AbsListView.OnScr
     private void initViews(){
         lv = (ListView) findViewById(R.id.lv);
 
-        String[] from = {GIVE,GET,CATEGORY,TEXT,DATE};
-        int[] to = {R.id.gives,R.id.gets,R.id.category,R.id.text,R.id.date};
+        String[] from = {GIVE,GET,PLACE,CONTACTS,DATE};
+        int[] to = {R.id.gives,R.id.gets,R.id.place,R.id.contacts,R.id.date};
         data = new ArrayList<>();
         lvAdapter = new SearchPullAdapter(this,data,R.layout.exchange_item,from,to);
 
@@ -125,6 +123,9 @@ public class MainActivity extends AppCompatActivity implements AbsListView.OnScr
                     }else{
                         item.put(IMAGE, "");
                     }
+                    item.put(IMAGES,searchExtraditionItem.getPhotosList());
+                    item.put(PLACE, searchExtraditionItem.getPlace());
+                    item.put(CONTACTS, searchExtraditionItem.getContacts());
 
                     long timestamp = searchExtraditionItem.getCreated();
                     timestamp*=1000;

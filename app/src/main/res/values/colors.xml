@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#5ad0ba</color>
-    <color name="colorPrimaryDark">#4fc8b1</color>
+    <color name="colorPrimary">#188f68</color>
+    <color name="colorPrimaryDark">#127757</color>
     <color name="colorAccent">#f96151</color>
 
     <color name="colorWhite">#fff</color>
@@ -9,10 +9,17 @@
 
     <color name="shadowColor">#b5b5b5</color>
 
-    <color name="loginButtonColor">#32393939</color>
+    <color name="roundedIVBorderColor">#188f68</color>
 
-    <color name="backgroundLightGray">#dddddd</color>
+    <color name="loginButtonColor">#32141414</color>
 
-    <color name="textColorDarkGray">#777777</color>
+    <color name="backgroundLightGray">#e8eced</color>
+
+    <color name="textColorDarkGray">#88898b</color>
+    <color name="textColorDarkGreen">#127757</color>
+    <color name="textColorDarkBlue">#0d9bbf</color>
+    <color name="textColorBlack">#181818</color>
     <!-- #32000000 -->
+
+    <color name="halfTransparentGreenCardView">#64188f68</color>
 </resources>
