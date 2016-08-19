@@ -6,6 +6,7 @@
 
     <color name="colorWhite">#fff</color>
     <color name="colorTransparent">#00ffffff</color>
+    <color name="colorBlack">#000000</color>
 
     <color name="shadowColor">#b5b5b5</color>
 

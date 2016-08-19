@@ -12,6 +12,11 @@
         <item name="colorButtonNormal">@color/loginButtonColor</item>
     </style>
 
+    <style name="ImagePreviewTheme" parent="AppTheme.Base">
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+    </style>
+
     <style name="AppTheme.Base" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>

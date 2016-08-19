@@ -77,6 +77,7 @@ public class MainActivity extends AppCompatActivity implements AbsListView.OnScr
         lv.setOnScrollListener(this);
     }
 
+
     private void performListQuery(final int offset,final int count){
         ExchangeClient client = RetrofitService.createService(ExchangeClient.class);
 
@@ -118,8 +119,8 @@ public class MainActivity extends AppCompatActivity implements AbsListView.OnScr
                     item.put(GIVE,searchExtraditionItem.getGive());
                     item.put(CATEGORY,searchExtraditionItem.getCategory());
                     item.put(TEXT,searchExtraditionItem.getText());
-                    if( searchExtraditionItem.getPhotosList().size() != 0  ) {
-                        item.put(IMAGE, searchExtraditionItem.getPhotosList().get(0));
+                    if( searchExtraditionItem.getPhotosList().length != 0  ) {
+                        item.put(IMAGE, searchExtraditionItem.getPhotosList()[0]);
                     }else{
                         item.put(IMAGE, "");
                     }
@@ -143,33 +144,6 @@ public class MainActivity extends AppCompatActivity implements AbsListView.OnScr
             @Override
             public void onFailure(Call<Search> call, Throwable t) {
                 Log.e(LOG_TAG,"ERROR");
-                t.printStackTrace();
-            }
-        });
-    }
-
-    private void vkGroupIdQuery(){
-        ExchangeClient client = RetrofitService.createService(ExchangeClient.class);
-
-        Call<VkGroupIdResponse> vkGroupIdCall = client.getVkGroupId(ExchangeClient.apiKey);
-
-        vkGroupIdCall.enqueue(new Callback<VkGroupIdResponse>() {
-            @Override
-            public void onResponse(Call<VkGroupIdResponse> call, Response<VkGroupIdResponse> response) {
-                Log.e(LOG_TAG,"SUCCESS");
-                VkGroupIdResponse vkGroupIdResponse = response.body();
-                if( vkGroupIdResponse.getVkGroupId() != null ){
-                    Log.e(LOG_TAG,"VK GROUP ID = " + vkGroupIdResponse.getVkGroupId());
-                }else{
-                    if( vkGroupIdResponse.getError() != null ) {
-                        Log.e(LOG_TAG, vkGroupIdResponse.getError().getResult());
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<VkGroupIdResponse> call, Throwable t) {
-                Log.e(LOG_TAG,"FAILED");
                 t.printStackTrace();
             }
         });

@@ -79,11 +79,11 @@ public class SearchExtraditionItem {
     }
 
     @Nullable
-    public ArrayList<String> getPhotosList() {
+    public String[] getPhotosList() {
         ObjectMapper mapper = new ObjectMapper();
         TypeFactory typeFactory = mapper.getTypeFactory();
         try {
-            return mapper.readValue(photos, typeFactory.constructCollectionType(ArrayList.class, String.class));
+            return mapper.readValue(photos, typeFactory.constructArrayType(String.class));
         } catch (IOException e) {
             e.printStackTrace();
             return null;
