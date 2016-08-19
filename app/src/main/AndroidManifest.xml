@@ -33,7 +33,6 @@
         <activity android:name=".activities.ExchangeLookupActivity" />
         <activity
             android:name=".activities.ImagePreviewActivity"
-            android:screenOrientation="portrait"
             android:theme="@style/ImagePreviewTheme"/>
     </application>
 

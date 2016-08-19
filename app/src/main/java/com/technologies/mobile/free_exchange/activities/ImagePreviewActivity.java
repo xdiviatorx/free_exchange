@@ -13,6 +13,7 @@ import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
 import com.technologies.mobile.free_exchange.R;
+import com.technologies.mobile.free_exchange.adapters.SearchPullAdapter;
 import com.technologies.mobile.free_exchange.fragments.ImageFragment;
 
 public class ImagePreviewActivity extends AppCompatActivity {
@@ -28,7 +29,7 @@ public class ImagePreviewActivity extends AppCompatActivity {
         setContentView(R.layout.activity_image_preview);
 
         Intent data = getIntent();
-        String[] imageUrls = data.getStringArrayExtra(MainActivity.IMAGES);
+        String[] imageUrls = data.getStringArrayExtra(SearchPullAdapter.IMAGES);
         int count = imageUrls.length;
         count = Math.max(1,count);
 

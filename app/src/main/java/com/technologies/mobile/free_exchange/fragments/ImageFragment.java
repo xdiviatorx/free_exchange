@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import com.squareup.picasso.Picasso;
 import com.technologies.mobile.free_exchange.R;
 import com.technologies.mobile.free_exchange.activities.MainActivity;
+import com.technologies.mobile.free_exchange.adapters.SearchPullAdapter;
 
 /**
  * Created by diviator on 19.08.2016.
@@ -22,7 +23,7 @@ public class ImageFragment extends Fragment{
     public static ImageFragment getInstance(String url){
         ImageFragment imageFragment = new ImageFragment();
         Bundle bundle = new Bundle();
-        bundle.putString(MainActivity.IMAGE,url);
+        bundle.putString(SearchPullAdapter.IMAGE,url);
         imageFragment.setArguments(bundle);
         return imageFragment;
     }
@@ -30,7 +31,7 @@ public class ImageFragment extends Fragment{
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        imageUrl = getArguments().getString(MainActivity.IMAGE);
+        imageUrl = getArguments().getString(SearchPullAdapter.IMAGE);
     }
 
     @Nullable
