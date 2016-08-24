@@ -15,7 +15,7 @@ public class MyApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
-        //vkAccessTokenTracker.startTracking();
+        vkAccessTokenTracker.startTracking();
         VKSdk.initialize(this);
     }
 

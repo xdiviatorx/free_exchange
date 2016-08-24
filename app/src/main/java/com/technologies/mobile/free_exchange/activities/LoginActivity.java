@@ -11,6 +11,7 @@ import com.technologies.mobile.free_exchange.R;
 import com.vk.sdk.VKAccessToken;
 import com.vk.sdk.VKCallback;
 import com.vk.sdk.VKSdk;
+import com.vk.sdk.api.VKApi;
 import com.vk.sdk.api.VKError;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener{

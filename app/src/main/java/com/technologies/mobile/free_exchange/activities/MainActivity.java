@@ -1,45 +1,73 @@
 package com.technologies.mobile.free_exchange.activities;
 
 import android.content.Intent;
+import android.os.Handler;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.ListView;
 
 import com.technologies.mobile.free_exchange.R;
+import com.technologies.mobile.free_exchange.adapters.NavigationRVAdapter;
 import com.technologies.mobile.free_exchange.adapters.SearchPullAdapter;
-import com.technologies.mobile.free_exchange.rest.ExchangeClient;
-import com.technologies.mobile.free_exchange.rest.RetrofitService;
-import com.technologies.mobile.free_exchange.rest.model.Search;
-import com.technologies.mobile.free_exchange.rest.model.SearchExtraditionItem;
-import com.technologies.mobile.free_exchange.rest.model.SearchResponse;
-import com.technologies.mobile.free_exchange.rest.model.VkGroupIdResponse;
+import com.technologies.mobile.free_exchange.fragments.AddFragment;
+import com.technologies.mobile.free_exchange.fragments.HomeFragment;
+import com.technologies.mobile.free_exchange.fragments.MessageFragment;
+import com.technologies.mobile.free_exchange.fragments.SearchFragment;
+import com.technologies.mobile.free_exchange.listeners.RecyclerViewOnItemClickListener;
+import com.vk.sdk.VKAccessToken;
+import com.vk.sdk.VKSdk;
+import com.vk.sdk.api.VKApi;
+import com.vk.sdk.api.VKApiConst;
+import com.vk.sdk.api.VKParameters;
+import com.vk.sdk.api.VKRequest;
+import com.vk.sdk.api.VKResponse;
+import com.vk.sdk.api.model.VKApiPhoto;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
-public class MainActivity extends AppCompatActivity implements AbsListView.OnScrollListener{
+public class MainActivity extends AppCompatActivity  {
 
     public static String LOG_TAG = "logs";
 
     public static int LOGIN_REQUEST = 100;
 
+    private int[] icons = {R.drawable.home,R.drawable.search_dark,
+            R.drawable.plus_dark,R.drawable.message_dark,R.drawable.exit};
 
+    private Toolbar toolbar;
 
-    private ListView lv;
-    private SearchPullAdapter lvAdapter;
-    private ArrayList<HashMap<String,Object>> data;
+    private String photo = "";
+    private String name = "";
 
+    private DrawerLayout drawerLayout;
+    private RecyclerView recyclerView;
+    private NavigationRVAdapter adapter;
+    private RecyclerView.LayoutManager layoutManager;
 
+    private ActionBarDrawerToggle drawerToggle;
 
+    private ImageButton floatingAdd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,30 +75,144 @@ public class MainActivity extends AppCompatActivity implements AbsListView.OnScr
         setContentView(R.layout.activity_main);
 
         login();
+
+        initToolbar();
+
+        initNavigation();
+
+        initFloating();
+
+        initDefaultFragment();
+
+    }
+
+    private void initFloating(){
+        floatingAdd = (ImageButton) findViewById(R.id.floating_add);
+        floatingAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                initFragment(2);
+            }
+        });
+    }
+
+    private void initDefaultFragment(){
+        initFragment(0);
+    }
+
+    private void initFragment(int index){
+        Fragment fragment;
+        switch ( index ){
+            case 0:{
+                fragment = new HomeFragment();
+                break;
+            }
+            case 1:{
+                fragment = new SearchFragment();
+                break;
+            }
+            case 2:{
+                fragment = new AddFragment();
+                break;
+            }
+            case 3:{
+                fragment = new MessageFragment();
+                break;
+            }
+            default:
+                fragment = new HomeFragment();
+        }
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.content,fragment)
+                .commit();
+        String[] titles = getResources().getStringArray(R.array.fragments);
+        setTitle(titles[index]);
+
+        if( index == 0 ){
+            floatingAdd.setVisibility(View.VISIBLE);
+        }else{
+            floatingAdd.setVisibility(View.INVISIBLE);
+        }
     }
 
     private void login(){
-        Intent intent = new Intent(getApplicationContext(),LoginActivity.class);
-        startActivityForResult(intent,LOGIN_REQUEST);
+        if( !VKSdk.isLoggedIn() ) {
+            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+            startActivityForResult(intent, LOGIN_REQUEST);
+        }
     }
 
-    private void initViews(){
-        lv = (ListView) findViewById(R.id.lv);
-
-        String[] from = {SearchPullAdapter.GIVE,SearchPullAdapter.GET,SearchPullAdapter.PLACE,SearchPullAdapter.CONTACTS,SearchPullAdapter.DATE};
-        int[] to = {R.id.gives,R.id.gets,R.id.place,R.id.contacts,R.id.date};
-        ArrayList<HashMap<String,Object>> data = new ArrayList<>();
-
-        lvAdapter = new SearchPullAdapter(this,data,R.layout.exchange_item,from,to);
-
-        lv.setAdapter(lvAdapter);
-
-        lv.setOnScrollListener(this);
-
-        lvAdapter.init();
+    private void initToolbar(){
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
     }
 
+    private void initNavigation(){
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
+        recyclerView = (RecyclerView) findViewById(R.id.left_drawer);
+        recyclerView.setHasFixedSize(true);
+
+        String[] categories = getResources().getStringArray(R.array.navigations);
+
+        adapter = new NavigationRVAdapter(this, categories,icons,photo,name);
+        recyclerView.setAdapter(adapter);
+
+        layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+
+        drawerToggle = new ActionBarDrawerToggle(this,drawerLayout,toolbar,R.string.open_drawer,R.string.close_drawer){
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+            }
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+            }
+        };
+
+        drawerToggle.syncState();
+
+        VKRequest vkRequest = VKApi.users().get(VKParameters.from(VKApiConst.FIELDS,"photo_200"));
+        vkRequest.executeWithListener(new VKRequest.VKRequestListener() {
+            @Override
+            public void onComplete(VKResponse response) {
+                super.onComplete(response);
+                //Log.e(LOG_TAG,response.json.toString());
+                try {
+                    JSONArray jsonArray = response.json.getJSONArray("response");
+                    JSONObject jsonObject = jsonArray.getJSONObject(0);
+                    String name = jsonObject.getString("first_name");
+                    name+= " " + jsonObject.getString("last_name");
+                    String photoUrl = jsonObject.getString("photo_200");
+                    //Log.e(LOG_TAG, "NAME = " + name);
+                    //Log.e(LOG_TAG, "PHOTO = " + photoUrl);
+                    adapter.setPersonalData(name,photoUrl);
+                    adapter.notifyDataSetChanged();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        recyclerView.addOnItemTouchListener(new RecyclerViewOnItemClickListener(this, new RecyclerViewOnItemClickListener.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                if( position == 5 ){
+                        VKSdk.logout();
+                        login();
+                        drawerLayout.closeDrawers();
+                }else if( position != 0 ){
+                    initFragment(position-1);
+                    drawerLayout.closeDrawers();
+                }
+
+            }
+        }));
+    }
 
 
     @Override
@@ -78,22 +220,35 @@ public class MainActivity extends AppCompatActivity implements AbsListView.OnScr
         super.onActivityResult(requestCode, resultCode, data);
         if( requestCode == LOGIN_REQUEST ){
             if( resultCode == RESULT_OK ){
-                initViews();
+                //
             }
         }
     }
 
     @Override
-    public void onScrollStateChanged(AbsListView absListView, int i) {
-
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
     }
 
     @Override
-    public void onScroll(AbsListView absListView, int i, int i1, int i2) {
+    public boolean onOptionsItemSelected(MenuItem item) {
 
-        if( i >= Math.max(i2-10,10) ) {
-            lvAdapter.uploading(i2);
+        switch ( item.getItemId() ){
+            case R.id.action_search:{
+                initFragment(1);
+                break;
+            }
+            case R.id.action_add:{
+                initFragment(2);
+                break;
+            }
+            case R.id.action_messages:{
+                initFragment(3);
+                break;
+            }
         }
 
+        return super.onOptionsItemSelected(item);
     }
 }

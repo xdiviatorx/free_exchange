@@ -22,4 +22,12 @@
     <string name="date_sample">18.08.2016 12:14</string>
     <string name="sample">Пример</string>
     <string name="sample_text">apple ibook g4, чистый американец, весь пакет документов и дисков!+apple камера, все без ремонтов и вскрытий!!!один хозяин, привезен из штатов!в идеальном состоянии!</string>
+
+    <string name="search">Поиск</string>
+    <string name="add">Добавить обмен</string>
+    <string name="messages">Мои сообщения</string>
+
+    <string name="open_drawer">Открытое меню</string>
+    <string name="close_drawer">Закрытое меню</string>
+
 </resources>

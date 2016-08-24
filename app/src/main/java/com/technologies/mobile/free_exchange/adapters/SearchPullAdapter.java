@@ -60,7 +60,7 @@ public class SearchPullAdapter extends SimpleAdapter{
         super(context, data, resource, from, to);
 
         this.context = context;
-        this.data =data;
+        this.data = data;
     }
 
     @Override
@@ -101,12 +101,12 @@ public class SearchPullAdapter extends SimpleAdapter{
         }
     }
 
-    public void init(){
+    public void initialUploading(){
         uploading=true;
         performListQuery(0,UPLOAD_LENGTH);
     }
 
-    public void uploading(int start){
+    public void additionalUploading(int start){
         if( !uploading  ) {
             uploading = true;
             performListQuery(start, UPLOAD_LENGTH);
@@ -135,18 +135,6 @@ public class SearchPullAdapter extends SimpleAdapter{
 
                     if( searchExtraditionItem == null ){
                         continue;
-                    }
-
-                    Log.e(LOG_TAG,"==ITEM#" + (i+1) + "==");
-                    Log.e(LOG_TAG,"OFFSET = " + offset + " COUNT = " + count);
-                    Log.e(LOG_TAG,searchExtraditionItem.getGet());
-                    Log.e(LOG_TAG,searchExtraditionItem.getGive());
-                    Log.e(LOG_TAG,searchExtraditionItem.getText());
-                    //Log.e(LOG_TAG,searchExtraditionItem.getPhotos());
-                    if( searchExtraditionItem.getPhotosList() != null ) {
-                        for (String link : searchExtraditionItem.getPhotosList()){
-                            Log.e(LOG_TAG,link);
-                        }
                     }
 
                     HashMap<String,Object> item = new HashMap<>();

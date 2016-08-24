@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="navigations">
+        <item>Главная</item>
+        <item>Поиск</item>
+        <item>Добавить обмен</item>
+        <item>Мои сообщения</item>
+        <item>Выйти</item>
+    </array>
+
+    <array name="fragments">
+        <item>@string/app_name</item>
+        <item>@string/search</item>
+        <item>@string/add</item>
+        <item>@string/messages</item>
+    </array>
+</resources>
