@@ -1,5 +1,6 @@
 package com.technologies.mobile.free_exchange.rest;
 
+import com.technologies.mobile.free_exchange.rest.model.Categories;
 import com.technologies.mobile.free_exchange.rest.model.Search;
 import com.technologies.mobile.free_exchange.rest.model.SearchResponse;
 import com.technologies.mobile.free_exchange.rest.model.VkGroupIdResponse;
@@ -26,4 +27,8 @@ public interface ExchangeClient {
     Call<Search> findExchanges(@Field("ItemsGive") String itemsGive, @Field("ItemsGet") String itemsGet,
                                @Field("ItemsOffset") int offset, @Field("ItemsCount") int count,
                                @Field("Category") int category, @Field("APIKey") String apiKey);
+
+    @FormUrlEncoded
+    @POST("API/GetCategoriesList")
+    Call<Categories> getCategoriesList(@Field("APIKey") String apiKey);
 }

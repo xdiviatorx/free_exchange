@@ -1,9 +1,11 @@
 package com.technologies.mobile.free_exchange.activities;
 
+import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -11,11 +13,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -26,6 +31,7 @@ import com.technologies.mobile.free_exchange.R;
 import com.technologies.mobile.free_exchange.adapters.NavigationRVAdapter;
 import com.technologies.mobile.free_exchange.adapters.SearchPullAdapter;
 import com.technologies.mobile.free_exchange.fragments.AddFragment;
+import com.technologies.mobile.free_exchange.fragments.FragmentAdapter;
 import com.technologies.mobile.free_exchange.fragments.HomeFragment;
 import com.technologies.mobile.free_exchange.fragments.MessageFragment;
 import com.technologies.mobile.free_exchange.fragments.SearchFragment;
@@ -67,12 +73,14 @@ public class MainActivity extends AppCompatActivity  {
 
     private ActionBarDrawerToggle drawerToggle;
 
-    private ImageButton floatingAdd;
+    private FragmentAdapter fragmentAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        fragmentAdapter = new FragmentAdapter(this);
 
         login();
 
@@ -80,61 +88,10 @@ public class MainActivity extends AppCompatActivity  {
 
         initNavigation();
 
-        initFloating();
-
-        initDefaultFragment();
-
+        fragmentAdapter.initDefaultFragment();
     }
 
-    private void initFloating(){
-        floatingAdd = (ImageButton) findViewById(R.id.floating_add);
-        floatingAdd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                initFragment(2);
-            }
-        });
-    }
 
-    private void initDefaultFragment(){
-        initFragment(0);
-    }
-
-    private void initFragment(int index){
-        Fragment fragment;
-        switch ( index ){
-            case 0:{
-                fragment = new HomeFragment();
-                break;
-            }
-            case 1:{
-                fragment = new SearchFragment();
-                break;
-            }
-            case 2:{
-                fragment = new AddFragment();
-                break;
-            }
-            case 3:{
-                fragment = new MessageFragment();
-                break;
-            }
-            default:
-                fragment = new HomeFragment();
-        }
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction()
-                .replace(R.id.content,fragment)
-                .commit();
-        String[] titles = getResources().getStringArray(R.array.fragments);
-        setTitle(titles[index]);
-
-        if( index == 0 ){
-            floatingAdd.setVisibility(View.VISIBLE);
-        }else{
-            floatingAdd.setVisibility(View.INVISIBLE);
-        }
-    }
 
     private void login(){
         if( !VKSdk.isLoggedIn() ) {
@@ -206,7 +163,7 @@ public class MainActivity extends AppCompatActivity  {
                         login();
                         drawerLayout.closeDrawers();
                 }else if( position != 0 ){
-                    initFragment(position-1);
+                    fragmentAdapter.initFragment(position-1);
                     drawerLayout.closeDrawers();
                 }
 
@@ -228,6 +185,7 @@ public class MainActivity extends AppCompatActivity  {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
+
         return true;
     }
 
@@ -236,15 +194,15 @@ public class MainActivity extends AppCompatActivity  {
 
         switch ( item.getItemId() ){
             case R.id.action_search:{
-                initFragment(1);
+                fragmentAdapter.initFragment(1);
                 break;
             }
             case R.id.action_add:{
-                initFragment(2);
+                fragmentAdapter.initFragment(2);
                 break;
             }
             case R.id.action_messages:{
-                initFragment(3);
+                fragmentAdapter.initFragment(3);
                 break;
             }
         }

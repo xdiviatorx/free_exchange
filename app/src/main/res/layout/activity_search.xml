@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    tools:context="com.technologies.mobile.free_exchange.activities.SearchActivity">
+
+    <ListView
+        android:id="@+id/lv"
+        android:layout_marginTop="60dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <LinearLayout
+        android:id="@+id/searchBar"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        android:clickable="true"
+        android:background="@color/colorPrimary" >
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <ImageButton
+                    android:id="@+id/back"
+                    android:layout_width="50dp"
+                    android:layout_height="60dp"
+                    android:layout_gravity="center"
+                    android:scaleType="center"
+                    android:clickable="true"
+                    android:theme="@style/CustomToolbarImageButtonTheme"
+                    android:src="@drawable/back_arrow"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_weight="1">
+
+                <EditText
+                    android:id="@+id/etGives"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:hint="@string/give"
+                    android:layout_gravity="center_vertical"
+                    android:theme="@style/ToolbarTheme"/>
+
+                <EditText
+                    android:id="@+id/etGets"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:hint="@string/get"
+                    android:layout_gravity="center_vertical"
+                    android:theme="@style/ToolbarTheme"/>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:id="@+id/spinner"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <android.support.v7.widget.AppCompatSpinner
+                            android:id="@+id/category"
+                            android:layout_width="match_parent"
+                            android:layout_height="60dp"
+                            android:gravity="center_vertical"
+                            android:theme="@style/ToolbarTheme"
+                            android:layout_weight="1"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/tvSearch"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:clickable="true">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="20dp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="20dp"
+                                android:text="@string/give"
+                                android:layout_marginRight="3dp"
+                                android:textSize="14sp"
+                                android:textColor="@color/colorWhite"
+                                android:gravity="center_vertical"
+                                android:maxLines="1"
+                                android:theme="@style/ToolbarTheme"
+                                android:ellipsize="end"/>
+
+                            <TextView
+                                android:id="@+id/preview_gives"
+                                android:layout_width="match_parent"
+                                android:layout_height="20dp"
+                                android:layout_marginRight="3dp"
+                                android:textSize="14sp"
+                                android:textColor="@color/colorWhite"
+                                android:gravity="center_vertical"
+                                android:maxLines="1"
+                                android:theme="@style/ToolbarTheme"
+                                android:ellipsize="end"/>
+
+                        </LinearLayout>
+
+
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="20dp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="20dp"
+                                android:text="@string/get"
+                                android:layout_marginRight="3dp"
+                                android:textSize="14sp"
+                                android:textColor="@color/colorWhite"
+                                android:gravity="center_vertical"
+                                android:maxLines="1"
+                                android:theme="@style/ToolbarTheme"
+                                android:ellipsize="end"/>
+
+                            <TextView
+                                android:id="@+id/preview_gets"
+                                android:layout_width="match_parent"
+                                android:layout_height="20dp"
+                                android:layout_marginRight="3dp"
+                                android:textSize="14sp"
+                                android:textColor="@color/colorWhite"
+                                android:gravity="center_vertical"
+                                android:maxLines="1"
+                                android:theme="@style/ToolbarTheme"
+                                android:ellipsize="end"/>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="20dp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="20dp"
+                                android:text="@string/category"
+                                android:layout_marginRight="3dp"
+                                android:textSize="14sp"
+                                android:textColor="@color/colorWhite"
+                                android:gravity="center_vertical"
+                                android:maxLines="1"
+                                android:theme="@style/ToolbarTheme"
+                                android:ellipsize="end"/>
+
+                            <TextView
+                                android:id="@+id/preview_category"
+                                android:layout_width="match_parent"
+                                android:layout_height="20dp"
+                                android:text=""
+                                android:layout_marginRight="3dp"
+                                android:textSize="14sp"
+                                android:textColor="@color/colorWhite"
+                                android:gravity="center_vertical"
+                                android:maxLines="1"
+                                android:theme="@style/ToolbarTheme"
+                                android:ellipsize="end"/>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <ImageButton
+                    android:id="@+id/clear"
+                    android:layout_width="50dp"
+                    android:layout_height="60dp"
+                    android:scaleType="center"
+                    android:clickable="true"
+                    android:theme="@style/CustomToolbarImageButtonTheme"
+                    android:layout_gravity="center"
+                    android:src="@drawable/delete"/>
+
+                <RelativeLayout
+                    android:layout_width="50dp"
+                    android:layout_height="match_parent">
+
+                    <ImageButton
+                        android:id="@+id/minimize"
+                        android:layout_width="50dp"
+                        android:layout_height="60dp"
+                        android:scaleType="center"
+                        android:clickable="true"
+                        android:theme="@style/CustomToolbarImageButtonTheme"
+                        android:layout_gravity="center"
+                        android:layout_alignParentBottom="true"
+                        android:src="@drawable/up"/>
+
+                    <ImageButton
+                        android:id="@+id/maximize"
+                        android:layout_width="50dp"
+                        android:layout_height="60dp"
+                        android:scaleType="center"
+                        android:clickable="true"
+                        android:theme="@style/CustomToolbarImageButtonTheme"
+                        android:layout_gravity="center"
+                        android:layout_alignParentBottom="true"
+                        android:src="@drawable/down"/>
+
+                </RelativeLayout>
+
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+    <!--
+    <Button
+        android:id="@+id/minimize"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Minimize"
+        android:layout_margin="10dp"/>
+    <Button
+        android:id="@+id/maximize"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Maximize"
+        android:layout_margin="10dp" />
+        -->
+
+</RelativeLayout>

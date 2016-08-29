@@ -16,8 +16,7 @@
         android:layout_marginLeft="20dp"
         android:textSize="18dp"
         android:textStyle="bold"
-        android:textColor="@color/colorWhite"
-        android:text="Name and surname"/>
+        android:textColor="@color/colorWhite" />
 
     <com.makeramen.roundedimageview.RoundedImageView
         android:id="@+id/headerPhoto"
@@ -25,7 +24,6 @@
         android:layout_height="100dp"
         app:riv_oval="true"
         android:scaleType="centerCrop"
-        android:src="@drawable/phone"
         android:layout_marginLeft="20dp"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="35dp"

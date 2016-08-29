@@ -2,7 +2,7 @@
 <resources>
     <color name="colorPrimary">#009688</color>
     <color name="colorPrimaryDark">#004d40</color>
-    <color name="colorAccent">#f96151</color>
+    <color name="colorAccent">#f44336</color>
 
     <color name="roundedIVBorderColor">@color/colorWhite</color>
 

@@ -30,4 +30,6 @@
     <string name="open_drawer">Открытое меню</string>
     <string name="close_drawer">Закрытое меню</string>
 
+    <string name="no_category">Без категории</string>
+
 </resources>

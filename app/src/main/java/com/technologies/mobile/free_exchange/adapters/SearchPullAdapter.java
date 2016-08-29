@@ -55,6 +55,9 @@ public class SearchPullAdapter extends SimpleAdapter{
 
     ArrayList<HashMap<String,Object>> data;
 
+    String itemsGive = "";
+    String itemsGet = "";
+    int category = 0;
 
     public SearchPullAdapter(Context context, ArrayList<HashMap<String,Object>> data, int resource, String[] from, int[] to) {
         super(context, data, resource, from, to);
@@ -113,13 +116,14 @@ public class SearchPullAdapter extends SimpleAdapter{
         }
     }
 
+    public void setUploadingParams(String itemsGive, String itemsGet, int category){
+        this.itemsGive = itemsGive;
+        this.itemsGet = itemsGet;
+        this.category = category;
+    }
+
     private void performListQuery(final int offset,final int count){
         ExchangeClient client = RetrofitService.createService(ExchangeClient.class);
-
-        String itemsGive = "";
-        String itemsGet = "";
-        int category = 0;
-
 
         Call<Search> searchCall = client.findExchanges(itemsGive,itemsGet,offset,count,category,ExchangeClient.apiKey);
 

@@ -33,7 +33,13 @@
         <activity android:name=".activities.ExchangeLookupActivity" />
         <activity
             android:name=".activities.ImagePreviewActivity"
-            android:theme="@style/ImagePreviewTheme"/>
+            android:theme="@style/ImagePreviewTheme" />
+        <activity
+            android:name=".activities.SearchActivity"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTop">
+
+        </activity>
     </application>
 
 </manifest>
