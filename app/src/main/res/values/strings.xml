@@ -32,4 +32,22 @@
 
     <string name="no_category">Без категории</string>
 
+    <string name="add_photo">Фотографии</string>
+    <string name="add_primary">Основное</string>
+    <string name="add_give">Отдаю</string>
+    <string name="add_get">Получаю</string>
+    <string name="add_category">Категория</string>
+    <string name="add_place">Место</string>
+    <string name="add_contacts">Контакты</string>
+    <string name="add_comments">Комментарии</string>
+
+    <string name="pm">ЛС</string>
+    <string name="phone">Телефон</string>
+    <string name="other">Другое</string>
+
+    <string name="send">Отправить</string>
+    <string name="delete">Удалить</string>
+
+    <string name="no_camera_on_device">Нет камеры в устройстве</string>
+
 </resources>

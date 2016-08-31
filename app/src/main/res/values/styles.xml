@@ -25,6 +25,8 @@
         <item name="windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
 
+        <item name="colorButtonNormal">@color/colorAccent</item>
+
         <item name="android:windowBackground">@color/colorLightGray</item>
     </style>
 
@@ -74,8 +76,12 @@
         <item name="color">@color/colorWhite</item>
     </style>
 
-    <style name="CustomToolbarImageButtonTheme">
+    <style name="CustomTransparentImageButtonTheme">
         <item name="colorButtonNormal">@color/colorTransparent</item>
+    </style>
+
+    <style name="DeletePopupButtonTheme">
+        <item name="colorButtonNormal">@color/loginButtonColor</item>
     </style>
 
 </resources>

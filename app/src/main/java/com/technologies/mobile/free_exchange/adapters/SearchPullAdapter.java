@@ -2,16 +2,20 @@ package com.technologies.mobile.free_exchange.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
+import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
 
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.squareup.picasso.Picasso;
 import com.technologies.mobile.free_exchange.R;
 import com.technologies.mobile.free_exchange.activities.ImagePreviewActivity;
 import com.technologies.mobile.free_exchange.activities.MainActivity;
+import com.technologies.mobile.free_exchange.logic.TextFormatter;
 import com.technologies.mobile.free_exchange.rest.ExchangeClient;
 import com.technologies.mobile.free_exchange.rest.RetrofitService;
 import com.technologies.mobile.free_exchange.rest.model.Search;
@@ -35,7 +39,7 @@ import retrofit2.Response;
  */
 public class SearchPullAdapter extends SimpleAdapter{
 
-    public static String LOG_TAG = "logs";
+    public static String LOG_TAG = "mySearchAdapter";
 
     public static String GIVE = "GIVE";
     public static String GET = "GET";
@@ -68,7 +72,7 @@ public class SearchPullAdapter extends SimpleAdapter{
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        View view =  super.getView(position, convertView, parent);
+        View view = super.getView(position, convertView, parent);
 
         RoundedImageView roundedImageView = (RoundedImageView) view.findViewById(R.id.image);
 
@@ -83,6 +87,31 @@ public class SearchPullAdapter extends SimpleAdapter{
         }
 
         roundedImageView.setOnClickListener(new OnImageClickListener(position));
+
+        //SPANNING
+
+        TextView tvGives = (TextView) view.findViewById(R.id.gives);
+        TextView tvGets = (TextView) view.findViewById(R.id.gets);
+        //TextView tvPlace = (TextView) view.findViewById(R.id.place);
+        //TextView tvContacts = (TextView) view.findViewById(R.id.contacts);
+
+        TextFormatter formatter = new TextFormatter(context);
+        HashMap<String,Object> item = data.get(position);
+
+        String gives = formatter.highlight(item.get(GIVE).toString(),itemsGive);
+        String gets = formatter.highlight(item.get(GET).toString(),itemsGet);
+        //String place = formatter.highlight(item.get(GIVE).toString(),itemsGive);
+        //String contacts = formatter.highlight(item.get(GIVE).toString(),itemsGive);
+
+
+
+        if (android.os.Build.VERSION.SDK_INT < 24) {
+            tvGives.setText(Html.fromHtml(gives));
+            tvGets.setText(Html.fromHtml(gets));
+        } else {
+            tvGives.setText(Html.fromHtml(gives,Html.FROM_HTML_MODE_LEGACY));
+            tvGets.setText(Html.fromHtml(gets,Html.FROM_HTML_MODE_LEGACY));
+        }
 
         return view;
     }

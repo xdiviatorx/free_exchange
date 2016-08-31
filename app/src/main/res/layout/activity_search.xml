@@ -38,7 +38,7 @@
                     android:layout_gravity="center"
                     android:scaleType="center"
                     android:clickable="true"
-                    android:theme="@style/CustomToolbarImageButtonTheme"
+                    android:theme="@style/CustomTransparentImageButtonTheme"
                     android:src="@drawable/back_arrow"/>
 
             </LinearLayout>
@@ -206,7 +206,7 @@
                     android:layout_height="60dp"
                     android:scaleType="center"
                     android:clickable="true"
-                    android:theme="@style/CustomToolbarImageButtonTheme"
+                    android:theme="@style/CustomTransparentImageButtonTheme"
                     android:layout_gravity="center"
                     android:src="@drawable/delete"/>
 
@@ -220,7 +220,7 @@
                         android:layout_height="60dp"
                         android:scaleType="center"
                         android:clickable="true"
-                        android:theme="@style/CustomToolbarImageButtonTheme"
+                        android:theme="@style/CustomTransparentImageButtonTheme"
                         android:layout_gravity="center"
                         android:layout_alignParentBottom="true"
                         android:src="@drawable/up"/>
@@ -231,7 +231,7 @@
                         android:layout_height="60dp"
                         android:scaleType="center"
                         android:clickable="true"
-                        android:theme="@style/CustomToolbarImageButtonTheme"
+                        android:theme="@style/CustomTransparentImageButtonTheme"
                         android:layout_gravity="center"
                         android:layout_alignParentBottom="true"
                         android:src="@drawable/down"/>
