@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Обмен даром</string>
 
+    <string name="api_version">5.53</string>
     <integer name="com_vk_sdk_AppId">5591803</integer>
 
     <string name="free_exchange">ОБМЕН ДАРОМ</string>
@@ -49,5 +50,20 @@
     <string name="delete">Удалить</string>
 
     <string name="no_camera_on_device">Нет камеры в устройстве</string>
+    <string name="get_group_error">Группа вконтакте не определена</string>
+    <string name="get_template_error">Шаблон сообщения не определен</string>
+    <string name="get_personal_data_error">Пользователь не определен</string>
+    <string name="parse_personal_data_error">Данные пользователя не правильные</string>
+
+    <string name="successfully_completed">Ваш обмен добавлен на сайт</string>
+    <string name="post_error">Ошибка публикации на сайте</string>
+
+    <string name="vk_post_success">Ваш обмен опубликован Вконтакте</string>
+    <string name="vk_post_error">Ошибка публикации вконтакте</string>
+
+    <string name="fields_missed">Поля \"Отдаю\", \"Получаю\" должны быть заполнены</string>
+
+    <string name="sending">Отправка..</string>
+    <string name="no_internet_connection">Нет соединения с интернетом</string>
 
 </resources>

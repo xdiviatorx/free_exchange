@@ -27,6 +27,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
 
+import com.technologies.mobile.free_exchange.Loader;
 import com.technologies.mobile.free_exchange.R;
 import com.technologies.mobile.free_exchange.adapters.NavigationRVAdapter;
 import com.technologies.mobile.free_exchange.adapters.SearchPullAdapter;

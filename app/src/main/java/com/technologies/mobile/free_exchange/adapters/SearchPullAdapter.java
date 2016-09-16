@@ -10,8 +10,10 @@ import android.view.ViewGroup;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.squareup.picasso.Picasso;
+import com.technologies.mobile.free_exchange.Loader;
 import com.technologies.mobile.free_exchange.R;
 import com.technologies.mobile.free_exchange.activities.ImagePreviewActivity;
 import com.technologies.mobile.free_exchange.activities.MainActivity;
@@ -79,7 +81,7 @@ public class SearchPullAdapter extends SimpleAdapter{
         String imageUrl = (String) data.get(position).get(IMAGE);
 
         if( !imageUrl.isEmpty() ) {
-            Picasso.with(context)
+            Glide.with(context)
                     .load(imageUrl)
                     .into(roundedImageView);
         }else{
@@ -134,6 +136,7 @@ public class SearchPullAdapter extends SimpleAdapter{
     }
 
     public void initialUploading(){
+        Loader.showProgressBar(context);
         uploading=true;
         performListQuery(0,UPLOAD_LENGTH);
     }
@@ -195,12 +198,14 @@ public class SearchPullAdapter extends SimpleAdapter{
                 }
                 notifyDataSetChanged();
                 uploading=false;
+                Loader.hideProgressBar(context);
             }
 
             @Override
             public void onFailure(Call<Search> call, Throwable t) {
                 Log.e(LOG_TAG,"ERROR");
                 t.printStackTrace();
+                Loader.hideProgressBar(context);
             }
         });
     }

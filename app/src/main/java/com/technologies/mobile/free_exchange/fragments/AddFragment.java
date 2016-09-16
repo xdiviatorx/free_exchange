@@ -1,14 +1,17 @@
 package com.technologies.mobile.free_exchange.fragments;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.FileProvider;
+import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,17 +21,25 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.technologies.mobile.free_exchange.R;
 import com.technologies.mobile.free_exchange.adapters.RecyclerAddedImagesAdapter;
+import com.technologies.mobile.free_exchange.rest.SendAsyncTask;
 import com.technologies.mobile.free_exchange.views.WrappingRelativeLayout;
+
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Array;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by diviator on 24.08.2016.
@@ -39,6 +50,10 @@ public class AddFragment extends Fragment implements View.OnClickListener {
 
     private static final int GALLERY_REQUEST = 347;
     private static final int CAMERA_REQUEST = 719;
+
+    public static final String PM = "PM";
+    public static final String PHONE = "PHONE";
+    public static final String OTHER = "OTHER";
 
     ImageButton mMakePhoto;
     ImageButton mGetFromGallery;
@@ -56,12 +71,18 @@ public class AddFragment extends Fragment implements View.OnClickListener {
     EditText mEtGives;
     EditText mEtGets;
 
+    EditText mEtPlace;
+
     AppCompatCheckBox cbPm;
     AppCompatCheckBox cbPhone;
     AppCompatCheckBox cbOther;
 
     EditText mEtPhone;
     EditText mEtOther;
+
+    AppCompatButton mBSend;
+
+    private Uri mJustPhoto;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -142,6 +163,18 @@ public class AddFragment extends Fragment implements View.OnClickListener {
                 }
             }
         });
+        mEtGives.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                if (!b) {
+                    if (mEtGives.getText().length() != 0) {
+                        mGiveTagsLayout.addTag(mEtGives.getText().toString());
+                        mEtGives.setText("");
+                    }
+                }
+            }
+        });
+
         mEtGets = (EditText) view.findViewById(R.id.etGets);
         mEtGets.addTextChangedListener(new TextWatcher() {
             @Override
@@ -164,6 +197,19 @@ public class AddFragment extends Fragment implements View.OnClickListener {
                 }
             }
         });
+        mEtGets.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                if (!b) {
+                    if (mEtGets.getText().length() != 0) {
+                        mGetTagsLayout.addTag(mEtGets.getText().toString());
+                        mEtGets.setText("");
+                    }
+                }
+            }
+        });
+
+        mEtPlace = (EditText) view.findViewById(R.id.etPlace);
 
         mEtPhone = (EditText) view.findViewById(R.id.etPhone);
         mEtOther = (EditText) view.findViewById(R.id.etOther);
@@ -175,7 +221,7 @@ public class AddFragment extends Fragment implements View.OnClickListener {
         cbPhone.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if( b ){
+                if (b) {
                     mEtPhone.setVisibility(View.VISIBLE);
                 } else {
                     mEtPhone.setVisibility(View.INVISIBLE);
@@ -187,19 +233,56 @@ public class AddFragment extends Fragment implements View.OnClickListener {
         cbOther.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if( b ){
+                if (b) {
                     mEtOther.setVisibility(View.VISIBLE);
                 } else {
                     mEtOther.setVisibility(View.INVISIBLE);
                 }
             }
         });
+
+        mBSend = (AppCompatButton) view.findViewById(R.id.bSend);
+        mBSend.setOnClickListener(this);
+    }
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "photo_" + timeStamp + "_";
+        File storageDir = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        return image;
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.bMakePhoto: {
+                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                // Ensure that there's a camera activity to handle the intent
+                mJustPhoto = null;
+                if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+                    // Create the File where the photo should go
+                    File photoFile = null;
+                    try {
+                        photoFile = createImageFile();
+                    } catch (IOException ex) {
+                        // Error occurred while creating the File
+                    }
+                    // Continue only if the File was successfully created
+                    if (photoFile != null) {
+                        Uri photoURI = Uri.fromFile(photoFile);
+                        mJustPhoto = Uri.fromFile(photoFile);
+                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                        startActivityForResult(takePictureIntent, CAMERA_REQUEST);
+                    }
+                }
+                /*
                 PackageManager packageManager = getActivity().getPackageManager();
                 if (packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
                     Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -211,6 +294,7 @@ public class AddFragment extends Fragment implements View.OnClickListener {
                 } else {
                     Toast.makeText(getContext(), R.string.no_camera_on_device, Toast.LENGTH_LONG).show();
                 }
+                */
                 break;
             }
             case R.id.bGetFromGallery: {
@@ -231,6 +315,15 @@ public class AddFragment extends Fragment implements View.OnClickListener {
                 mGetTagsLayout.addTag(tag);
                 break;
             }
+            case R.id.bSend: {
+                if( validate() ) {
+                    SendAsyncTask send = new SendAsyncTask(this);
+                    send.execute();
+                }else{
+                    Toast.makeText(getContext(),R.string.fields_missed,Toast.LENGTH_LONG).show();
+                }
+                break;
+            }
         }
     }
 
@@ -247,21 +340,73 @@ public class AddFragment extends Fragment implements View.OnClickListener {
             }
             case CAMERA_REQUEST: {
                 if (resultCode == Activity.RESULT_OK) {
-                    Uri imageUri = data.getData();
-                    mRecyclerAdapter.addPhoto(imageUri);
+                    if (mJustPhoto != null) {
+                        Uri imageUri = mJustPhoto;
+                        mRecyclerAdapter.addPhoto(imageUri);
+                    }
                 }
                 break;
             }
         }
     }
 
-    private void send(){
-        String itemsPut = ""; // ...\n...\n...
-        String itemsGet = ""; // ...\n...\n...
-        String contactPm = ""; // {0,1}
-        String contactPhone = ""; // phone
-        String geo = ""; // place
+    public ArrayList<Uri> getPhotos() {
+        ArrayList<Uri> uris = new ArrayList<>();
 
-        String[] photos; // image urls
+        List<Map<String, Object>> data = mRecyclerAdapter.getData();
+        for (Map<String, Object> item : data) {
+            uris.add((Uri) item.get(RecyclerAddedImagesAdapter.URI));
+        }
+
+        return uris;
+    }
+
+    public ArrayList<String> getGives() {
+        ArrayList<String> gives = new ArrayList<>();
+        for (Map.Entry e : mGiveTagsLayout.getTags().entrySet()) {
+            gives.add(e.getValue().toString());
+            Log.e(LOG_TAG, e.getValue().toString());
+        }
+        if (mEtGives.getText().length() != 0) {
+            gives.add(mEtGives.getText().toString());
+        }
+        return gives;
+    }
+
+    public ArrayList<String> getGets() {
+        ArrayList<String> gets = new ArrayList<>();
+        for (Map.Entry e : mGetTagsLayout.getTags().entrySet()) {
+            gets.add(e.getValue().toString());
+            Log.e(LOG_TAG, e.getValue().toString());
+        }
+        if (mEtGets.getText().length() != 0) {
+            gets.add(mEtGets.getText().toString());
+        }
+        return gets;
+    }
+
+    public String getPlace() {
+        return mEtPlace.getText().toString();
+    }
+
+    public Map<String, Object> getContacts() {
+        Map<String, Object> contacts = new HashMap<>();
+        contacts.put(PM, false);
+        if (cbPm.isChecked()) {
+            contacts.put(PM, true);
+        }
+        contacts.put(PHONE, "");
+        if (cbPhone.isChecked()) {
+            contacts.put(PHONE, mEtPhone.getText().toString());
+        }
+        contacts.put(OTHER, "");
+        if (cbOther.isChecked()) {
+            contacts.put(OTHER, mEtOther.getText().toString());
+        }
+        return contacts;
+    }
+
+    private boolean validate() {
+        return getGets().size() != 0 && getGives().size() != 0;
     }
 }

@@ -18,7 +18,9 @@
     <color name="colorBlue">#2196f3</color>
 
     <color name="colorWhite">#fff</color>
+    <color name="colorWhite140">#8cffffff</color>
     <color name="colorBlack">#000000</color>
+    <color name="colorBlack140">#8c000000</color>
     <color name="colorTransparent">#00ffffff</color>
     <!-- #32000000 -->
 

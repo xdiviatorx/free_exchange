@@ -1,9 +1,13 @@
 package com.technologies.mobile.free_exchange.rest;
 
+import com.technologies.mobile.free_exchange.rest.model.AddResponse;
 import com.technologies.mobile.free_exchange.rest.model.Categories;
 import com.technologies.mobile.free_exchange.rest.model.Search;
 import com.technologies.mobile.free_exchange.rest.model.SearchResponse;
 import com.technologies.mobile.free_exchange.rest.model.VkGroupIdResponse;
+import com.technologies.mobile.free_exchange.rest.model.VkPostTemplateResponse;
+
+import org.json.JSONArray;
 
 import retrofit2.Call;
 import retrofit2.http.Field;
@@ -31,4 +35,15 @@ public interface ExchangeClient {
     @FormUrlEncoded
     @POST("API/GetCategoriesList")
     Call<Categories> getCategoriesList(@Field("APIKey") String apiKey);
+
+    @FormUrlEncoded
+    @POST("API/GetVKPostTemplate")
+    Call<VkPostTemplateResponse> getVkPostTemplate(@Field("APIKey") String apiKey);
+
+    @FormUrlEncoded
+    @POST("API/Add")
+    Call<AddResponse> addPost(@Field("id") String id, @Field("first_name") String firstName, @Field("last_name") String lastName,
+                              @Field("ItemsPut") String itemsGive, @Field("ItemsGet") String itemsGet,
+                              @Field("ContactsPM") String pm, @Field("ContactsPhone") String phone, @Field("Geo") String place,
+                              @Field("Images") JSONArray JSONImagesArray, @Field("APIKey") String apiKey);
 }

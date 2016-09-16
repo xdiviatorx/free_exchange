@@ -154,6 +154,7 @@
                         android:orientation="horizontal">
 
                         <EditText
+                            android:id="@+id/etPlace"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="@string/add_place"
@@ -163,7 +164,7 @@
                             android:maxLines="1" />
 
                         <ImageButton
-                            android:layout_width="50dp"
+                            android:layout_width="0dp"
                             android:layout_height="50dp"
                             android:src="@drawable/location"
                             android:theme="@style/CustomTransparentImageButtonTheme"/>
@@ -278,6 +279,7 @@
             </android.support.v7.widget.CardView>
 
             <android.support.v7.widget.AppCompatButton
+                android:id="@+id/bSend"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:text="@string/send"

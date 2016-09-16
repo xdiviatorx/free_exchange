@@ -35,6 +35,10 @@ public class RecyclerAddedImagesAdapter extends RecyclerView.Adapter<RecyclerAdd
         mContext = context;
     }
 
+    public List<Map<String, Object>> getData() {
+        return mData;
+    }
+
     public static class MyViewHolder extends RecyclerView.ViewHolder {
 
         ImageView ivPhoto;
@@ -83,7 +87,7 @@ public class RecyclerAddedImagesAdapter extends RecyclerView.Adapter<RecyclerAdd
 
     public void deletePhoto(int position) {
         mData.remove(position);
-        notifyItemChanged(position);
+        notifyDataSetChanged();
     }
 
     public void showDeleteButton(int position) {

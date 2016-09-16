@@ -14,7 +14,7 @@ public class TextFormatter {
     }
 
     public String highlight(String string, String textToHighlight){
-        return string.replaceAll(textToHighlight,"<font color='red'>"+textToHighlight+"</font>");
+        return string.replaceAll("(?i)" + textToHighlight,"<font color='red'>"+textToHighlight+"</font>");
         //"<font color='red'>"+textToHighlight+"</font>"
         //"<span style='background-color: #FFFF00'>" + textToHighlight + "</span>"
     }

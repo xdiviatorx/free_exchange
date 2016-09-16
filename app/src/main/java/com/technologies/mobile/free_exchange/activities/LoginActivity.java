@@ -10,6 +10,7 @@ import android.widget.Toast;
 import com.technologies.mobile.free_exchange.R;
 import com.vk.sdk.VKAccessToken;
 import com.vk.sdk.VKCallback;
+import com.vk.sdk.VKScope;
 import com.vk.sdk.VKSdk;
 import com.vk.sdk.api.VKApi;
 import com.vk.sdk.api.VKError;
@@ -40,7 +41,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     public void onClick(View view) {
         switch( view.getId() ){
             case R.id.vkLogin:{
-                VKSdk.login(this,this.getPackageName());
+                VKSdk.login(this, VKScope.WALL, VKScope.PHOTOS);
                 break;
             }
         }

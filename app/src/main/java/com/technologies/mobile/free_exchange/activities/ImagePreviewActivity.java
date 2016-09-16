@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 import com.technologies.mobile.free_exchange.R;
@@ -22,6 +23,8 @@ public class ImagePreviewActivity extends AppCompatActivity {
 
     ViewPager viewPager;
     PagerAdapter pagerAdapter;
+
+    TextView mTvCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +39,27 @@ public class ImagePreviewActivity extends AppCompatActivity {
         viewPager = (ViewPager) findViewById(R.id.viewPager);
         pagerAdapter = new ImagePagerAdapter(getSupportFragmentManager(),count,imageUrls);
         viewPager.setAdapter(pagerAdapter);
+
+        mTvCount = (TextView) findViewById(R.id.tvCount);
+        mTvCount.setText(1+"/"+String.valueOf(pagerAdapter.getCount()));
+
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                String number = String.valueOf(position+1);
+                mTvCount.setText(number+"/"+String.valueOf(pagerAdapter.getCount()));
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
     }
 
     private class ImagePagerAdapter extends FragmentPagerAdapter {
