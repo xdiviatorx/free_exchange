@@ -2,9 +2,11 @@ package com.technologies.mobile.free_exchange;
 
 import android.app.Application;
 
+import com.crashlytics.android.Crashlytics;
 import com.vk.sdk.VKAccessToken;
 import com.vk.sdk.VKAccessTokenTracker;
 import com.vk.sdk.VKSdk;
+import io.fabric.sdk.android.Fabric;
 
 /**
  * Created by diviator on 17.08.2016.
@@ -14,6 +16,7 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        Fabric.with(this, new Crashlytics());
 
         //vkAccessTokenTracker.startTracking();
         VKSdk.initialize(this);
