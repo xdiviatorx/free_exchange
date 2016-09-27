@@ -1,0 +1,58 @@
+package com.technologies.mobile.free_exchange.rest.model;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+/**
+ * Created by diviator on 20.09.2016.
+ */
+public class DialogMessage {
+
+    @JsonProperty("id")
+    String messageId;
+
+    @JsonProperty("from")
+    String fromId;
+
+    @JsonProperty("to")
+    String toId;
+
+    @JsonProperty("date")
+    String time;
+
+    @JsonProperty("dlg_id")
+    String dialogId;
+
+    @JsonProperty("viewed")
+    String viewed;
+
+    @JsonProperty("text")
+    String text;
+
+    public String getText() {
+        return text;
+    }
+
+    public String getMessageId() {
+        return messageId;
+    }
+
+    public String getFromId() {
+        return fromId;
+    }
+
+    public String getToId() {
+        return toId;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public String getDialogId() {
+        return dialogId;
+    }
+
+    public String getViewed() {
+        return viewed;
+    }
+}

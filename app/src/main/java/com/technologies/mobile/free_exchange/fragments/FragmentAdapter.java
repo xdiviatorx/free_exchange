@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 
 import com.technologies.mobile.free_exchange.R;
@@ -14,6 +15,9 @@ import com.technologies.mobile.free_exchange.activities.SearchActivity;
  * Created by diviator on 25.08.2016.
  */
 public class FragmentAdapter{
+
+    public static final int MESSAGE = 3;
+    public static final int DIALOG = 4;
 
     private Activity activity;
     private FragmentManager fragmentManager;
@@ -29,6 +33,7 @@ public class FragmentAdapter{
 
     public void initFragment(int index){
         Fragment fragment;
+        boolean backStack = false;
         switch ( index ){
             case 0:{
                 fragment = new HomeFragment();
@@ -44,19 +49,27 @@ public class FragmentAdapter{
                 fragment = new AddFragment();
                 break;
             }
-            case 3:{
+            case MESSAGE:{
                 fragment = new MessageFragment();
+                break;
+            }
+            case DIALOG:{
+                fragment = new DialogFragment();
+                backStack = true;
                 break;
             }
             default:
                 fragment = new HomeFragment();
         }
 
-        fragmentManager.beginTransaction()
-                .replace(R.id.content,fragment)
-                .commit();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        if( !backStack) {
+            fragmentManager.popBackStack();
+            transaction.replace(R.id.content,fragment).commit();
+        }else{
+            transaction.add(R.id.content,fragment).addToBackStack(null).commit();
+        }
         String[] titles = activity.getResources().getStringArray(R.array.fragments);
         activity.setTitle(titles[index]);
-
     }
 }

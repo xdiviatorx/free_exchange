@@ -32,6 +32,7 @@ import com.technologies.mobile.free_exchange.R;
 import com.technologies.mobile.free_exchange.adapters.NavigationRVAdapter;
 import com.technologies.mobile.free_exchange.adapters.SearchPullAdapter;
 import com.technologies.mobile.free_exchange.fragments.AddFragment;
+import com.technologies.mobile.free_exchange.fragments.DialogFragment;
 import com.technologies.mobile.free_exchange.fragments.FragmentAdapter;
 import com.technologies.mobile.free_exchange.fragments.HomeFragment;
 import com.technologies.mobile.free_exchange.fragments.MessageFragment;
@@ -209,5 +210,15 @@ public class MainActivity extends AppCompatActivity  {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        FragmentManager fm = getSupportFragmentManager();
+        DialogFragment dialogFragment = (DialogFragment) fm.findFragmentByTag(DialogFragment.TAG);
+        if( dialogFragment != null && dialogFragment.isVisible() ) {
+            dialogFragment.setLastTitle();
+        }
+        super.onBackPressed();
     }
 }

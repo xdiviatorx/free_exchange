@@ -55,12 +55,16 @@ public class Loader {
 
     public static void showProgressBar(Context context){
         mProgressBar = (ProgressBar) ((Activity) context).findViewById(R.id.pb);
-        mProgressBar.setVisibility(View.VISIBLE);
+        if( mProgressBar != null ) {
+            mProgressBar.setVisibility(View.VISIBLE);
+        }
     }
 
     public static void hideProgressBar(Context context){
         mProgressBar = (ProgressBar) ((Activity) context).findViewById(R.id.pb);
-        mProgressBar.setVisibility(View.GONE);
+        if( mProgressBar != null ) {
+            mProgressBar.setVisibility(View.GONE);
+        }
     }
 
 }

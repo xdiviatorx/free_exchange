@@ -4,12 +4,14 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.technologies.mobile.free_exchange.Loader;
 import com.technologies.mobile.free_exchange.R;
+import com.technologies.mobile.free_exchange.activities.LoginActivity;
 import com.technologies.mobile.free_exchange.activities.MainActivity;
 import com.technologies.mobile.free_exchange.fragments.AddFragment;
 import com.technologies.mobile.free_exchange.fragments.FragmentAdapter;
@@ -65,7 +67,7 @@ public class SendAsyncTask extends AsyncTask<Void, Void, Integer> {
 
     private String vkGroupId;
     private String vkPostTemplate;
-    private String id;
+    private String vkId;
     private String firstName;
     private String lastName;
 
@@ -99,7 +101,7 @@ public class SendAsyncTask extends AsyncTask<Void, Void, Integer> {
 
         vkGroupId = vkGroupIdResponse.body().getVkGroupId().toString();
 
-        Response<VkPostTemplateResponse> vkPostTemplateResponse = null;
+        /*Response<VkPostTemplateResponse> vkPostTemplateResponse = null;
         try {
             vkPostTemplateResponse = client.getVkPostTemplate(ExchangeClient.apiKey).execute();
         } catch (IOException e) {
@@ -111,13 +113,13 @@ public class SendAsyncTask extends AsyncTask<Void, Void, Integer> {
             return GET_TEMPLATE_ERROR;
         }
 
-        vkPostTemplate = vkPostTemplateResponse.body().getVkPostTemplate();
+        vkPostTemplate = vkPostTemplateResponse.body().getVkPostTemplate();*/
 
-        VKClient vkClient = VKRetrofitService.createService(VKClient.class);
+        /*VKClient vkClient = VKRetrofitService.createService(VKClient.class);
 
         Response<PersonalDataResponse> personalDataResponse = null;
         try {
-            personalDataResponse = vkClient.getUserData(VKAccessToken.USER_ID).execute();
+            personalDataResponse = vkClient.getUserData(VKAccessToken.currentToken().userId).execute();
         } catch (IOException e) {
             e.printStackTrace();
             Log.e(LOG_TAG, e.toString());
@@ -127,9 +129,9 @@ public class SendAsyncTask extends AsyncTask<Void, Void, Integer> {
             return GET_PERSONAL_DATA_ERROR;
         }
 
-        id = personalDataResponse.body().getPersonalDataArray()[0].getId();
+        vkId = personalDataResponse.body().getPersonalDataArray()[0].getId();
         firstName = personalDataResponse.body().getPersonalDataArray()[0].getFirstName();
-        lastName = personalDataResponse.body().getPersonalDataArray()[0].getLastName();
+        lastName = personalDataResponse.body().getPersonalDataArray()[0].getLastName();*/
 
         return SUCCESS;
     }
@@ -238,17 +240,25 @@ public class SendAsyncTask extends AsyncTask<Void, Void, Integer> {
 
     public void sendToServer() {
         ExchangeClient client = RetrofitService.createService(ExchangeClient.class);
-        JSONArray JSONImagesArray = null;
+        JSONArray JSONImagesArray;
         try {
             JSONImagesArray = new JSONArray(images);
         } catch (JSONException e) {
             e.printStackTrace();
-        }
-        if( JSONImagesArray == null ){
+            Loader.hideSender();
+            Toast.makeText(mFragment.getContext(), R.string.post_error, Toast.LENGTH_LONG).show();
             return;
         }
+
+        String uid = PreferenceManager.getDefaultSharedPreferences(mFragment.getContext()).getString(LoginActivity.ID,null);
+        if( uid == null ){
+            Toast.makeText(mFragment.getContext(), R.string.post_error, Toast.LENGTH_LONG).show();
+            return;
+        }
+
+
         Log.e(LOG_TAG,"JsonImages"+JSONImagesArray.toString());
-        Call<AddResponse> addResponseCall = client.addPost(id,firstName,lastName,
+        Call<AddResponse> addResponseCall = client.addPost(uid,
                 getServerGive(),getServerGet(),getServerPM(),getPhone(),mFragment.getPlace(),JSONImagesArray,ExchangeClient.apiKey);
         addResponseCall.enqueue(new Callback<AddResponse>() {
             @Override
@@ -267,7 +277,8 @@ public class SendAsyncTask extends AsyncTask<Void, Void, Integer> {
 
             @Override
             public void onFailure(Call<AddResponse> call, Throwable t) {
-                Log.e(LOG_TAG,"server posting error" + t.toString());
+                Log.e(LOG_TAG,"call " + call.toString());
+                Log.e(LOG_TAG,"server posting error " + t.toString());
                 Loader.hideSender();
                 Toast.makeText(mFragment.getContext(), R.string.post_error, Toast.LENGTH_LONG).show();
             }

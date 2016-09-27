@@ -4,12 +4,14 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -23,7 +25,7 @@ import java.util.HashMap;
 /**
  * Created by diviator on 24.08.2016.
  */
-public class HomeFragment extends Fragment implements AbsListView.OnScrollListener{
+public class HomeFragment extends Fragment implements AbsListView.OnScrollListener, AdapterView.OnItemClickListener{
 
     public static String LOG_TAG = "logs";
 
@@ -72,6 +74,7 @@ public class HomeFragment extends Fragment implements AbsListView.OnScrollListen
         lv.setAdapter(lvAdapter);
 
         lv.setOnScrollListener(this);
+        lv.setOnItemClickListener(this);
 
         lvAdapter.initialUploading();
 
@@ -166,5 +169,20 @@ public class HomeFragment extends Fragment implements AbsListView.OnScrollListen
         if( isFABVisible ) {
             floatingAdd.startAnimation(anim);
         }
+    }
+
+
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        Fragment dialogFragment = new DialogFragment();
+        Bundle args = new Bundle();
+
+        int uid = (int) lvAdapter.getData().get(i).get(SearchPullAdapter.UID);
+        args.putString(DialogFragment.INTERLOCUTOR_ID,String.valueOf(uid));
+        dialogFragment.setArguments(args);
+
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.add(R.id.content,dialogFragment,DialogFragment.TAG).addToBackStack(null).commit();
     }
 }

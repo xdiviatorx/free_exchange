@@ -11,14 +11,16 @@
     <string name="login">Войти</string>
 
     <string name="login_successfully">Вход выполнен</string>
+    <string name="sign_up_successfully">Пользователь зарегистрирован</string>
 
     <string name="login_error">Ошибка входа</string>
+    <string name="sign_up_error">Ошибка регистрации</string>
 
-    <string name="give">Отдаю:</string>
+    <string name="give">Даю:</string>
     <string name="get">Получаю:</string>
     <string name="category">Категория:</string>
     <string name="place">Место:</string>
-    <string name="contacts">Контакты:</string>
+    <string name="contacts">Связь:</string>
 
     <string name="date_sample">18.08.2016 12:14</string>
     <string name="sample">Пример</string>
@@ -27,6 +29,7 @@
     <string name="search">Поиск</string>
     <string name="add">Добавить обмен</string>
     <string name="messages">Мои сообщения</string>
+    <string name="dialog">Диалог</string>
 
     <string name="open_drawer">Открытое меню</string>
     <string name="close_drawer">Закрытое меню</string>
@@ -35,11 +38,11 @@
 
     <string name="add_photo">Фотографии</string>
     <string name="add_primary">Основное</string>
-    <string name="add_give">Отдаю</string>
+    <string name="add_give">Даю</string>
     <string name="add_get">Получаю</string>
     <string name="add_category">Категория</string>
     <string name="add_place">Место</string>
-    <string name="add_contacts">Контакты</string>
+    <string name="add_contacts">Связь</string>
     <string name="add_comments">Комментарии</string>
 
     <string name="pm">ЛС</string>
@@ -61,9 +64,13 @@
     <string name="vk_post_success">Ваш обмен опубликован Вконтакте</string>
     <string name="vk_post_error">Ошибка публикации вконтакте</string>
 
-    <string name="fields_missed">Поля \"Отдаю\", \"Получаю\" должны быть заполнены</string>
+    <string name="fields_missed">Поля \"Даю\", \"Получаю\" должны быть заполнены</string>
 
     <string name="sending">Отправка..</string>
     <string name="no_internet_connection">Нет соединения с интернетом</string>
+
+    <!-- MESAGES -->
+
+    <string name="your_message">Ваше сообщение</string>
 
 </resources>

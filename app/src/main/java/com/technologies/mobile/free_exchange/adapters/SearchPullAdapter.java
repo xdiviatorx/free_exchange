@@ -52,6 +52,7 @@ public class SearchPullAdapter extends SimpleAdapter{
     public static String PLACE = "PLACE";
     public static String CONTACTS = "CONTACTS";
     public static String IMAGES = "IMAGES";
+    public static String UID = "UID";
 
     private int UPLOAD_LENGTH = 20;
 
@@ -116,6 +117,10 @@ public class SearchPullAdapter extends SimpleAdapter{
         }
 
         return view;
+    }
+
+    public ArrayList<HashMap<String, Object>> getData() {
+        return data;
     }
 
     private class OnImageClickListener implements View.OnClickListener{
@@ -186,6 +191,7 @@ public class SearchPullAdapter extends SimpleAdapter{
                     item.put(IMAGES,searchExtraditionItem.getPhotosList());
                     item.put(PLACE, searchExtraditionItem.getPlace());
                     item.put(CONTACTS, searchExtraditionItem.getContacts());
+                    item.put(UID,searchExtraditionItem.getUid());
 
                     long timestamp = searchExtraditionItem.getCreated();
                     timestamp*=1000;
@@ -203,8 +209,9 @@ public class SearchPullAdapter extends SimpleAdapter{
 
             @Override
             public void onFailure(Call<Search> call, Throwable t) {
-                Log.e(LOG_TAG,"ERROR");
+                Log.e(LOG_TAG,"ERROR " + t.toString());
                 t.printStackTrace();
+                uploading=false;
                 Loader.hideProgressBar(context);
             }
         });
