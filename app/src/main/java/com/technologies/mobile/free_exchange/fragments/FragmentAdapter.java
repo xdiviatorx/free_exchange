@@ -17,7 +17,8 @@ import com.technologies.mobile.free_exchange.activities.SearchActivity;
 public class FragmentAdapter{
 
     public static final int MESSAGE = 3;
-    public static final int DIALOG = 4;
+    public static final int SUBSCRIBES = 4;
+    public static final int DIALOG = 5;
 
     private Activity activity;
     private FragmentManager fragmentManager;
@@ -51,6 +52,10 @@ public class FragmentAdapter{
             }
             case MESSAGE:{
                 fragment = new MessageFragment();
+                break;
+            }
+            case SUBSCRIBES:{
+                fragment = new SubscribesFragment();
                 break;
             }
             case DIALOG:{

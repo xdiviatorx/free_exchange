@@ -16,11 +16,15 @@
     <string name="login_error">Ошибка входа</string>
     <string name="sign_up_error">Ошибка регистрации</string>
 
+    <string name="yes">Да</string>
+    <string name="no">Нет</string>
+
     <string name="give">Даю:</string>
     <string name="get">Получаю:</string>
     <string name="category">Категория:</string>
     <string name="place">Место:</string>
     <string name="contacts">Связь:</string>
+    <string name="notification">Уведомления:</string>
 
     <string name="date_sample">18.08.2016 12:14</string>
     <string name="sample">Пример</string>
@@ -29,6 +33,7 @@
     <string name="search">Поиск</string>
     <string name="add">Добавить обмен</string>
     <string name="messages">Мои сообщения</string>
+    <string name="subscribes">Подписки</string>
     <string name="dialog">Диалог</string>
 
     <string name="open_drawer">Открытое меню</string>
@@ -72,5 +77,27 @@
     <!-- MESAGES -->
 
     <string name="your_message">Ваше сообщение</string>
+
+    <!-- SUBSCRIBES LISTS -->
+
+    <string name="subs_new_sub">Новая подписка</string>
+    <string name="subs_edit_sub">Изменение подписки</string>
+    <string name="subs_title">Подписка</string>
+
+    <string name="subs_main">Атрибуты подписки</string>
+    <string name="subs_settings">Настройки</string>
+    <string name="subs_notification">Уведомления</string>
+
+    <string name="subs_create">Создать подписку</string>
+    <string name="subs_update">Сохранить изменения</string>
+
+    <string name="subs_create_error">Ошибка создания подписки</string>
+    <string name="subs_create_success">Подписка успешно создана</string>
+
+    <string name="subs_edit_error">Ошибка изменения подписки</string>
+    <string name="subs_edit_success">Подписка успешно изменена</string>
+
+    <string name="subs_mi_delete">Удалить</string>
+    <string name="subs_mi_edit">Изменить</string>
 
 </resources>

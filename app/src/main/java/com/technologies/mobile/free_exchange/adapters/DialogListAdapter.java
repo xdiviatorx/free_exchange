@@ -43,6 +43,7 @@ public class DialogListAdapter extends SimpleAdapter {
 
     public static final String INTERLOCUTOR_NAME = "INTERLOCUTOR_NAME";
     public static final String INTERLOCUTOR_ID = "INTERLOCUTOR_ID";
+    public static final String INTERLOCUTOR_VK_ID = "INTERLOCUTOR_VK_ID";
     public static final String INTERLOCUTOR_AVATAR_LINK = "INTERLOCUTOR_AVATAR_LINK";
     public static final String LAST_MESSAGE = "LAST_MESSAGE";
     public static final String DIALOG_ID = "DIALOG_ID";
@@ -66,10 +67,12 @@ public class DialogListAdapter extends SimpleAdapter {
 
         RoundedImageView rivAvatar = (RoundedImageView) view.findViewById(R.id.rivAvatar);
 
-        if( !mData.get(position).get(INTERLOCUTOR_AVATAR_LINK).toString().isEmpty() ) {
+        if( mData.get(position).get(INTERLOCUTOR_AVATAR_LINK) != null ) {
             Picasso.with(mContext)
                     .load(mData.get(position).get(INTERLOCUTOR_AVATAR_LINK).toString())
                     .into(rivAvatar);
+        }else{
+            rivAvatar.setImageResource(R.drawable.no_photo);
         }
 
         return view;
@@ -106,13 +109,24 @@ public class DialogListAdapter extends SimpleAdapter {
             public void onResponse(Call<ListDialogsResponse> call, Response<ListDialogsResponse> response) {
                 Dialog[] dialogs = response.body().getListDialogs().getDialogs();
                 for( Dialog dialog : dialogs ){
+                    int interlocutorIndex = findInterlocutorIndex(dialog.getUsers());
+
                     HashMap<String,Object> item = new HashMap<String, Object>();
-                    item.put(INTERLOCUTOR_AVATAR_LINK,"");
-                    item.put(INTERLOCUTOR_NAME,dialog.getDialog_id());
+                    item.put(INTERLOCUTOR_AVATAR_LINK,dialog.getUsers()[interlocutorIndex].getPhoto());
+
+                    String name = dialog.getUsers()[interlocutorIndex].getName();
+                    if( name == null ){
+                        name = mContext.getString(R.string.dialog);
+                        name += " №" + dialog.getDialog_id();
+                    }
+                    item.put(INTERLOCUTOR_NAME,name);
+
                     item.put(LAST_MESSAGE,"");
 
+                    item.put(INTERLOCUTOR_VK_ID,dialog.getUsers()[interlocutorIndex].getVkId());
+
                     item.put(DIALOG_ID,dialog.getDialog_id());
-                    item.put(INTERLOCUTOR_ID,findInterlocutorId(dialog.getUsers()));
+                    item.put(INTERLOCUTOR_ID,dialog.getUsers()[interlocutorIndex].getId());
                     mData.add(item);
                 }
                 notifyDataSetChanged();
@@ -129,18 +143,17 @@ public class DialogListAdapter extends SimpleAdapter {
         });
     }
 
-    @Nullable
-    public String findInterlocutorId(User[] users){
+    public int findInterlocutorIndex(User[] users){
         String uid = PreferenceManager.getDefaultSharedPreferences(mContext).getString(LoginActivity.ID,null);
         if( uid == null ){
-            return null;
+            return 0;
         }
         for( int i = 0; i < users.length; i++ ){
             if( !users[i].getId().equals(uid) ){
-                return users[i].getId();
+                return i;
             }
         }
-        return null;
+        return 0;
     }
 
 }

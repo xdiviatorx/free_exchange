@@ -1,5 +1,7 @@
 package com.technologies.mobile.free_exchange.rest;
 
+import java.util.concurrent.TimeUnit;
+
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
@@ -10,7 +12,9 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 public class RetrofitService {
     public static final String API_BASE_URL = "http://37.1.222.157";
 
-    private static OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+    private static OkHttpClient.Builder httpClient = new OkHttpClient.Builder()
+            .readTimeout(24, TimeUnit.HOURS)
+            .connectTimeout(24, TimeUnit.HOURS);
 
     private static Retrofit.Builder builder =
             new Retrofit.Builder()

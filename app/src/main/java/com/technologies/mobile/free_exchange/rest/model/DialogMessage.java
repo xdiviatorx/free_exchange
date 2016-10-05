@@ -28,6 +28,12 @@ public class DialogMessage {
     @JsonProperty("text")
     String text;
 
+    @JsonProperty("udata_from")
+    User userDataFrom;
+
+    @JsonProperty("udata_to")
+    User userDataTo;
+
     public String getText() {
         return text;
     }
@@ -54,5 +60,13 @@ public class DialogMessage {
 
     public String getViewed() {
         return viewed;
+    }
+
+    public User getUserDataFrom() {
+        return userDataFrom;
+    }
+
+    public User getUserDataTo() {
+        return userDataTo;
     }
 }

@@ -84,4 +84,8 @@
         <item name="colorButtonNormal">@color/loginButtonColor</item>
     </style>
 
+    <style name="CustomCardViewTheme">
+
+    </style>
+
 </resources>

@@ -58,6 +58,9 @@ public class SearchExtraditionItem {
     @JsonProperty("hidden")
     int hidden;
 
+    @JsonProperty("udata")
+    User userData;
+
     public int getId() {
         return id;
     }
@@ -140,5 +143,9 @@ public class SearchExtraditionItem {
 
     public int isHidden() {
         return hidden;
+    }
+
+    public User getUserData() {
+        return userData;
     }
 }

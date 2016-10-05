@@ -3,13 +3,19 @@ package com.technologies.mobile.free_exchange.rest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.technologies.mobile.free_exchange.rest.model.AddMessageResponse;
 import com.technologies.mobile.free_exchange.rest.model.AddResponse;
+import com.technologies.mobile.free_exchange.rest.model.AddSubscribeListResponse;
 import com.technologies.mobile.free_exchange.rest.model.AddUserResponse;
 import com.technologies.mobile.free_exchange.rest.model.Categories;
+import com.technologies.mobile.free_exchange.rest.model.DeleteSubscribeListResponse;
 import com.technologies.mobile.free_exchange.rest.model.DialogMessagesResponse;
+import com.technologies.mobile.free_exchange.rest.model.EditSubscribeListResponse;
+import com.technologies.mobile.free_exchange.rest.model.GetSubscribeListsResponse;
 import com.technologies.mobile.free_exchange.rest.model.GetUserResponse;
 import com.technologies.mobile.free_exchange.rest.model.ListDialogsResponse;
+import com.technologies.mobile.free_exchange.rest.model.NewMessagesResponse;
 import com.technologies.mobile.free_exchange.rest.model.Search;
 import com.technologies.mobile.free_exchange.rest.model.SearchResponse;
+import com.technologies.mobile.free_exchange.rest.model.SetViewedResponse;
 import com.technologies.mobile.free_exchange.rest.model.VkGroupIdResponse;
 import com.technologies.mobile.free_exchange.rest.model.VkPostTemplateResponse;
 
@@ -35,7 +41,8 @@ public interface ExchangeClient {
 
     @FormUrlEncoded
     @POST("API/AddUser")
-    Call<AddUserResponse> addUser(@Field("vk_id") String vkId, @Field("APIKey") String apiKey);
+    Call<AddUserResponse> addUser(@Field("vk_id") String vkId, @Field("name") String nameAndSurname,
+                                  @Field("photo") String photoUrl, @Field("APIKey") String apiKey);
 
     @FormUrlEncoded
     @POST("API/GetVKGroupId")
@@ -64,17 +71,50 @@ public interface ExchangeClient {
 
     @FormUrlEncoded
     @POST("API/GetDialogs")
-    Call<ListDialogsResponse> getDialogs(@Field("uid") String uid, @Field("offset") int offset, @Field("count") int count, @Field("APIKey") String apiKey);
+    Call<ListDialogsResponse> getDialogs(@Field("uid") String uid, @Field("offset") int offset, @Field("count") int count,
+                                         @Field("APIKey") String apiKey);
 
     @FormUrlEncoded
     @POST("API/GetDialogs")
-    Call<ListDialogsResponse> getDialogs(@Field("uid") String uid, @Field("another_user") String anotherUser, @Field("offset") int offset, @Field("count") int count, @Field("APIKey") String apiKey);
+    Call<ListDialogsResponse> getDialogs(@Field("uid") String uid, @Field("another_user") String anotherUser,
+                                         @Field("offset") int offset, @Field("count") int count, @Field("APIKey") String apiKey);
 
     @FormUrlEncoded
     @POST("API/GetDialogMessages")
-    Call<DialogMessagesResponse> getDialogMessages(@Field("dialog_id") String dialogId, @Field("offset") int offset, @Field("count") int count, @Field("APIKey") String apiKey);
+    Call<DialogMessagesResponse> getDialogMessages(@Field("dialog_id") String dialogId, @Field("offset") int offset,
+                                                   @Field("count") int count, @Field("APIKey") String apiKey);
 
     @FormUrlEncoded
     @POST("API/addMessage")
-    Call<AddMessageResponse> addMessage(@Field("uid_to") String toId, @Field("uid_from") String fromId, @Field("text") String text, @Field("APIKey") String apiKey);
+    Call<AddMessageResponse> addMessage(@Field("uid_to") String toId, @Field("uid_from") String fromId,
+                                        @Field("text") String text, @Field("APIKey") String apiKey);
+
+    @FormUrlEncoded
+    @POST("API/GetNewMessages")
+    Call<NewMessagesResponse> getNewMessages(@Field("uid") String uid, @Field("APIKey") String apiKey);
+
+    @FormUrlEncoded
+    @POST("API/setViewed")
+    Call<SetViewedResponse> setViewed(@Field("dialog_id") String dialogId, @Field("uid") String uid, @Field("APIKey") String apiKey);
+
+    @FormUrlEncoded
+    @POST("API/getSubscribeLists")
+    Call<GetSubscribeListsResponse> getSubscribeLists(@Field("uid") String uid, @Field("offset") int offset,
+                                                      @Field("count") int count, @Field("APIKey") String apiKey);
+
+    @FormUrlEncoded
+    @POST("API/deleteSubscribeList")
+    Call<DeleteSubscribeListResponse> deleteSubscribeList(@Field("list_id") String listId, @Field("APIKey") String apiKey);
+
+    @FormUrlEncoded
+    @POST("API/AddSubscribeList")
+    Call<AddSubscribeListResponse> addSubscribeList(@Field("uid") String uid, @Field("ItemsGet") JSONArray itemsGet,
+                                                    @Field("ItemsGive") JSONArray itemsGive, @Field("category") JSONArray categories,
+                                                    @Field("notification") int notification, @Field("APIKey") String apiKey);
+
+    @FormUrlEncoded
+    @POST("API/editSubscribeList")
+    Call<EditSubscribeListResponse> editSubscribeList(@Field("list_id") String listId, @Field("ItemsGet") JSONArray itemsGet,
+                                                      @Field("ItemsGive") JSONArray itemsGive, @Field("category") JSONArray categories,
+                                                      @Field("notification") int notification, @Field("APIKey") String apiKey);
 }

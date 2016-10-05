@@ -1,5 +1,7 @@
 package com.technologies.mobile.free_exchange.adapters;
 
+import com.technologies.mobile.free_exchange.rest.model.User;
+
 /**
  * Created by diviator on 26.09.2016.
  */
@@ -10,12 +12,15 @@ public class ChatMessage {
     private String mFromId;
     private int mType;
 
+    private User mFromUser;
 
-    public ChatMessage(String fromId, String text, String myId){
+    public ChatMessage(User fromUser, String text, String myId){
         mText = text;
         mMyId = myId;
-        mFromId = fromId;
+        mFromId = fromUser.getId();
         mType = calculateType();
+
+        mFromUser = fromUser;
     }
 
     public ChatMessage(String text){
@@ -37,6 +42,10 @@ public class ChatMessage {
         }else{
             return MessageListAdapter.INPUT_MESSAGE;
         }
+    }
+
+    public String getPhotoUrl(){
+        return mFromUser.getPhoto();
     }
 
 }

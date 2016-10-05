@@ -3,6 +3,7 @@ package com.technologies.mobile.free_exchange.activities;
 import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.MenuItemCompat;
@@ -32,12 +33,14 @@ import com.technologies.mobile.free_exchange.R;
 import com.technologies.mobile.free_exchange.adapters.NavigationRVAdapter;
 import com.technologies.mobile.free_exchange.adapters.SearchPullAdapter;
 import com.technologies.mobile.free_exchange.fragments.AddFragment;
+import com.technologies.mobile.free_exchange.fragments.CreateSubscribeFragment;
 import com.technologies.mobile.free_exchange.fragments.DialogFragment;
 import com.technologies.mobile.free_exchange.fragments.FragmentAdapter;
 import com.technologies.mobile.free_exchange.fragments.HomeFragment;
 import com.technologies.mobile.free_exchange.fragments.MessageFragment;
 import com.technologies.mobile.free_exchange.fragments.SearchFragment;
 import com.technologies.mobile.free_exchange.listeners.RecyclerViewOnItemClickListener;
+import com.technologies.mobile.free_exchange.services.MessageCatcherService;
 import com.vk.sdk.VKAccessToken;
 import com.vk.sdk.VKSdk;
 import com.vk.sdk.api.VKApi;
@@ -56,12 +59,12 @@ import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity  {
 
-    public static String LOG_TAG = "logs";
+    public static String LOG_TAG = "mCservice";
 
     public static int LOGIN_REQUEST = 100;
 
-    private int[] icons = {R.drawable.home,R.drawable.search_dark,
-            R.drawable.plus_dark,R.drawable.message_dark,R.drawable.exit};
+    private int[] icons = {R.drawable.home,R.drawable.search_dark, R.drawable.plus_dark,
+            R.drawable.message_dark,R.drawable.subscribe, R.drawable.exit};
 
     private Toolbar toolbar;
 
@@ -93,12 +96,15 @@ public class MainActivity extends AppCompatActivity  {
         fragmentAdapter.initDefaultFragment();
     }
 
-
-
     private void login(){
         if( !VKSdk.isLoggedIn() ) {
             Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
             startActivityForResult(intent, LOGIN_REQUEST);
+        }else{
+            Log.e(LOG_TAG,"service started");
+            Intent messageCatcherServiceStarter = new Intent(this,MessageCatcherService.class);
+            stopService(messageCatcherServiceStarter);
+            startService(messageCatcherServiceStarter);
         }
     }
 
@@ -113,7 +119,7 @@ public class MainActivity extends AppCompatActivity  {
         recyclerView = (RecyclerView) findViewById(R.id.left_drawer);
         recyclerView.setHasFixedSize(true);
 
-        String[] categories = getResources().getStringArray(R.array.navigations);
+        final String[] categories = getResources().getStringArray(R.array.navigations);
 
         adapter = new NavigationRVAdapter(this, categories,icons,photo,name);
         recyclerView.setAdapter(adapter);
@@ -160,10 +166,11 @@ public class MainActivity extends AppCompatActivity  {
         recyclerView.addOnItemTouchListener(new RecyclerViewOnItemClickListener(this, new RecyclerViewOnItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                if( position == 5 ){
-                        VKSdk.logout();
-                        login();
-                        drawerLayout.closeDrawers();
+                if( position == categories.length ){
+                    VKSdk.logout();
+                    PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().remove(LoginActivity.ID).apply();
+                    login();
+                    drawerLayout.closeDrawers();
                 }else if( position != 0 ){
                     fragmentAdapter.initFragment(position-1);
                     drawerLayout.closeDrawers();
@@ -179,7 +186,10 @@ public class MainActivity extends AppCompatActivity  {
         super.onActivityResult(requestCode, resultCode, data);
         if( requestCode == LOGIN_REQUEST ){
             if( resultCode == RESULT_OK ){
-                //
+                Log.e(LOG_TAG,"service started");
+                Intent messageCatcherServiceStarter = new Intent(this,MessageCatcherService.class);
+                stopService(messageCatcherServiceStarter);
+                startService(messageCatcherServiceStarter);
             }
         }
     }
@@ -215,10 +225,17 @@ public class MainActivity extends AppCompatActivity  {
     @Override
     public void onBackPressed() {
         FragmentManager fm = getSupportFragmentManager();
+
         DialogFragment dialogFragment = (DialogFragment) fm.findFragmentByTag(DialogFragment.TAG);
         if( dialogFragment != null && dialogFragment.isVisible() ) {
             dialogFragment.setLastTitle();
         }
+
+        CreateSubscribeFragment createSubscribeFragment = (CreateSubscribeFragment) fm.findFragmentByTag(CreateSubscribeFragment.TAG);
+        if( createSubscribeFragment != null && createSubscribeFragment.isVisible() ){
+            createSubscribeFragment.setLastTitle();
+        }
+
         super.onBackPressed();
     }
 }

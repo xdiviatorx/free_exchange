@@ -1,6 +1,10 @@
 package com.technologies.mobile.free_exchange.activities;
 
 import android.animation.Animator;
+import android.content.Intent;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatSpinner;
@@ -22,11 +26,12 @@ import android.widget.TextView;
 import com.technologies.mobile.free_exchange.R;
 import com.technologies.mobile.free_exchange.adapters.CategorySpinnerAdapter;
 import com.technologies.mobile.free_exchange.adapters.SearchPullAdapter;
+import com.technologies.mobile.free_exchange.fragments.DialogFragment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class SearchActivity extends AppCompatActivity implements View.OnClickListener, TextWatcher, AbsListView.OnScrollListener, AdapterView.OnItemSelectedListener{
+public class SearchActivity extends AppCompatActivity implements View.OnClickListener, TextWatcher, AbsListView.OnScrollListener, AdapterView.OnItemSelectedListener, AdapterView.OnItemClickListener{
 
     private String LOG_TAG = "mySearch";
 
@@ -126,6 +131,8 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
         lv.setAdapter(lvAdapter);
 
         lv.setOnScrollListener(this);
+
+        lv.setOnItemClickListener(this);
 
         lvAdapter.initialUploading();
     }
@@ -381,5 +388,20 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
 
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        Intent intent = new Intent(this,DialogActivity.class);
+
+        int authorId = (int) lvAdapter.getData().get(i).get(SearchPullAdapter.UID);
+        String authorName = (String) lvAdapter.getData().get(i).get(SearchPullAdapter.AUTHOR_NAME);
+        String authorVkId = (String) lvAdapter.getData().get(i).get(SearchPullAdapter.VK_ID);
+
+        intent.putExtra(DialogFragment.INTERLOCUTOR_ID,String.valueOf(authorId));
+        intent.putExtra(DialogFragment.INTERLOCUTOR_NAME,authorName);
+        intent.putExtra(DialogFragment.INTERLOCUTOR_VK_ID,authorVkId);
+
+        startActivity(intent);
     }
 }

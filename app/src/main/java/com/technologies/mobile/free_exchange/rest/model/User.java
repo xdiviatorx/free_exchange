@@ -22,6 +22,10 @@ public class User {
     @JsonProperty("photo")
     String photo;
 
+    @Nullable
+    @JsonProperty("vk_id")
+    String vkId;
+
     public String getId() {
         return id;
     }
@@ -34,5 +38,10 @@ public class User {
     @Nullable
     public String getPhoto() {
         return photo;
+    }
+
+    @Nullable
+    public String getVkId() {
+        return vkId;
     }
 }

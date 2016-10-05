@@ -1,5 +1,9 @@
 package com.technologies.mobile.free_exchange.fragments;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
@@ -20,12 +24,20 @@ import com.technologies.mobile.free_exchange.activities.LoginActivity;
 import com.technologies.mobile.free_exchange.adapters.ChatMessage;
 import com.technologies.mobile.free_exchange.adapters.MessageListAdapter;
 import com.technologies.mobile.free_exchange.logic.TextFormatter;
+import com.technologies.mobile.free_exchange.notification.Notificator;
 import com.technologies.mobile.free_exchange.rest.ExchangeClient;
 import com.technologies.mobile.free_exchange.rest.RetrofitService;
 import com.technologies.mobile.free_exchange.rest.model.AddMessageResponse;
 import com.technologies.mobile.free_exchange.rest.model.DialogMessage;
 import com.technologies.mobile.free_exchange.rest.model.DialogMessagesResponse;
 import com.technologies.mobile.free_exchange.rest.model.ListDialogsResponse;
+import com.vk.sdk.api.VKApi;
+import com.vk.sdk.api.VKError;
+import com.vk.sdk.api.VKRequest;
+import com.vk.sdk.api.VKResponse;
+import com.vk.sdk.api.methods.VKApiFriends;
+import com.vk.sdk.api.methods.VKApiMessages;
+import com.vk.sdk.api.methods.VKApiUsers;
 
 import java.security.spec.ECField;
 import java.util.ArrayList;
@@ -42,10 +54,14 @@ import retrofit2.Response;
  */
 public class DialogFragment extends Fragment implements View.OnClickListener, AbsListView.OnScrollListener{
 
+    public static final String NEW_MESSAGE_ACTION = "NEW_MESSAGE_ACTION";
+
     public static final String LOG_TAG = "DialogFragment";
 
     public static final String INTERLOCUTOR_ID = "INTERLOCUTOR_UID";
+    public static final String INTERLOCUTOR_VK_ID = "INTERLOCUTOR_VK_ID";
     public static final String DIALOG_ID = "DIALOG_ID";
+    public static final String INTERLOCUTOR_NAME = "INTERLOCUTOR_NAME";
 
     public static final String TAG = "dialogTag";
 
@@ -57,9 +73,12 @@ public class DialogFragment extends Fragment implements View.OnClickListener, Ab
     private ListView lvMessages;
     private MessageListAdapter messageListAdapter;
 
+    NewMessagesReceiver newMessagesReceiver;
 
     @Nullable private String interlocutorId;
     @Nullable private String dialogId;
+    @Nullable private String interlocutorName;
+    @Nullable private String interlocutorVkId;
 
     public DialogFragment(){
 
@@ -71,10 +90,20 @@ public class DialogFragment extends Fragment implements View.OnClickListener, Ab
 
         interlocutorId = getArguments().getString(INTERLOCUTOR_ID,null);
         dialogId = getArguments().getString(DIALOG_ID,null);
+        interlocutorName = getArguments().getString(INTERLOCUTOR_NAME,null);
+
+        if(interlocutorId != null ){
+            Log.e(LOG_TAG,"INTER_ID = " + interlocutorId);
+        }
 
         if( dialogId == null ){
             getDialogId();
         }
+
+        interlocutorVkId = getArguments().getString(INTERLOCUTOR_VK_ID,null);
+
+        //Notificator notificator = new Notificator(getContext());
+        //notificator.cancelNotification();
     }
 
     @Nullable
@@ -115,6 +144,10 @@ public class DialogFragment extends Fragment implements View.OnClickListener, Ab
         messageListAdapter.initialUploading();
 
         lvMessages.setOnScrollListener(this);
+
+        newMessagesReceiver = new NewMessagesReceiver();
+        IntentFilter filter = new IntentFilter(NEW_MESSAGE_ACTION);
+        getActivity().registerReceiver(newMessagesReceiver,filter);
     }
 
     private void initDefaultMessageList(){
@@ -136,6 +169,10 @@ public class DialogFragment extends Fragment implements View.OnClickListener, Ab
             messageListAdapter.addMessageToList(chatMessage);
 
             addMessage();
+
+            addVkMessage();
+
+            etMessage.setText("");
         }
     }
 
@@ -164,11 +201,39 @@ public class DialogFragment extends Fragment implements View.OnClickListener, Ab
         });
     }
 
+    private void addVkMessage(){
+        if( interlocutorVkId == null ){
+            //TODO ERROR MESSAGE
+            return;
+        }
+        final VKRequest request = new VKRequest("messages.send");
+        request.addExtraParameter("user_id",interlocutorVkId);
+        request.addExtraParameter("message",etMessage.getText().toString());
+        request.executeWithListener(new VKRequest.VKRequestListener() {
+            @Override
+            public void onComplete(VKResponse response) {
+                super.onComplete(response);
+                Log.e(LOG_TAG,response.responseString);
+            }
+
+            @Override
+            public void onError(VKError error) {
+                super.onError(error);
+                Log.e(LOG_TAG,error.toString());
+            }
+        });
+    }
+
     private void setTitle(){
         lastTitle = getActivity().getTitle().toString();
+        String newTitle = getString(R.string.dialog);
         if( interlocutorId != null ) {
-            getActivity().setTitle(interlocutorId);
+            newTitle = interlocutorId;
         }
+        if( interlocutorName != null ){
+            newTitle = interlocutorName;
+        }
+        getActivity().setTitle(newTitle);
     }
 
     public void setLastTitle(){
@@ -212,5 +277,28 @@ public class DialogFragment extends Fragment implements View.OnClickListener, Ab
         if( i != 0 && fixPosition >= i2-5 ){
             messageListAdapter.additionalUploading(i2);
         }
+    }
+
+    public class NewMessagesReceiver extends BroadcastReceiver{
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.e(LOG_TAG,"RECEIVE NEW MESSAGES");
+            messageListAdapter.downloadNewMessages();
+        }
+
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if( newMessagesReceiver != null ) {
+            getActivity().unregisterReceiver(newMessagesReceiver);
+        }
+    }
+
+    @Nullable
+    public String getDlgId(){
+        return dialogId;
     }
 }

@@ -5,6 +5,7 @@
         <item>Поиск</item>
         <item>Добавить обмен</item>
         <item>Мои сообщения</item>
+        <item>Подписки</item>
         <item>Выйти</item>
     </array>
 
@@ -13,6 +14,7 @@
         <item>@string/search</item>
         <item>@string/add</item>
         <item>@string/messages</item>
+        <item>@string/subscribes</item>
         <item>@string/dialog</item>
     </array>
 </resources>

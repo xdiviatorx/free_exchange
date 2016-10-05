@@ -85,11 +85,22 @@ public class MessageFragment extends Fragment implements AbsListView.OnScrollLis
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
         String interlocutorId = (String) dialogListAdapter.getData().get(position).get(DialogListAdapter.INTERLOCUTOR_ID);
         String dialogId = String.valueOf(dialogListAdapter.getData().get(position).get(DialogListAdapter.DIALOG_ID));
+        String interlocutorName = (String) dialogListAdapter.getData().get(position).get(DialogListAdapter.INTERLOCUTOR_NAME);
+        String interlocutorVkId = (String) dialogListAdapter.getData().get(position).get(DialogListAdapter.INTERLOCUTOR_VK_ID);
+
+        if( interlocutorName == null ){
+            interlocutorName=getString(R.string.dialog);
+            if( dialogId != null ){
+                interlocutorName+= " №" + dialogId;
+            }
+        }
 
         DialogFragment dialogFragment = new DialogFragment();
         Bundle args = new Bundle();
+        args.putString(DialogFragment.INTERLOCUTOR_NAME,interlocutorName);
         args.putString(DialogFragment.INTERLOCUTOR_ID,interlocutorId);
         args.putString(DialogFragment.DIALOG_ID,dialogId);
+        args.putString(DialogFragment.INTERLOCUTOR_VK_ID,interlocutorVkId);
         dialogFragment.setArguments(args);
 
         FragmentManager fragmentManager = getFragmentManager();

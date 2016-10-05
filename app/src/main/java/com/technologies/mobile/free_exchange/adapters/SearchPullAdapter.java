@@ -1,5 +1,6 @@
 package com.technologies.mobile.free_exchange.adapters;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
@@ -53,6 +54,8 @@ public class SearchPullAdapter extends SimpleAdapter{
     public static String CONTACTS = "CONTACTS";
     public static String IMAGES = "IMAGES";
     public static String UID = "UID";
+    public static String VK_ID = "VK_ID";
+    public static String AUTHOR_NAME = "AUTHOR_NAME";
 
     private int UPLOAD_LENGTH = 20;
 
@@ -192,6 +195,13 @@ public class SearchPullAdapter extends SimpleAdapter{
                     item.put(PLACE, searchExtraditionItem.getPlace());
                     item.put(CONTACTS, searchExtraditionItem.getContacts());
                     item.put(UID,searchExtraditionItem.getUid());
+                    item.put(VK_ID,searchExtraditionItem.getUserData().getVkId());
+
+                    String authorName = searchExtraditionItem.getUserData().getName();
+                    if( authorName == null ){
+                        authorName = context.getString(R.string.dialog);
+                    }
+                    item.put(AUTHOR_NAME,authorName);
 
                     long timestamp = searchExtraditionItem.getCreated();
                     timestamp*=1000;
@@ -209,7 +219,13 @@ public class SearchPullAdapter extends SimpleAdapter{
 
             @Override
             public void onFailure(Call<Search> call, Throwable t) {
-                Log.e(LOG_TAG,"ERROR " + t.toString());
+                Log.e(LOG_TAG,"ERROR MAIN LIST " + t.toString());
+
+                /*AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setNeutralButton("Закрыть",null);
+                builder.setMessage(t.toString());
+                builder.create().show();*/
+
                 t.printStackTrace();
                 uploading=false;
                 Loader.hideProgressBar(context);

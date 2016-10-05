@@ -1,5 +1,6 @@
 package com.technologies.mobile.free_exchange.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -18,6 +19,7 @@ import android.widget.ListView;
 
 import com.technologies.mobile.free_exchange.R;
 import com.technologies.mobile.free_exchange.adapters.SearchPullAdapter;
+import com.technologies.mobile.free_exchange.services.MessageCatcherService;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,6 +47,7 @@ public class HomeFragment extends Fragment implements AbsListView.OnScrollListen
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         fragmentAdapter = new FragmentAdapter(getActivity());
+
     }
 
     @Nullable
@@ -178,7 +181,12 @@ public class HomeFragment extends Fragment implements AbsListView.OnScrollListen
         Bundle args = new Bundle();
 
         int uid = (int) lvAdapter.getData().get(i).get(SearchPullAdapter.UID);
+        String authorName = (String) lvAdapter.getData().get(i).get(SearchPullAdapter.AUTHOR_NAME);
+        String authorVkId = (String) lvAdapter.getData().get(i).get(SearchPullAdapter.VK_ID);
+
         args.putString(DialogFragment.INTERLOCUTOR_ID,String.valueOf(uid));
+        args.putString(DialogFragment.INTERLOCUTOR_NAME,authorName);
+        args.putString(DialogFragment.INTERLOCUTOR_VK_ID,authorVkId);
         dialogFragment.setArguments(args);
 
         FragmentManager fragmentManager = getFragmentManager();
