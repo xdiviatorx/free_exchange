@@ -7,6 +7,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
@@ -111,7 +112,7 @@ public class SubscribesAdapter extends SimpleAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         View view = super.getView(position, convertView, parent);
 
-        ImageButton more = (ImageButton) view.findViewById(R.id.ibMore);
+        ImageView more = (ImageView) view.findViewById(R.id.ivMore);
         more.setOnClickListener(new ItemClickListener(position, (String) data.get(position).get(LIST_ID)));
 
         TextView tvGives = (TextView) view.findViewById(R.id.gives);

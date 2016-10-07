@@ -5,6 +5,7 @@
     <integer name="com_vk_sdk_AppId">5591803</integer>
 
     <string name="free_exchange">ОБМЕН ДАРОМ</string>
+    <string name="exchanges">Обмены</string>
 
     <string name="app_description">Обменяйте ненужные вещи на нужные.\nСовершенно бесплатно</string>
 
@@ -99,5 +100,9 @@
 
     <string name="subs_mi_delete">Удалить</string>
     <string name="subs_mi_edit">Изменить</string>
+
+    <string name="subs_exchanges">Обмены подписки</string>
+
+
 
 </resources>

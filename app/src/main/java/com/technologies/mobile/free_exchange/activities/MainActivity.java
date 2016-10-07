@@ -39,6 +39,7 @@ import com.technologies.mobile.free_exchange.fragments.FragmentAdapter;
 import com.technologies.mobile.free_exchange.fragments.HomeFragment;
 import com.technologies.mobile.free_exchange.fragments.MessageFragment;
 import com.technologies.mobile.free_exchange.fragments.SearchFragment;
+import com.technologies.mobile.free_exchange.fragments.SubscribeExchangesFragment;
 import com.technologies.mobile.free_exchange.listeners.RecyclerViewOnItemClickListener;
 import com.technologies.mobile.free_exchange.services.MessageCatcherService;
 import com.vk.sdk.VKAccessToken;
@@ -226,14 +227,20 @@ public class MainActivity extends AppCompatActivity  {
     public void onBackPressed() {
         FragmentManager fm = getSupportFragmentManager();
 
-        DialogFragment dialogFragment = (DialogFragment) fm.findFragmentByTag(DialogFragment.TAG);
-        if( dialogFragment != null && dialogFragment.isVisible() ) {
-            dialogFragment.setLastTitle();
-        }
-
         CreateSubscribeFragment createSubscribeFragment = (CreateSubscribeFragment) fm.findFragmentByTag(CreateSubscribeFragment.TAG);
         if( createSubscribeFragment != null && createSubscribeFragment.isVisible() ){
             createSubscribeFragment.setLastTitle();
+        }
+
+        SubscribeExchangesFragment subscribeExchangesFragment =
+                (SubscribeExchangesFragment) fm.findFragmentByTag(SubscribeExchangesFragment.TAG);
+        if( subscribeExchangesFragment != null && subscribeExchangesFragment.isVisible() ){
+            subscribeExchangesFragment.setLastTitle();
+        }
+
+        DialogFragment dialogFragment = (DialogFragment) fm.findFragmentByTag(DialogFragment.TAG);
+        if( dialogFragment != null && dialogFragment.isVisible() ) {
+            dialogFragment.setLastTitle();
         }
 
         super.onBackPressed();

@@ -9,6 +9,7 @@ import com.technologies.mobile.free_exchange.rest.model.Categories;
 import com.technologies.mobile.free_exchange.rest.model.DeleteSubscribeListResponse;
 import com.technologies.mobile.free_exchange.rest.model.DialogMessagesResponse;
 import com.technologies.mobile.free_exchange.rest.model.EditSubscribeListResponse;
+import com.technologies.mobile.free_exchange.rest.model.GetOffersByListResponse;
 import com.technologies.mobile.free_exchange.rest.model.GetSubscribeListsResponse;
 import com.technologies.mobile.free_exchange.rest.model.GetUserResponse;
 import com.technologies.mobile.free_exchange.rest.model.ListDialogsResponse;
@@ -117,4 +118,9 @@ public interface ExchangeClient {
     Call<EditSubscribeListResponse> editSubscribeList(@Field("list_id") String listId, @Field("ItemsGet") JSONArray itemsGet,
                                                       @Field("ItemsGive") JSONArray itemsGive, @Field("category") JSONArray categories,
                                                       @Field("notification") int notification, @Field("APIKey") String apiKey);
+
+    @FormUrlEncoded
+    @POST("API/getOffersByList")
+    Call<GetOffersByListResponse> getOffersByList(@Field("list_id") String listId, @Field("offset") int offset,
+                                                  @Field("count") int count, @Field("APIKey") String apiKey);
 }

@@ -59,7 +59,7 @@ public class SearchPullAdapter extends SimpleAdapter{
 
     private int UPLOAD_LENGTH = 20;
 
-    private boolean uploading = false;
+    protected boolean uploading = false;
 
     Context context;
 
@@ -162,7 +162,7 @@ public class SearchPullAdapter extends SimpleAdapter{
         this.category = category;
     }
 
-    private void performListQuery(final int offset,final int count){
+    protected void performListQuery(final int offset,final int count){
         ExchangeClient client = RetrofitService.createService(ExchangeClient.class);
 
         Call<Search> searchCall = client.findExchanges(itemsGive,itemsGet,offset,count,category,ExchangeClient.apiKey);

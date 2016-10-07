@@ -89,13 +89,14 @@
 
             </LinearLayout>
 
-            <ImageButton
-                android:id="@+id/ibMore"
-                android:layout_width="30dp"
+            <ImageView
+                android:id="@+id/ivMore"
+                android:layout_width="20dp"
                 android:layout_height="40dp"
                 android:src="@drawable/settings_light"
                 android:layout_marginRight="5dp"
-                android:theme="@style/CustomTransparentImageButtonTheme"/>
+                android:theme="@style/CustomTransparentImageButtonTheme"
+                android:focusableInTouchMode="false"/>
 
         </LinearLayout>
 

@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ListView;
 
@@ -34,11 +35,11 @@ import retrofit2.Response;
  * Created by diviator on 04.10.2016.
  */
 
-public class SubscribesFragment extends Fragment implements AbsListView.OnScrollListener, ActivityActions{
+public class SubscribesFragment extends Fragment implements AbsListView.OnScrollListener, ActivityActions, AdapterView.OnItemClickListener{
 
     public static final String LOG_TAG = "subscribesFragment";
 
-    ListView lvSubscribers;
+    ListView lvSubscribes;
     SubscribesAdapter subscribesAdapter;
 
     ImageButton floatingAdd;
@@ -66,16 +67,18 @@ public class SubscribesFragment extends Fragment implements AbsListView.OnScroll
     }
 
     public void initViews(View view){
-        lvSubscribers = (ListView) view.findViewById(R.id.lvSubscribes);
+        lvSubscribes = (ListView) view.findViewById(R.id.lvSubscribes);
 
         ArrayList<HashMap<String,Object>> data = new ArrayList<>();
         String[] from = {SubscribesAdapter.ITEMS_GET,SubscribesAdapter.ITEMS_GIVE};
         int[] to = {R.id.gets,R.id.gives};
         subscribesAdapter = new SubscribesAdapter(getContext(),data,R.layout.subscribe_item,from,to);
 
-        lvSubscribers.setAdapter(subscribesAdapter);
+        lvSubscribes.setAdapter(subscribesAdapter);
         subscribesAdapter.initialDownload();
-        lvSubscribers.setOnScrollListener(this);
+
+        lvSubscribes.setOnScrollListener(this);
+        lvSubscribes.setOnItemClickListener(this);
 
         subscribesAdapter.setActivityAction(this);
     }
@@ -166,5 +169,19 @@ public class SubscribesFragment extends Fragment implements AbsListView.OnScroll
 
         fragmentManager.beginTransaction().add(R.id.content,createSubscribeFragment,CreateSubscribeFragment.TAG)
                 .addToBackStack(null).commit();
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        Fragment subscribeExchangesFragment = new SubscribeExchangesFragment();
+
+        Bundle args = new Bundle();
+        args.putString(SubscribeExchangesFragment.LIST_ID,(String)subscribesAdapter.getData().get(i).get(SubscribesAdapter.LIST_ID));
+        subscribeExchangesFragment.setArguments(args);
+
+        getActivity().getSupportFragmentManager().beginTransaction()
+                .add(R.id.content,subscribeExchangesFragment,SubscribeExchangesFragment.TAG)
+                .addToBackStack(null).commit();
+        Log.e(LOG_TAG,"item click");
     }
 }
