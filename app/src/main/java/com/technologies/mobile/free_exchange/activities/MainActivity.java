@@ -1,62 +1,39 @@
 package com.technologies.mobile.free_exchange.activities;
 
-import android.app.SearchManager;
 import android.content.Intent;
-import android.os.Handler;
 import android.preference.PreferenceManager;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.AbsListView;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ImageButton;
-import android.widget.ListView;
 
-import com.technologies.mobile.free_exchange.Loader;
 import com.technologies.mobile.free_exchange.R;
 import com.technologies.mobile.free_exchange.adapters.NavigationRVAdapter;
-import com.technologies.mobile.free_exchange.adapters.SearchPullAdapter;
-import com.technologies.mobile.free_exchange.fragments.AddFragment;
 import com.technologies.mobile.free_exchange.fragments.CreateSubscribeFragment;
 import com.technologies.mobile.free_exchange.fragments.DialogFragment;
 import com.technologies.mobile.free_exchange.fragments.FragmentAdapter;
-import com.technologies.mobile.free_exchange.fragments.HomeFragment;
-import com.technologies.mobile.free_exchange.fragments.MessageFragment;
-import com.technologies.mobile.free_exchange.fragments.SearchFragment;
 import com.technologies.mobile.free_exchange.fragments.SubscribeExchangesFragment;
 import com.technologies.mobile.free_exchange.listeners.RecyclerViewOnItemClickListener;
-import com.technologies.mobile.free_exchange.services.MessageCatcherService;
-import com.vk.sdk.VKAccessToken;
+import com.technologies.mobile.free_exchange.services.messages.MessageCatcherService;
+import com.technologies.mobile.free_exchange.services.subscribes.SubscribeExchangeCatcherService;
 import com.vk.sdk.VKSdk;
 import com.vk.sdk.api.VKApi;
 import com.vk.sdk.api.VKApiConst;
 import com.vk.sdk.api.VKParameters;
 import com.vk.sdk.api.VKRequest;
 import com.vk.sdk.api.VKResponse;
-import com.vk.sdk.api.model.VKApiPhoto;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity  {
 
@@ -103,9 +80,14 @@ public class MainActivity extends AppCompatActivity  {
             startActivityForResult(intent, LOGIN_REQUEST);
         }else{
             Log.e(LOG_TAG,"service started");
+
             Intent messageCatcherServiceStarter = new Intent(this,MessageCatcherService.class);
             stopService(messageCatcherServiceStarter);
             startService(messageCatcherServiceStarter);
+
+            Intent subscribeExchangeCatcherService = new Intent(this, SubscribeExchangeCatcherService.class);
+            stopService(subscribeExchangeCatcherService);
+            startService(subscribeExchangeCatcherService);
         }
     }
 
@@ -188,9 +170,14 @@ public class MainActivity extends AppCompatActivity  {
         if( requestCode == LOGIN_REQUEST ){
             if( resultCode == RESULT_OK ){
                 Log.e(LOG_TAG,"service started");
+
                 Intent messageCatcherServiceStarter = new Intent(this,MessageCatcherService.class);
                 stopService(messageCatcherServiceStarter);
                 startService(messageCatcherServiceStarter);
+
+                Intent subscribeExchangeCatcherService = new Intent(this, SubscribeExchangeCatcherService.class);
+                stopService(subscribeExchangeCatcherService);
+                startService(subscribeExchangeCatcherService);
             }
         }
     }

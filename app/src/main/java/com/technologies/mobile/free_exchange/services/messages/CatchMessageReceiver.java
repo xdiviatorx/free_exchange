@@ -1,4 +1,4 @@
-package com.technologies.mobile.free_exchange.services;
+package com.technologies.mobile.free_exchange.services.messages;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -13,7 +13,6 @@ import com.technologies.mobile.free_exchange.fragments.DialogFragment;
 import com.technologies.mobile.free_exchange.notification.Notificator;
 import com.technologies.mobile.free_exchange.rest.ExchangeClient;
 import com.technologies.mobile.free_exchange.rest.RetrofitService;
-import com.technologies.mobile.free_exchange.rest.model.DialogMessage;
 import com.technologies.mobile.free_exchange.rest.model.NewMessage;
 import com.technologies.mobile.free_exchange.rest.model.NewMessagesResponse;
 
@@ -47,6 +46,7 @@ public class CatchMessageReceiver extends BroadcastReceiver {
             return;
         }
         Log.e(LOG_TAG," UID " + uid);
+
         ExchangeClient client = RetrofitService.createService(ExchangeClient.class);
         Call<NewMessagesResponse> newMessagesResponseCall = client.getNewMessages(uid,ExchangeClient.apiKey);
         newMessagesResponseCall.enqueue(new Callback<NewMessagesResponse>() {

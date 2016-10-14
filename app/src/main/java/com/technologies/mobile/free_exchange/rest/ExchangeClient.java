@@ -14,8 +14,10 @@ import com.technologies.mobile.free_exchange.rest.model.GetSubscribeListsRespons
 import com.technologies.mobile.free_exchange.rest.model.GetUserResponse;
 import com.technologies.mobile.free_exchange.rest.model.ListDialogsResponse;
 import com.technologies.mobile.free_exchange.rest.model.NewMessagesResponse;
+import com.technologies.mobile.free_exchange.rest.model.NewOffersByUidResponse;
 import com.technologies.mobile.free_exchange.rest.model.Search;
 import com.technologies.mobile.free_exchange.rest.model.SearchResponse;
+import com.technologies.mobile.free_exchange.rest.model.SetNotifiedResponse;
 import com.technologies.mobile.free_exchange.rest.model.SetViewedResponse;
 import com.technologies.mobile.free_exchange.rest.model.VkGroupIdResponse;
 import com.technologies.mobile.free_exchange.rest.model.VkPostTemplateResponse;
@@ -123,4 +125,12 @@ public interface ExchangeClient {
     @POST("API/getOffersByList")
     Call<GetOffersByListResponse> getOffersByList(@Field("list_id") String listId, @Field("offset") int offset,
                                                   @Field("count") int count, @Field("APIKey") String apiKey);
+
+    @FormUrlEncoded
+    @POST("API/getNewOffersByUid")
+    Call<NewOffersByUidResponse> getNewOffersByUid(@Field("uid") String uid, @Field("APIKey") String apiKey);
+
+    @FormUrlEncoded
+    @POST("API/setNotified")
+    Call<SetNotifiedResponse> setNotified(@Field("list_id") String listid, @Field("APIKey") String apiKey);
 }

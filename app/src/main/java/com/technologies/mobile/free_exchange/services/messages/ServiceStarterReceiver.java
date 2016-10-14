@@ -1,4 +1,4 @@
-package com.technologies.mobile.free_exchange.services;
+package com.technologies.mobile.free_exchange.services.messages;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -7,7 +7,7 @@ import android.content.Intent;
 /**
  * Created by diviator on 27.09.2016.
  */
-public class ServicesStarterReceiver extends BroadcastReceiver {
+public class ServiceStarterReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {

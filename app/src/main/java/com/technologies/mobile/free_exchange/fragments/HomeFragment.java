@@ -1,6 +1,5 @@
 package com.technologies.mobile.free_exchange.fragments;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -13,13 +12,11 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
 
 import com.technologies.mobile.free_exchange.R;
 import com.technologies.mobile.free_exchange.adapters.SearchPullAdapter;
-import com.technologies.mobile.free_exchange.services.MessageCatcherService;
 
 import java.util.ArrayList;
 import java.util.HashMap;

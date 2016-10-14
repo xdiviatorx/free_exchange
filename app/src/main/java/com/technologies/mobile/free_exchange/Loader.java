@@ -5,6 +5,8 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -16,13 +18,13 @@ public class Loader {
 
     private static ProgressDialog mDialog = null;
     private static boolean mVisible = false;
-    private static ProgressBar mProgressBar = null;
 
     public static void showSender(Context context) {
         if (!mVisible) {
-            mDialog = createDialog(context);
+            mDialog = createProgressDialog(context);
             if (!isOnline(context)) {
-                Toast.makeText(context, R.string.no_internet_connection, Toast.LENGTH_LONG).show();
+                createAlertDialog(context).show();
+                //Toast.makeText(context, R.string.no_internet_connection, Toast.LENGTH_LONG).show();
                 return;
             }
             mDialog.show();
@@ -30,11 +32,21 @@ public class Loader {
         }
     }
 
-    public static ProgressDialog createDialog(Context context) {
+    private static ProgressDialog createProgressDialog(Context context) {
         ProgressDialog dialog = new ProgressDialog(context);
         dialog.setCancelable(false);
         dialog.setMessage(context.getString(R.string.sending));
         return dialog;
+    }
+
+    private static AlertDialog createAlertDialog(Context context){
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle(R.string.conn_error)
+                .setMessage(R.string.conn_check)
+                .setCancelable(true)
+                .setPositiveButton(R.string.close,null)
+                .setIcon(R.drawable.error);
+        return builder.create();
     }
 
     public static void hideSender() {
@@ -47,23 +59,46 @@ public class Loader {
         }
     }
 
-    public static boolean isOnline(Context context) {
+    private static boolean isOnline(Context context) {
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
         return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 
     public static void showProgressBar(Context context){
-        mProgressBar = (ProgressBar) ((Activity) context).findViewById(R.id.pb);
+        ProgressBar mProgressBar = (ProgressBar) ((Activity) context).findViewById(R.id.pb);
+        ProgressBar dialogProgressBar = (ProgressBar) ((Activity) context).findViewById(R.id.pb_dialog);
+        ProgressBar subsExsProgressBar = (ProgressBar) ((Activity) context).findViewById(R.id.pb_subs_exs);
+        if( !isOnline(context) ){
+            createAlertDialog(context).show();
+        }
         if( mProgressBar != null ) {
             mProgressBar.setVisibility(View.VISIBLE);
+            Log.e("progress","NOT NULL mProgressBar");
         }
+        if( dialogProgressBar != null ) {
+            dialogProgressBar.setVisibility(View.VISIBLE);
+            Log.e("progress","NOT NULL dialogProgressBar");
+        }
+        if( subsExsProgressBar != null ) {
+            subsExsProgressBar.setVisibility(View.VISIBLE);
+            Log.e("progress","NOT NULL dialogProgressBar");
+        }
+        //Log.e("progress","show");
     }
 
     public static void hideProgressBar(Context context){
-        mProgressBar = (ProgressBar) ((Activity) context).findViewById(R.id.pb);
+        ProgressBar mProgressBar = (ProgressBar) ((Activity) context).findViewById(R.id.pb);
+        ProgressBar dialogProgressBar = (ProgressBar) ((Activity) context).findViewById(R.id.pb_dialog);
+        ProgressBar subsExsProgressBar = (ProgressBar) ((Activity) context).findViewById(R.id.pb_subs_exs);
         if( mProgressBar != null ) {
             mProgressBar.setVisibility(View.GONE);
+        }
+        if( dialogProgressBar != null ) {
+            dialogProgressBar.setVisibility(View.GONE);
+        }
+        if( subsExsProgressBar != null ) {
+            subsExsProgressBar.setVisibility(View.GONE);
         }
     }
 

@@ -57,7 +57,7 @@ public class SearchPullAdapter extends SimpleAdapter{
     public static String VK_ID = "VK_ID";
     public static String AUTHOR_NAME = "AUTHOR_NAME";
 
-    private int UPLOAD_LENGTH = 20;
+    protected int UPLOAD_LENGTH = 20;
 
     protected boolean uploading = false;
 

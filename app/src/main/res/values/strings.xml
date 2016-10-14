@@ -23,8 +23,8 @@
     <string name="give">Даю:</string>
     <string name="get">Получаю:</string>
     <string name="category">Категория:</string>
-    <string name="place">Место:</string>
-    <string name="contacts">Связь:</string>
+    <string name="place">Место встречи:</string>
+    <string name="contacts">Способ связи:</string>
     <string name="notification">Уведомления:</string>
 
     <string name="date_sample">18.08.2016 12:14</string>
@@ -40,6 +40,8 @@
     <string name="open_drawer">Открытое меню</string>
     <string name="close_drawer">Закрытое меню</string>
 
+    <string name="close">Закрыть</string>
+
     <string name="no_category">Без категории</string>
 
     <string name="add_photo">Фотографии</string>
@@ -47,8 +49,8 @@
     <string name="add_give">Даю</string>
     <string name="add_get">Получаю</string>
     <string name="add_category">Категория</string>
-    <string name="add_place">Место</string>
-    <string name="add_contacts">Связь</string>
+    <string name="add_place">Место встречи</string>
+    <string name="add_contacts">Способ связи</string>
     <string name="add_comments">Комментарии</string>
 
     <string name="pm">ЛС</string>
@@ -103,6 +105,10 @@
 
     <string name="subs_exchanges">Обмены подписки</string>
 
+    <string name="new_exchange">Новый обмен</string>
 
+    <!-- INTERNET -->
+    <string name="conn_error">Ошибка соединения</string>
+    <string name="conn_check">Проверте соединение с интернетом</string>
 
 </resources>

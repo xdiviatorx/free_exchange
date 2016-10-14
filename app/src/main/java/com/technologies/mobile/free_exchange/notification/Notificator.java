@@ -26,6 +26,7 @@ import com.technologies.mobile.free_exchange.rest.RetrofitService;
 import com.technologies.mobile.free_exchange.rest.model.Dialog;
 import com.technologies.mobile.free_exchange.rest.model.NewMessage;
 import com.technologies.mobile.free_exchange.rest.model.NewMessagesResponse;
+import com.technologies.mobile.free_exchange.rest.model.SearchExtraditionItem;
 import com.technologies.mobile.free_exchange.rest.model.SetViewedResponse;
 
 import java.io.IOException;
@@ -39,6 +40,7 @@ import retrofit2.Response;
  * Created by diviator on 30.09.2016.
  */
 public class Notificator {
+
 
     private int NOTIFICATION_ID = 753;
     private int NOTIFICATION_POST_DELAY_MILLIS = 3000;

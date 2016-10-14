@@ -60,17 +60,37 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
+        <!-- MESSAGES -->
         <service
-            android:name=".services.MessageCatcherService"
+            android:name=".services.messages.MessageCatcherService"
             android:enabled="true"
             android:exported="false" />
 
         <receiver
-            android:name=".services.CatchMessageReceiver"
+            android:name=".services.messages.CatchMessageReceiver"
             android:enabled="true"
             android:exported="false" />
         <receiver
-            android:name=".services.ServicesStarterReceiver"
+            android:name=".services.messages.ServiceStarterReceiver"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+        <!-- SUBSCRIBES -->
+        <service
+            android:name=".services.subscribes.SubscribeExchangeCatcherService"
+            android:enabled="true"
+            android:exported="false" />
+
+        <receiver
+            android:name=".services.subscribes.CatchExchangeReceiver"
+            android:enabled="true"
+            android:exported="false" />
+        <receiver
+            android:name=".services.subscribes.ServiceStarterReceiver"
             android:enabled="true"
             android:exported="false">
             <intent-filter>
@@ -86,6 +106,7 @@
             android:name=".activities.DialogActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
+        <activity android:name=".activities.SubscribeExchangeActivity"></activity>
     </application>
 
 </manifest>
