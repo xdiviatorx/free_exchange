@@ -59,7 +59,7 @@ public class CatchExchangeReceiver extends BroadcastReceiver{
             public void onResponse(Call<NewOffersByUidResponse> call, Response<NewOffersByUidResponse> response) {
                 if( response.body().getResponse().getCount() != 0 ){
                     for(SubscribeOffers subscribeOffers : response.body().getResponse().getLists()){
-                        if( subscribeOffers.getCount() != 0 ){
+                        if( subscribeOffers.getCount() != 0 && subscribeOffers.getNotification() != 0){
                             SubscribeNotificator notificator = new SubscribeNotificator(mContext);
                             notificator.notificatePreparing(subscribeOffers);
                         }

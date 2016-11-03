@@ -77,9 +77,9 @@ public class SubscribeNotificator {
             }
         };
 
-        if( exItem.getPhotosList() != null && exItem.getPhotosList().length != 0 ) {
+        if( exItem.getPhotosList() != null && exItem.getPhotosList().length != 0 && exItem.getPhotosList()[0].getPhoto130() != null) {
             Picasso.with(mContext)
-                    .load(exItem.getPhotosList()[0])
+                    .load(exItem.getPhotosList()[0].getPhoto130())
                     .into(target);
         }else{
             makeNotification(exItem, large);

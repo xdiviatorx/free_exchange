@@ -35,14 +35,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class MainActivity extends AppCompatActivity  {
+public class MainActivity extends AppCompatActivity {
 
-    public static String LOG_TAG = "mCservice";
+    public static String LOG_TAG = "mainActivity";
 
     public static int LOGIN_REQUEST = 100;
 
-    private int[] icons = {R.drawable.home,R.drawable.search_dark, R.drawable.plus_dark,
-            R.drawable.message_dark,R.drawable.subscribe, R.drawable.exit};
+    private int[] icons = {R.drawable.home, R.drawable.search_dark, R.drawable.plus_dark,
+            R.drawable.message_dark, R.drawable.subscribe, R.drawable.exit};
 
     private Toolbar toolbar;
 
@@ -74,14 +74,14 @@ public class MainActivity extends AppCompatActivity  {
         fragmentAdapter.initDefaultFragment();
     }
 
-    private void login(){
-        if( !VKSdk.isLoggedIn() ) {
+    private void login() {
+        if (!VKSdk.isLoggedIn()) {
             Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
             startActivityForResult(intent, LOGIN_REQUEST);
-        }else{
-            Log.e(LOG_TAG,"service started");
+        } else {
+            Log.e(LOG_TAG, "service started");
 
-            Intent messageCatcherServiceStarter = new Intent(this,MessageCatcherService.class);
+            Intent messageCatcherServiceStarter = new Intent(this, MessageCatcherService.class);
             stopService(messageCatcherServiceStarter);
             startService(messageCatcherServiceStarter);
 
@@ -91,12 +91,12 @@ public class MainActivity extends AppCompatActivity  {
         }
     }
 
-    private void initToolbar(){
+    private void initToolbar() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
     }
 
-    private void initNavigation(){
+    private void initNavigation() {
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
         recyclerView = (RecyclerView) findViewById(R.id.left_drawer);
@@ -104,13 +104,22 @@ public class MainActivity extends AppCompatActivity  {
 
         final String[] categories = getResources().getStringArray(R.array.navigations);
 
-        adapter = new NavigationRVAdapter(this, categories,icons,photo,name);
+        adapter = new NavigationRVAdapter(this, categories, icons, photo, name);
         recyclerView.setAdapter(adapter);
 
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
-        drawerToggle = new ActionBarDrawerToggle(this,drawerLayout,toolbar,R.string.open_drawer,R.string.close_drawer){
+        String name = PreferenceManager.getDefaultSharedPreferences(this).getString(LoginActivity.NAME, null);
+        String photoUrl = PreferenceManager.getDefaultSharedPreferences(this).getString(LoginActivity.PHOTO, null);
+        Log.e(LOG_TAG, "BEGIN PHOTO AND NAME");
+        if (name != null && photoUrl != null) {
+            Log.e(LOG_TAG,"PHOTO AND NAME " + name + " " + photoUrl);
+            adapter.setPersonalData(name, photoUrl);
+            adapter.notifyDataSetChanged();
+        }
+
+        drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open_drawer, R.string.close_drawer) {
             @Override
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
@@ -124,7 +133,7 @@ public class MainActivity extends AppCompatActivity  {
 
         drawerToggle.syncState();
 
-        VKRequest vkRequest = VKApi.users().get(VKParameters.from(VKApiConst.FIELDS,"photo_200"));
+        /*VKRequest vkRequest = VKApi.users().get(VKParameters.from(VKApiConst.FIELDS,"photo_200"));
         vkRequest.executeWithListener(new VKRequest.VKRequestListener() {
             @Override
             public void onComplete(VKResponse response) {
@@ -144,21 +153,22 @@ public class MainActivity extends AppCompatActivity  {
                     e.printStackTrace();
                 }
             }
-        });
+        });*/
 
         recyclerView.addOnItemTouchListener(new RecyclerViewOnItemClickListener(this, new RecyclerViewOnItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                if( position == categories.length ){
+                if (position == categories.length) {
                     VKSdk.logout();
                     PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().remove(LoginActivity.ID).apply();
+                    PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().remove(LoginActivity.NAME).apply();
+                    PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().remove(LoginActivity.PHOTO).apply();
                     login();
                     drawerLayout.closeDrawers();
-                }else if( position != 0 ){
-                    fragmentAdapter.initFragment(position-1);
+                } else if (position != 0) {
+                    fragmentAdapter.initFragment(position - 1);
                     drawerLayout.closeDrawers();
                 }
-
             }
         }));
     }
@@ -167,11 +177,13 @@ public class MainActivity extends AppCompatActivity  {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if( requestCode == LOGIN_REQUEST ){
-            if( resultCode == RESULT_OK ){
-                Log.e(LOG_TAG,"service started");
+        if (requestCode == LOGIN_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                Log.e(LOG_TAG, "service started");
 
-                Intent messageCatcherServiceStarter = new Intent(this,MessageCatcherService.class);
+                initNavigation();
+
+                Intent messageCatcherServiceStarter = new Intent(this, MessageCatcherService.class);
                 stopService(messageCatcherServiceStarter);
                 startService(messageCatcherServiceStarter);
 
@@ -192,16 +204,16 @@ public class MainActivity extends AppCompatActivity  {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        switch ( item.getItemId() ){
-            case R.id.action_search:{
+        switch (item.getItemId()) {
+            case R.id.action_search: {
                 fragmentAdapter.initFragment(1);
                 break;
             }
-            case R.id.action_add:{
+            case R.id.action_add: {
                 fragmentAdapter.initFragment(2);
                 break;
             }
-            case R.id.action_messages:{
+            case R.id.action_messages: {
                 fragmentAdapter.initFragment(3);
                 break;
             }
@@ -215,18 +227,18 @@ public class MainActivity extends AppCompatActivity  {
         FragmentManager fm = getSupportFragmentManager();
 
         CreateSubscribeFragment createSubscribeFragment = (CreateSubscribeFragment) fm.findFragmentByTag(CreateSubscribeFragment.TAG);
-        if( createSubscribeFragment != null && createSubscribeFragment.isVisible() ){
+        if (createSubscribeFragment != null && createSubscribeFragment.isVisible()) {
             createSubscribeFragment.setLastTitle();
         }
 
         SubscribeExchangesFragment subscribeExchangesFragment =
                 (SubscribeExchangesFragment) fm.findFragmentByTag(SubscribeExchangesFragment.TAG);
-        if( subscribeExchangesFragment != null && subscribeExchangesFragment.isVisible() ){
+        if (subscribeExchangesFragment != null && subscribeExchangesFragment.isVisible()) {
             subscribeExchangesFragment.setLastTitle();
         }
 
         DialogFragment dialogFragment = (DialogFragment) fm.findFragmentByTag(DialogFragment.TAG);
-        if( dialogFragment != null && dialogFragment.isVisible() ) {
+        if (dialogFragment != null && dialogFragment.isVisible()) {
             dialogFragment.setLastTitle();
         }
 

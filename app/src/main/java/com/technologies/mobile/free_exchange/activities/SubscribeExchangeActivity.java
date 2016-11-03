@@ -4,6 +4,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 
 import com.technologies.mobile.free_exchange.R;
 import com.technologies.mobile.free_exchange.fragments.SubscribeExchangesFragment;
@@ -39,6 +40,12 @@ public class SubscribeExchangeActivity extends AppCompatActivity {
         fragment.setArguments(args);
 
         getSupportFragmentManager().beginTransaction().replace(R.id.content,fragment).commit();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        finish();
+        return super.onOptionsItemSelected(item);
     }
 
 }

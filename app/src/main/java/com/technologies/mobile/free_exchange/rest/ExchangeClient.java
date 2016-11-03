@@ -1,6 +1,7 @@
 package com.technologies.mobile.free_exchange.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.technologies.mobile.free_exchange.rest.model.AddCommentResponse;
 import com.technologies.mobile.free_exchange.rest.model.AddMessageResponse;
 import com.technologies.mobile.free_exchange.rest.model.AddResponse;
 import com.technologies.mobile.free_exchange.rest.model.AddSubscribeListResponse;
@@ -9,6 +10,7 @@ import com.technologies.mobile.free_exchange.rest.model.Categories;
 import com.technologies.mobile.free_exchange.rest.model.DeleteSubscribeListResponse;
 import com.technologies.mobile.free_exchange.rest.model.DialogMessagesResponse;
 import com.technologies.mobile.free_exchange.rest.model.EditSubscribeListResponse;
+import com.technologies.mobile.free_exchange.rest.model.GetCommentsResponse;
 import com.technologies.mobile.free_exchange.rest.model.GetOffersByListResponse;
 import com.technologies.mobile.free_exchange.rest.model.GetSubscribeListsResponse;
 import com.technologies.mobile.free_exchange.rest.model.GetUserResponse;
@@ -133,4 +135,14 @@ public interface ExchangeClient {
     @FormUrlEncoded
     @POST("API/setNotified")
     Call<SetNotifiedResponse> setNotified(@Field("list_id") String listid, @Field("APIKey") String apiKey);
+
+    @FormUrlEncoded
+    @POST("API/getComments")
+    Call<GetCommentsResponse> getComments(@Field("offer_id") int offerId, @Field("offset") int offset,
+                                          @Field("count") int count, @Field("APIKey") String apiKey);
+
+    @FormUrlEncoded
+    @POST("API/addComment")
+    Call<AddCommentResponse> addComment(@Field("offer_id") String offerId, @Field("uid") String uid,
+                                        @Field("text") String text, @Field("APIKey") String apiKey);
 }

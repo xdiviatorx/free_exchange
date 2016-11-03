@@ -17,9 +17,15 @@ public class SubscribeOffers {
     @JsonProperty("count")
     Integer count;
 
+    @Nullable
+    @JsonProperty("notification")
+    Integer notification;
+
+
     @JsonProperty("offers")
     SearchExtraditionItem[] offers;
 
+    @Nullable
     public String getListId() {
         return listId;
     }
@@ -32,4 +38,8 @@ public class SubscribeOffers {
         return count;
     }
 
+    @Nullable
+    public Integer getNotification() {
+        return notification;
+    }
 }

@@ -41,7 +41,10 @@
             android:name=".activities.LoginActivity"
             android:screenOrientation="portrait"
             android:theme="@style/LoginTheme" />
-        <activity android:name=".activities.ExchangeLookupActivity" />
+        <activity
+            android:name=".activities.ExchangeMoreActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/comments"/>
         <activity
             android:name=".activities.ImagePreviewActivity"
             android:theme="@style/ImagePreviewTheme" />
@@ -106,7 +109,9 @@
             android:name=".activities.DialogActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
-        <activity android:name=".activities.SubscribeExchangeActivity"></activity>
+        <activity
+            android:name=".activities.SubscribeExchangeActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

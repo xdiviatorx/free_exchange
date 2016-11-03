@@ -6,6 +6,7 @@ import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -40,6 +41,8 @@ import retrofit2.Response;
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
     public static final String ID = "ID";
+    public static final String PHOTO = "PHOTO";
+    public static final String NAME = "NAME";
 
     Button vkLogin;
 
@@ -98,7 +101,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         JSONArray fields;
         try {
             by = new JSONObject("{ \"vk_id\" : " + vkId + "}");
-            fields = new JSONArray("[\"id\"]");
+            fields = new JSONArray("[\"id\",\"name\",\"photo\"]");
         } catch (JSONException e) {
             e.printStackTrace();
             Toast.makeText(getApplicationContext(), R.string.login_error, Toast.LENGTH_LONG).show();
@@ -115,6 +118,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.putString(ID, response.body().getResponse().getUsers()[0].getId());
+                    editor.putString(NAME, response.body().getResponse().getUsers()[0].getName());
+                    editor.putString(PHOTO, response.body().getResponse().getUsers()[0].getPhoto());
+                    Log.e(MainActivity.LOG_TAG,"SIGNING_RESULT " + response.body().getResponse().getUsers()[0].getName() + " " + response.body().getResponse().getUsers()[0].getPhoto() );
                     editor.apply();
                     Toast.makeText(getApplicationContext(), R.string.login_successfully, Toast.LENGTH_LONG).show();
                     finish();
@@ -161,7 +167,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         });
     }
 
-    private void siteSignUp(String vkId, String nameAndSurname, String photoUrl) {
+    private void siteSignUp(String vkId, final String nameAndSurname, final String photoUrl) {
         ExchangeClient client = RetrofitService.createService(ExchangeClient.class);
         Call<AddUserResponse> addUserResponseCall = client.addUser(vkId, nameAndSurname, photoUrl, ExchangeClient.apiKey);
         addUserResponseCall.enqueue(new Callback<AddUserResponse>() {
@@ -171,6 +177,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.putString(ID, response.body().getResponse().getUid());
+                    editor.putString(NAME, nameAndSurname);
+                    editor.putString(PHOTO, photoUrl);
                     editor.apply();
                     Toast.makeText(getApplicationContext(), R.string.sign_up_successfully, Toast.LENGTH_LONG).show();
                     finish();

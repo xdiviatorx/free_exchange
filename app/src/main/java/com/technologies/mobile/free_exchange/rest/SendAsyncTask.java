@@ -181,15 +181,20 @@ public class SendAsyncTask extends AsyncTask<Void, Void, Integer> {
                 @Override
                 public void onComplete(VKResponse[] responses) {
                     super.onComplete(responses);
+
+                    Log.e(LOG_TAG,"RESPONSES!!!");
+                    for( int i = 0; i < responses.length; i++){
+                        Log.e(LOG_TAG,responses[i].responseString);
+                    }
+
                     VKApiPhoto[] photos = new VKApiPhoto[responses.length];
                     for (int i = 0; i < responses.length; i++) {
                         photos[i] = ((VKPhotoArray) responses[i].parsedModel).get(0);
                     }
 
-                    images = new String[photos.length];
-                    for( int i = 0; i < photos.length; i++ ){
-                        Log.e(LOG_TAG,photos[i].photo_2560);
-                        images[i]=photos[i].photo_2560;
+                    images = new String[responses.length];
+                    for( int i = 0; i < responses.length; i++ ){
+                        images[i]=responses[i].responseString;
                     }
 
                     makePost(new VKAttachments(photos), vkMessage, Integer.valueOf(vkGroupId));

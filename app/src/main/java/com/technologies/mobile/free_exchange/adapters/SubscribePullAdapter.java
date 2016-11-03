@@ -15,6 +15,7 @@ import com.technologies.mobile.free_exchange.rest.model.SearchResponse;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -49,6 +50,7 @@ public class SubscribePullAdapter extends SearchPullAdapter {
         client.getOffersByList(listId, offset, count, ExchangeClient.apiKey).enqueue(new Callback<GetOffersByListResponse>() {
             @Override
             public void onResponse(Call<GetOffersByListResponse> call, Response<GetOffersByListResponse> response) {
+                metaData.addAll(Arrays.asList(response.body().getResponse().getOffers()));
                 for (SearchExtraditionItem searchExtraditionItem : response.body().getResponse().getOffers()) {
                     if (searchExtraditionItem == null) {
                         continue;
@@ -59,12 +61,14 @@ public class SubscribePullAdapter extends SearchPullAdapter {
                     item.put(GIVE, searchExtraditionItem.getGive());
                     item.put(CATEGORY, searchExtraditionItem.getCategory());
                     item.put(TEXT, searchExtraditionItem.getText());
-                    if (searchExtraditionItem.getPhotosList().length != 0) {
-                        item.put(IMAGE, searchExtraditionItem.getPhotosList()[0]);
+                    if (searchExtraditionItem.getPhotosList() != null &&
+                            searchExtraditionItem.getPhotosList().length != 0 &&
+                            searchExtraditionItem.getPhotosList()[0].getPhoto807() != null) {
+                        item.put(IMAGE, searchExtraditionItem.getPhotosList()[0].getPhoto807());
                     } else {
                         item.put(IMAGE, "");
                     }
-                    item.put(IMAGES, searchExtraditionItem.getPhotosList());
+                    item.put(IMAGES, searchExtraditionItem.getPhotosArray());
                     item.put(PLACE, searchExtraditionItem.getPlace());
                     item.put(CONTACTS, searchExtraditionItem.getContacts());
                     item.put(UID, searchExtraditionItem.getUid());
@@ -76,12 +80,9 @@ public class SubscribePullAdapter extends SearchPullAdapter {
                     }
                     item.put(AUTHOR_NAME, authorName);
 
-                    long timestamp = searchExtraditionItem.getCreated();
-                    timestamp *= 1000;
-                    DateFormat df = new SimpleDateFormat("dd.MM.yyyy HH:mm");
-                    String date = df.format(new Date(timestamp));
+                    item.put(DATE, searchExtraditionItem.getDate());
 
-                    item.put(DATE, date);
+                    item.put(COMMENTS_COUNT, searchExtraditionItem.getCommentsCount());
 
                     data.add(item);
                 }

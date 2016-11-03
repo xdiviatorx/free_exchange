@@ -1,10 +1,10 @@
 <resources>
-    <string name="app_name">Обмен даром</string>
+    <string name="app_name">Free Shop</string>
 
     <string name="api_version">5.53</string>
     <integer name="com_vk_sdk_AppId">5591803</integer>
 
-    <string name="free_exchange">ОБМЕН ДАРОМ</string>
+    <string name="free_exchange">FREE SHOP</string>
     <string name="exchanges">Обмены</string>
 
     <string name="app_description">Обменяйте ненужные вещи на нужные.\nСовершенно бесплатно</string>
@@ -110,5 +110,8 @@
     <!-- INTERNET -->
     <string name="conn_error">Ошибка соединения</string>
     <string name="conn_check">Проверте соединение с интернетом</string>
+
+    <!-- COMMENTS -->
+    <string name="comments">Комментарии</string>
 
 </resources>
