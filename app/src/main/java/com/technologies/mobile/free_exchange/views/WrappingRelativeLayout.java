@@ -13,8 +13,10 @@ import android.widget.TextView;
 
 import com.technologies.mobile.free_exchange.R;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Created by diviator on 31.08.2016.
@@ -35,14 +37,20 @@ public class WrappingRelativeLayout extends RelativeLayout implements View.OnCli
         super(context);
         mContext = context;
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        mTags = new HashMap<>();
+        mTags = new TreeMap<>();
     }
 
     public WrappingRelativeLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
         mContext = context;
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        mTags = new HashMap<>();
+        mTags = new TreeMap<>();
+    }
+
+    public void addTags(ArrayList<String> tags){
+        for( String tag : tags ){
+            addTag(tag);
+        }
     }
 
     public void addTag(String tag) {
@@ -119,7 +127,7 @@ public class WrappingRelativeLayout extends RelativeLayout implements View.OnCli
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.bDeleteTag: {
-                int removeId = ((View) view.getParent()).getId();
+                int removeId = ((View)((View) view.getParent()).getParent()).getId();
                 removeTag(removeId);
                 break;
             }

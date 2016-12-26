@@ -139,7 +139,9 @@ public class CreateSubscribeFragment extends Fragment implements View.OnClickLis
             @Override
             public void afterTextChanged(Editable editable) {
                 String text = editable.toString();
-                if (text.length() != 0 && text.charAt(text.length() - 1) == ',') {
+                if (text.length() != 0 && ( text.charAt(text.length() - 1) == ','
+                        || text.charAt(text.length() - 1) == '.'
+                        || text.charAt(text.length() - 1) == ' ' ) ) {
                     String tag = mEtGets.getText().toString().substring(0, text.length() - 1);
                     mEtGets.setText("");
                     mGetTagsLayout.addTag(tag);
@@ -173,7 +175,9 @@ public class CreateSubscribeFragment extends Fragment implements View.OnClickLis
             @Override
             public void afterTextChanged(Editable editable) {
                 String text = editable.toString();
-                if (text.length() != 0 && text.charAt(text.length() - 1) == ',') {
+                if (text.length() != 0 && ( text.charAt(text.length() - 1) == ','
+                        || text.charAt(text.length() - 1) == '.'
+                        || text.charAt(text.length() - 1) == ' ' ) ) {
                     String tag = mEtGives.getText().toString().substring(0, text.length() - 1);
                     mEtGives.setText("");
                     mGiveTagsLayout.addTag(tag);

@@ -32,6 +32,7 @@ import com.vk.sdk.api.VKParameters;
 import com.vk.sdk.api.VKRequest;
 import com.vk.sdk.api.VKResponse;
 import com.vk.sdk.api.model.VKApiPhoto;
+import com.vk.sdk.api.model.VKApiPost;
 import com.vk.sdk.api.model.VKAttachments;
 import com.vk.sdk.api.model.VKPhotoArray;
 import com.vk.sdk.api.model.VKWallPostResult;
@@ -141,7 +142,7 @@ public class SendAsyncTask extends AsyncTask<Void, Void, Integer> {
         super.onPostExecute(resultCode);
         switch (resultCode) {
             case SUCCESS: {
-                Log.e(LOG_TAG,"GROUP ID = " + vkGroupId);
+                Log.e(LOG_TAG, "GROUP ID = " + vkGroupId);
                 uploadPhotosAndMakePost(createVkPostMessage());
                 break;
             }
@@ -170,10 +171,10 @@ public class SendAsyncTask extends AsyncTask<Void, Void, Integer> {
             for (int i = 0; i < uris.size(); i++) {
                 try {
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(mFragment.getActivity().getContentResolver(), uris.get(i));
-                    requests[i] = VKApi.uploadWallPhotoRequest(new VKUploadImage(bitmap, VKImageParameters.jpgImage(0.9f)), 0, -1*Integer.parseInt(vkGroupId));
+                    requests[i] = VKApi.uploadWallPhotoRequest(new VKUploadImage(bitmap, VKImageParameters.jpgImage(0.9f)), 0, -1 * Integer.parseInt(vkGroupId));
                 } catch (IOException e) {
                     e.printStackTrace();
-                    Log.e(LOG_TAG,e.toString());
+                    Log.e(LOG_TAG, e.toString());
                 }
             }
             VKBatchRequest batchRequest = new VKBatchRequest(requests);
@@ -182,9 +183,9 @@ public class SendAsyncTask extends AsyncTask<Void, Void, Integer> {
                 public void onComplete(VKResponse[] responses) {
                     super.onComplete(responses);
 
-                    Log.e(LOG_TAG,"RESPONSES!!!");
-                    for( int i = 0; i < responses.length; i++){
-                        Log.e(LOG_TAG,responses[i].responseString);
+                    Log.e(LOG_TAG, "RESPONSES!!!");
+                    for (int i = 0; i < responses.length; i++) {
+                        Log.e(LOG_TAG, responses[i].responseString);
                     }
 
                     VKApiPhoto[] photos = new VKApiPhoto[responses.length];
@@ -193,8 +194,8 @@ public class SendAsyncTask extends AsyncTask<Void, Void, Integer> {
                     }
 
                     images = new String[responses.length];
-                    for( int i = 0; i < responses.length; i++ ){
-                        images[i]=responses[i].responseString;
+                    for (int i = 0; i < responses.length; i++) {
+                        images[i] = responses[i].responseString;
                     }
 
                     makePost(new VKAttachments(photos), vkMessage, Integer.valueOf(vkGroupId));
@@ -204,7 +205,7 @@ public class SendAsyncTask extends AsyncTask<Void, Void, Integer> {
                 public void onError(VKError error) {
                     super.onError(error);
                     Loader.hideSender();
-                    Log.e(LOG_TAG,"uploading" + error.toString());
+                    Log.e(LOG_TAG, "uploading" + error.toString());
                 }
             });
         } else {
@@ -229,21 +230,22 @@ public class SendAsyncTask extends AsyncTask<Void, Void, Integer> {
             @Override
             public void onComplete(VKResponse response) {
                 // Успешно
-                sendToServer();
+                VKWallPostResult result = ((VKWallPostResult) response.parsedModel);
+                sendToServer(result.post_id, true);
                 Toast.makeText(mFragment.getContext(), R.string.vk_post_success, Toast.LENGTH_LONG).show();
             }
 
             @Override
             public void onError(VKError error) {
                 // Ошибка публикации
-                Log.e(LOG_TAG,"posting" + error.toString());
-                sendToServer();
+                Log.e(LOG_TAG, "posting" + error.toString());
+                sendToServer(0, false);
                 Toast.makeText(mFragment.getContext(), R.string.vk_post_error, Toast.LENGTH_LONG).show();
             }
         });
     }
 
-    public void sendToServer() {
+    public void sendToServer(int postId, boolean isPostIdValid) {
         ExchangeClient client = RetrofitService.createService(ExchangeClient.class);
         JSONArray JSONImagesArray;
         try {
@@ -255,25 +257,33 @@ public class SendAsyncTask extends AsyncTask<Void, Void, Integer> {
             return;
         }
 
-        String uid = PreferenceManager.getDefaultSharedPreferences(mFragment.getContext()).getString(LoginActivity.ID,null);
-        if( uid == null ){
+        String uid = PreferenceManager.getDefaultSharedPreferences(mFragment.getContext()).getString(LoginActivity.ID, null);
+        if (uid == null) {
             Toast.makeText(mFragment.getContext(), R.string.post_error, Toast.LENGTH_LONG).show();
             return;
         }
 
+        Call<AddResponse> addResponseCall;
 
-        Log.e(LOG_TAG,"JsonImages"+JSONImagesArray.toString());
-        Call<AddResponse> addResponseCall = client.addPost(uid,
-                getServerGive(),getServerGet(),getServerPM(),getPhone(),mFragment.getPlace(),JSONImagesArray,ExchangeClient.apiKey);
+        if (isPostIdValid) {
+            addResponseCall = client.addPost(uid, postId,
+                    getServerGive(), getServerGet(), getServerPM(), getPhone(), mFragment.getPlace(), JSONImagesArray, ExchangeClient.apiKey);
+        } else {
+            addResponseCall = client.addPost(uid,
+                    getServerGive(), getServerGet(), getServerPM(), getPhone(), mFragment.getPlace(), JSONImagesArray, ExchangeClient.apiKey);
+        }
+
+        Log.e(LOG_TAG, "JsonImages" + JSONImagesArray.toString());
+
         addResponseCall.enqueue(new Callback<AddResponse>() {
             @Override
             public void onResponse(Call<AddResponse> call, Response<AddResponse> response) {
-                if( response.body().getResponse() != null ){
-                    Log.e(LOG_TAG,response.body().getResponse());
+                if (response.body().getResponse() != null) {
+                    Log.e(LOG_TAG, response.body().getResponse());
                 }
-                if( response.body().getError() != null ){
-                    Log.e(LOG_TAG,response.body().getError().getResult());
-                    Log.e(LOG_TAG,response.body().getError().getCode() + "");
+                if (response.body().getError() != null) {
+                    Log.e(LOG_TAG, response.body().getError().getResult());
+                    Log.e(LOG_TAG, response.body().getError().getCode() + "");
                 }
                 Loader.hideSender();
                 success();
@@ -282,52 +292,52 @@ public class SendAsyncTask extends AsyncTask<Void, Void, Integer> {
 
             @Override
             public void onFailure(Call<AddResponse> call, Throwable t) {
-                Log.e(LOG_TAG,"call " + call.toString());
-                Log.e(LOG_TAG,"server posting error " + t.toString());
+                Log.e(LOG_TAG, "call " + call.toString());
+                Log.e(LOG_TAG, "server posting error " + t.toString());
                 Loader.hideSender();
                 Toast.makeText(mFragment.getContext(), R.string.post_error, Toast.LENGTH_LONG).show();
             }
         });
     }
 
-    private String getServerGive(){
+    private String getServerGive() {
         String give = "";
         ArrayList<String> gives = mFragment.getGives();
         for (int i = 0; i < gives.size(); i++) {
-            if( i > 0 ){
-                give+="\n";
+            if (i > 0) {
+                give += "\n";
             }
-            give+=gives.get(i);
+            give += gives.get(i);
         }
         return give;
     }
 
-    private String getServerGet(){
+    private String getServerGet() {
         String get = "";
         ArrayList<String> gets = mFragment.getGets();
         for (int i = 0; i < gets.size(); i++) {
-            if( i > 0 ){
-                get+="\n";
+            if (i > 0) {
+                get += "\n";
             }
-            get+=gets.get(i);
+            get += gets.get(i);
         }
         return get;
     }
 
-    private String getServerPM(){
+    private String getServerPM() {
         String pm = "0";
-        Map<String,Object> contactsMap = mFragment.getContacts();
-        if( (boolean)contactsMap.get(AddFragment.PM) ){
-            pm="1";
+        Map<String, Object> contactsMap = mFragment.getContacts();
+        if ((boolean) contactsMap.get(AddFragment.PM)) {
+            pm = "1";
         }
         return pm;
     }
 
-    private String getPhone(){
+    private String getPhone() {
         String phone = "";
-        Map<String,Object> contactsMap = mFragment.getContacts();
-        if( ((String)contactsMap.get(AddFragment.PHONE)).length() != 0 ){
-            phone+=((String)contactsMap.get(AddFragment.PHONE));
+        Map<String, Object> contactsMap = mFragment.getContacts();
+        if (((String) contactsMap.get(AddFragment.PHONE)).length() != 0) {
+            phone += ((String) contactsMap.get(AddFragment.PHONE));
         }
         return phone;
     }
@@ -338,39 +348,39 @@ public class SendAsyncTask extends AsyncTask<Void, Void, Integer> {
         String give = "";
         ArrayList<String> gives = mFragment.getGives();
         for (int i = 0; i < gives.size(); i++) {
-            if( i > 0 ){
-                give+=", ";
+            if (i > 0) {
+                give += ", ";
             }
-            give+=gives.get(i);
+            give += gives.get(i);
         }
 
         String get = "";
         ArrayList<String> gets = mFragment.getGets();
         for (int i = 0; i < gets.size(); i++) {
-            if( i > 0 ){
-                get+=", ";
+            if (i > 0) {
+                get += ", ";
             }
-            get+=gets.get(i);
+            get += gets.get(i);
         }
 
         String where = mFragment.getPlace();
 
         String contacts = "";
-        Map<String,Object> contactsMap = mFragment.getContacts();
-        if( (boolean)contactsMap.get(AddFragment.PM) ){
-            contacts+="ЛС";
+        Map<String, Object> contactsMap = mFragment.getContacts();
+        if ((boolean) contactsMap.get(AddFragment.PM)) {
+            contacts += "ЛС";
         }
-        if( ((String)contactsMap.get(AddFragment.PHONE)).length() != 0 ){
-            if( contacts.length() != 0 ){
+        if (((String) contactsMap.get(AddFragment.PHONE)).length() != 0) {
+            if (contacts.length() != 0) {
                 contacts += ", ";
             }
-            contacts+="Тел. "+((String)contactsMap.get(AddFragment.PHONE));
+            contacts += "Тел. " + ((String) contactsMap.get(AddFragment.PHONE));
         }
-        if( ((String)contactsMap.get(AddFragment.OTHER)).length() != 0 ){
-            if( contacts.length() != 0 ){
+        if (((String) contactsMap.get(AddFragment.OTHER)).length() != 0) {
+            if (contacts.length() != 0) {
                 contacts += ", ";
             }
-            contacts+="Другое: "+((String)contactsMap.get(AddFragment.OTHER));
+            contacts += "Другое: " + ((String) contactsMap.get(AddFragment.OTHER));
         }
 
         message = "Даю: " + give + "\r\n";
@@ -381,7 +391,7 @@ public class SendAsyncTask extends AsyncTask<Void, Void, Integer> {
         return message;
     }
 
-    public void success(){
+    public void success() {
         FragmentAdapter fragmentAdapter = new FragmentAdapter(mFragment.getActivity());
         fragmentAdapter.initFragment(0);
     }

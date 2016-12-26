@@ -10,7 +10,10 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.util.Log;
+import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 import com.technologies.mobile.free_exchange.R;
@@ -34,12 +37,18 @@ import retrofit2.Response;
 
 public class SubscribeNotificator {
 
+    private final static String LOG_TAG = "subsnotificaton";
+
     private int NOTIFICATION_ID = 197;
 
     Context mContext;
     NotificationManager mNotificationManager;
 
+    ImageView picture;
+
     String listId;
+
+    Target target;
 
     public SubscribeNotificator(Context context){
         mContext = context;
@@ -59,8 +68,8 @@ public class SubscribeNotificator {
 
     private void prepareNotificationLarge(final SearchExtraditionItem exItem){
         final Bitmap large = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.ic_launcher);
-
-        Target target = new Target() {
+        Log.e(LOG_TAG,"prepare image");
+        target = new Target() {
             @Override
             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                 makeNotification(exItem, bitmap);
@@ -77,16 +86,18 @@ public class SubscribeNotificator {
             }
         };
 
-        if( exItem.getPhotosList() != null && exItem.getPhotosList().length != 0 && exItem.getPhotosList()[0].getPhoto130() != null) {
+        if( exItem.getPhotosArray() != null && exItem.getPhotosArray().length != 0 && !exItem.getPhotosArray()[0].isEmpty()) {
             Picasso.with(mContext)
-                    .load(exItem.getPhotosList()[0].getPhoto130())
+                    .load(exItem.getPhotosArray()[0])
                     .into(target);
+            Log.e(LOG_TAG,"IMAGE LOADING PREPARE");
         }else{
             makeNotification(exItem, large);
         }
     }
 
     private void makeNotification(SearchExtraditionItem exItem, Bitmap large){
+        Log.e(LOG_TAG,"making notification and set notified");
         ExchangeClient client = RetrofitService.createService(ExchangeClient.class);
         client.setNotified(listId,ExchangeClient.apiKey).enqueue(new Callback<SetNotifiedResponse>() {
             @Override

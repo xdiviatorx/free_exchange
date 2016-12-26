@@ -1,88 +1,234 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="200dp">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/exchange_background"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp" >
 
-        <ImageView
-            android:id="@+id/ivPhoto"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:src="@drawable/no_photo_big"
-            android:scaleType="centerCrop"/>
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/tvDate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentRight="true"
-            android:layout_margin="10dp"
-            android:text="@string/sample"
-            android:padding="3dp"
-            style="@style/halfTransparentCardViewText"
-            android:background="@color/halfTransparentGreenCardView"/>
+            <TextView
+                android:id="@+id/tvName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:layout_below="@+id/llMain"
+                android:text="Dmitriy Mihailov"
+                android:textSize="18sp"
+                android:textColor="@color/colorPrimary"/>
 
-        <android.support.v7.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_margin="10dp"
-            app:cardElevation="0dp"
-            app:cardCornerRadius="5dp"
-            app:cardBackgroundColor="@color/halfTransparentGreenCardView">
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentBottom="true"
+                android:padding="6dp">
 
-            <TableLayout
+                <TextView
+                    android:id="@+id/date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/date_sample"
+                    style="@style/SearchPullDataText"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/llMain"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="5dp"
-                android:shrinkColumns="1">
+                android:orientation="vertical">
 
-                <TableRow
+                <TableLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-                    <TextView
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginTop="3dp"
+                    android:layout_marginBottom="3dp"
+                    android:shrinkColumns="1">
+
+                    <TableRow
                         android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/give"
+                            style="@style/SearchPullCategoriesText"
+                            />
+
+                        <TextView
+                            android:id="@+id/gives"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/sample"
+                            android:layout_marginLeft="10dp"
+
+                            style="@style/SearchPullText"/>
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_marginTop="5dp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/get"
+                            style="@style/SearchPullCategoriesText"
+                            />
+                        <TextView
+                            android:id="@+id/gets"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:text="@string/sample"
+
+                            style="@style/SearchPullText"/>
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_marginTop="5dp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/place"
+                            style="@style/SearchPullCategoriesText"
+                            />
+                        <TextView
+                            android:id="@+id/place"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="10dp"
+                            android:gravity="center_vertical"
+                            android:text="@string/sample"
+                            style="@style/SearchPullText"/>
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_marginTop="5dp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/contacts"
+                            style="@style/SearchPullCategoriesText"
+                            />
+                        <TextView
+                            android:id="@+id/contacts"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="10dp"
+                            android:gravity="center_vertical"
+                            android:text="@string/sample"
+                            style="@style/SearchPullText"/>
+                    </TableRow>
+
+                </TableLayout>
+
+                <com.technologies.mobile.free_exchange.views.PhotosListLayout
+                    android:id="@+id/pllPhotos"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+                <com.makeramen.roundedimageview.RoundedImageView
+                    android:id="@+id/image"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:src="@drawable/phone"
+                    android:layout_marginTop="3dp"
+                    android:layout_marginBottom="3dp"
+                    android:layout_marginLeft="7dp"
+                    android:scaleType="centerCrop"
+                    android:layout_gravity="center"
+                    app:riv_oval="true"
+                    app:riv_border_width="1dp"
+                    app:riv_border_color="@color/roundedIVBorderColor"
+                    android:visibility="gone"/>
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+        <!--<LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:orientation="vertical"
+            android:layout_below="@+id/llMain"
+            android:layout_marginLeft="1px"
+            android:layout_marginRight="1px"
+            android:layout_marginBottom="4dp"
+            android:background="@color/colorLightGray">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="@color/stroke" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="5dp"
+                    android:layout_gravity="right"
+                    android:layout_alignParentRight="false">
+
+                    <ImageView
+                        android:id="@+id/ivComments"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/give"
-                        style="@style/halfTransparentCardViewText"/>
+                        android:layout_marginTop="3dp"
+                        android:layout_marginBottom="3dp"
+                        android:layout_marginLeft="10dp"
+                        android:tint="@color/colorMediumGray"
+                        android:src="@drawable/comments"
+                        android:paddingTop="4dp"
+                        android:paddingBottom="4dp"
+                        />
+
                     <TextView
-                        android:id="@+id/tvGives"
-                        android:layout_width="match_parent"
+                        android:id="@+id/tvCommentsCount"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/sample"
-                        android:maxLines="2"
-                        android:ellipsize="end"
+                        android:layout_gravity="center"
                         android:layout_marginLeft="5dp"
-                        style="@style/halfTransparentCardViewText"/>
-                </TableRow>
+                        android:text="0"
+                        android:textSize="16sp"
+                        android:textColor="@color/colorMediumGray"/>
 
-                <TableRow>
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/get"
-                        style="@style/halfTransparentCardViewText"/>
-                    <TextView
-                        android:id="@+id/tvGets"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/sample"
-                        android:maxLines="2"
-                        android:ellipsize="end"
-                        android:layout_marginLeft="5dp"
-                        style="@style/halfTransparentCardViewText"/>
-                </TableRow>
+                </LinearLayout>
 
-            </TableLayout>
+                <ImageView
+                    android:id="@+id/ivMessage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="3dp"
+                    android:layout_marginBottom="3dp"
+                    android:layout_marginRight="10dp"
+                    android:tint="@color/colorMediumGray"
+                    android:src="@drawable/message_dark"
+                    android:layout_alignParentRight="true"
+                    android:paddingTop="4dp"
+                    android:paddingBottom="4dp" />
 
-        </android.support.v7.widget.CardView>
+            </RelativeLayout>
 
-    </RelativeLayout>
+        </LinearLayout>-->
+
+    </LinearLayout>
 
 </LinearLayout>

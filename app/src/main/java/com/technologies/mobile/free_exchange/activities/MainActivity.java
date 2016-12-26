@@ -1,7 +1,15 @@
 package com.technologies.mobile.free_exchange.activities;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
+import android.os.PersistableBundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -15,13 +23,21 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
+import com.makeramen.roundedimageview.RoundedImageView;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
+import com.technologies.mobile.free_exchange.MyApplication;
 import com.technologies.mobile.free_exchange.R;
 import com.technologies.mobile.free_exchange.adapters.NavigationRVAdapter;
+import com.technologies.mobile.free_exchange.fragments.AddFragment;
 import com.technologies.mobile.free_exchange.fragments.CreateSubscribeFragment;
 import com.technologies.mobile.free_exchange.fragments.DialogFragment;
 import com.technologies.mobile.free_exchange.fragments.FragmentAdapter;
 import com.technologies.mobile.free_exchange.fragments.SubscribeExchangesFragment;
 import com.technologies.mobile.free_exchange.listeners.RecyclerViewOnItemClickListener;
+import com.technologies.mobile.free_exchange.logic.BitmapUtil;
 import com.technologies.mobile.free_exchange.services.messages.MessageCatcherService;
 import com.technologies.mobile.free_exchange.services.subscribes.SubscribeExchangeCatcherService;
 import com.vk.sdk.VKSdk;
@@ -37,7 +53,9 @@ import org.json.JSONObject;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static String LOG_TAG = "mainActivity";
+    public static String LOG_TAG = "instance";
+
+    private static final String STORED_FRAGMENT_INDEX = "STORED_FRAGMENT_INDEX";
 
     public static int LOGIN_REQUEST = 100;
 
@@ -58,10 +76,21 @@ public class MainActivity extends AppCompatActivity {
 
     private FragmentAdapter fragmentAdapter;
 
+    private Tracker mTracker;
+
+    Menu menu;
+    Target target;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mTracker = ((MyApplication) getApplication()).getDefaultTracker();
+        mTracker.setScreenName(MyApplication.MAIN_CATEGORY);
+        mTracker.send(new HitBuilders.EventBuilder()
+                .setCategory(MyApplication.MAIN_CATEGORY)
+                .setAction(MyApplication.LAUNCHED_ACTION).build());
 
         fragmentAdapter = new FragmentAdapter(this);
 
@@ -72,6 +101,19 @@ public class MainActivity extends AppCompatActivity {
         initNavigation();
 
         fragmentAdapter.initDefaultFragment();
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        fragmentAdapter.initFragment(savedInstanceState.getInt(STORED_FRAGMENT_INDEX,0));
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        Log.e(LOG_TAG,"SAVING");
+        outState.putInt(STORED_FRAGMENT_INDEX,fragmentAdapter.getCurrentFragmentIndex());
+        super.onSaveInstanceState(outState);
     }
 
     private void login() {
@@ -93,6 +135,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void initToolbar() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
+        //setActionBar(toolbar);
         setSupportActionBar(toolbar);
     }
 
@@ -131,6 +174,7 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
+        drawerToggle.setDrawerIndicatorEnabled(false);
         drawerToggle.syncState();
 
         /*VKRequest vkRequest = VKApi.users().get(VKParameters.from(VKApiConst.FIELDS,"photo_200"));
@@ -182,6 +226,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.e(LOG_TAG, "service started");
 
                 initNavigation();
+                initMenuItemAvatar();
 
                 Intent messageCatcherServiceStarter = new Intent(this, MessageCatcherService.class);
                 stopService(messageCatcherServiceStarter);
@@ -194,9 +239,40 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    protected void initMenuItemAvatar(){
+        if( menu == null ){
+            return;
+        }
+
+        target = new Target(){
+            @Override
+            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                Bitmap nBitmap = BitmapUtil.getRoundedCornerBitmap(bitmap);
+                BitmapDrawable bitmapDrawable = new BitmapDrawable(getResources(),nBitmap);
+
+                menu.findItem(R.id.action_avatar).setIcon(bitmapDrawable);
+            }
+
+            @Override
+            public void onBitmapFailed(Drawable errorDrawable) {
+
+            }
+
+            @Override
+            public void onPrepareLoad(Drawable placeHolderDrawable) {
+            }
+        };
+        String photoUrl = PreferenceManager.getDefaultSharedPreferences(this).getString(LoginActivity.PHOTO, null);
+        Picasso.with(this).load(photoUrl).into(target);
+    }
+
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(final Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
+
+        this.menu = menu;
+
+        initMenuItemAvatar();
 
         return true;
     }
@@ -209,14 +285,14 @@ public class MainActivity extends AppCompatActivity {
                 fragmentAdapter.initFragment(1);
                 break;
             }
-            case R.id.action_add: {
+            /*case R.id.action_add: {
                 fragmentAdapter.initFragment(2);
                 break;
             }
             case R.id.action_messages: {
                 fragmentAdapter.initFragment(3);
                 break;
-            }
+            }*/
         }
 
         return super.onOptionsItemSelected(item);
@@ -243,5 +319,9 @@ public class MainActivity extends AppCompatActivity {
         }
 
         super.onBackPressed();
+    }
+
+    public FragmentAdapter getFragmentAdapter() {
+        return fragmentAdapter;
     }
 }

@@ -57,7 +57,7 @@ public interface ExchangeClient {
     @POST("API/Search")
     Call<Search> findExchanges(@Field("ItemsGive") String itemsGive, @Field("ItemsGet") String itemsGet,
                                @Field("ItemsOffset") int offset, @Field("ItemsCount") int count,
-                               @Field("Category") int category, @Field("APIKey") String apiKey);
+                               @Field("category") int category, @Field("APIKey") String apiKey);
 
     @FormUrlEncoded
     @POST("API/GetCategoriesList")
@@ -66,6 +66,13 @@ public interface ExchangeClient {
     @FormUrlEncoded
     @POST("API/GetVKPostTemplate")
     Call<VkPostTemplateResponse> getVkPostTemplate(@Field("APIKey") String apiKey);
+
+    @FormUrlEncoded
+    @POST("API/Add")
+    Call<AddResponse> addPost(@Field("id") String id, @Field("post_id") int postId,
+                              @Field("ItemsPut") String itemsGive, @Field("ItemsGet") String itemsGet,
+                              @Field("ContactsPM") String pm, @Field("ContactsPhone") String phone, @Field("Geo") String place,
+                              @Field("Images") JSONArray JSONImagesArray, @Field("APIKey") String apiKey);
 
     @FormUrlEncoded
     @POST("API/Add")

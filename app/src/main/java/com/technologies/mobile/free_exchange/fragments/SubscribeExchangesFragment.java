@@ -1,5 +1,6 @@
 package com.technologies.mobile.free_exchange.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -13,8 +14,10 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.technologies.mobile.free_exchange.R;
+import com.technologies.mobile.free_exchange.activities.ExchangeMoreActivity;
 import com.technologies.mobile.free_exchange.adapters.SearchPullAdapter;
 import com.technologies.mobile.free_exchange.adapters.SubscribePullAdapter;
+import com.technologies.mobile.free_exchange.listeners.OnIconClickListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,7 +26,7 @@ import java.util.HashMap;
  * Created by diviator on 07.10.2016.
  */
 
-public class SubscribeExchangesFragment extends Fragment implements AdapterView.OnItemClickListener, AbsListView.OnScrollListener{
+public class SubscribeExchangesFragment extends Fragment implements AdapterView.OnItemClickListener, AbsListView.OnScrollListener, OnIconClickListener{
 
     public static final String TAG = "subscribeExchangeTag";
     public static final String LIST_ID = "LIST_ID";
@@ -74,6 +77,7 @@ public class SubscribeExchangesFragment extends Fragment implements AdapterView.
 
         spAdapter.setListId(listId);
         spAdapter.initialUploading();
+        spAdapter.setOnIconClickListener(this);
     }
 
     private void setTitle() {
@@ -90,6 +94,13 @@ public class SubscribeExchangesFragment extends Fragment implements AdapterView.
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        Intent intent = new Intent(getContext(), ExchangeMoreActivity.class);
+        intent.putExtra(ExchangeMoreActivity.EXCHANGE, spAdapter.getItem(i));
+        startActivity(intent);
+    }
+
+    @Override
+    public void onIconClick(View view, int i) {
         Fragment dialogFragment = new DialogFragment();
         Bundle args = new Bundle();
 

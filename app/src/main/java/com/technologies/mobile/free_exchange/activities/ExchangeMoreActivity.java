@@ -26,7 +26,10 @@ import com.technologies.mobile.free_exchange.rest.model.AddCommentResponse;
 import com.technologies.mobile.free_exchange.rest.model.Comment;
 import com.technologies.mobile.free_exchange.rest.model.SearchExtraditionItem;
 import com.technologies.mobile.free_exchange.rest.model.User;
+import com.technologies.mobile.free_exchange.views.AutomaticPhotoLayout;
+import com.technologies.mobile.free_exchange.views.PhotosListLayout;
 
+import java.util.Arrays;
 import java.util.List;
 
 import retrofit2.Call;
@@ -92,18 +95,27 @@ public class ExchangeMoreActivity extends AppCompatActivity implements AbsListVi
         LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
         header = inflater.inflate(R.layout.header_more, null, false);
 
-        ImageView ivPhoto = (ImageView) header.findViewById(R.id.ivPhoto);
-        TextView tvDate = (TextView) header.findViewById(R.id.tvDate);
-        TextView tvGives = (TextView) header.findViewById(R.id.tvGives);
-        TextView tvGets = (TextView) header.findViewById(R.id.tvGets);
+        PhotosListLayout aplPhotos = (PhotosListLayout) header.findViewById(R.id.pllPhotos);
 
-        if (curItem.getPhotosList() != null && curItem.getPhotosList().length != 0 && curItem.getPhotosList()[0].getPhoto807() != null) {
-            Picasso.with(this).load(curItem.getPhotosList()[0].getPhoto807()).into(ivPhoto);
+        TextView tvName = (TextView) header.findViewById(R.id.tvName);
+        TextView tvDate = (TextView) header.findViewById(R.id.date);
+
+        TextView tvGives = (TextView) header.findViewById(R.id.gives);
+        TextView tvGets = (TextView) header.findViewById(R.id.gets);
+        TextView tvPlace = (TextView) header.findViewById(R.id.place);
+        TextView tvContacts = (TextView) header.findViewById(R.id.contacts);
+
+        if (curItem.getPhotosArray() != null && curItem.getPhotosArray().length != 0 && !curItem.getPhotosArray()[0].isEmpty()) {
+            aplPhotos.addPhotos(Arrays.asList(curItem.getPhotosArray()));
         }
 
+        tvName.setText(curItem.getUserData().getName());
         tvDate.setText(curItem.getDate());
+
         tvGives.setText(curItem.getGive());
         tvGets.setText(curItem.getGet());
+        tvPlace.setText(curItem.getPlace());
+        tvContacts.setText(curItem.getContacts());
 
         lvComments.addHeaderView(header);
     }

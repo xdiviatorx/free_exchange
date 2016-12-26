@@ -48,6 +48,8 @@ public class Notificator {
     Context mContext;
     NotificationManager mNotificationManager;
 
+    Target target;
+
     public Notificator(Context context) {
         mContext = context;
         mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -127,7 +129,7 @@ public class Notificator {
     public void prepareNotificationLarge(final NewMessage message){
         final Bitmap large = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.ic_launcher);
 
-        Target target = new Target() {
+        target = new Target() {
             @Override
             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                 makeNotification(message, bitmap);

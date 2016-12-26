@@ -1,13 +1,13 @@
 <resources>
-    <string name="app_name">Free Shop</string>
+    <string name="app_name">FREESHOP</string>
 
     <string name="api_version">5.53</string>
     <integer name="com_vk_sdk_AppId">5591803</integer>
 
-    <string name="free_exchange">FREE SHOP</string>
+    <string name="free_exchange">FREESHOP</string>
     <string name="exchanges">Обмены</string>
 
-    <string name="app_description">Обменяйте ненужные вещи на нужные.\nСовершенно бесплатно</string>
+    <string name="app_description">Обменяй свои услуги и ненужные вещи на то, что тебе нужно.\nМеняемся и дарим.</string>
 
     <string name="login">Войти</string>
 
@@ -23,8 +23,8 @@
     <string name="give">Даю:</string>
     <string name="get">Получаю:</string>
     <string name="category">Категория:</string>
-    <string name="place">Место встречи:</string>
-    <string name="contacts">Способ связи:</string>
+    <string name="place">Место\nвстречи:</string>
+    <string name="contacts">Способ\nсвязи:</string>
     <string name="notification">Уведомления:</string>
 
     <string name="date_sample">18.08.2016 12:14</string>
@@ -44,6 +44,8 @@
 
     <string name="no_category">Без категории</string>
 
+    <string name="try_again_message">К сожалению ничего не найдено\nПопробуйте еще раз</string>
+
     <string name="add_photo">Фотографии</string>
     <string name="add_primary">Основное</string>
     <string name="add_give">Даю</string>
@@ -51,7 +53,7 @@
     <string name="add_category">Категория</string>
     <string name="add_place">Место встречи</string>
     <string name="add_contacts">Способ связи</string>
-    <string name="add_comments">Комментарии</string>
+    <string name="add_comments">Описание</string>
 
     <string name="pm">ЛС</string>
     <string name="phone">Телефон</string>
@@ -66,11 +68,11 @@
     <string name="get_personal_data_error">Пользователь не определен</string>
     <string name="parse_personal_data_error">Данные пользователя не правильные</string>
 
-    <string name="successfully_completed">Ваш обмен добавлен на сайт</string>
-    <string name="post_error">Ошибка публикации на сайте</string>
+    <string name="successfully_completed">Обмен отправлен на модерацию на сайте</string>
+    <string name="post_error">При попытке предложить объявление на сайт произошла ошибка</string>
 
-    <string name="vk_post_success">Ваш обмен опубликован Вконтакте</string>
-    <string name="vk_post_error">Ошибка публикации вконтакте</string>
+    <string name="vk_post_success">Обмен отправлен на модерацию в паблик</string>
+    <string name="vk_post_error">При попытке предложить объявление в группу Вконтакте произошла ошибка</string>
 
     <string name="fields_missed">Поля \"Даю\", \"Получаю\" должны быть заполнены</string>
 
@@ -80,6 +82,7 @@
     <!-- MESAGES -->
 
     <string name="your_message">Ваше сообщение</string>
+    <string name="your_comment">Ваш комментарий</string>
 
     <!-- SUBSCRIBES LISTS -->
 
@@ -113,5 +116,27 @@
 
     <!-- COMMENTS -->
     <string name="comments">Комментарии</string>
+    <string name="detailed">Подробно</string>
+
+    <!-- VIEW PAGER CATEGORIES -->
+    <string name="all">Все</string>
+    <string name="women_closes">Женская одежда</string>
+    <string name="men_closes">Мужская одежда</string>
+    <string name="tech">Техника</string>
+    <string name="children">Детское</string>
+    <string name="for_pretty">Все для красоты</string>
+    <string name="books">Книги</string>
+    <string name="gift">Даром</string>
+    <string name="others">Разное</string>
+
+    <integer name="all">0</integer> <!--Все-->
+    <integer name="women_closes">51</integer> <!--Женская одежда-->
+    <integer name="men_closes">55</integer> <!--Мужская одежда-->
+    <integer name="tech">52</integer> <!--Техника-->
+    <integer name="children">56</integer> <!--Детское-->
+    <integer name="for_pretty">57</integer> <!--Все для красоты-->
+    <integer name="books">100</integer> <!--Книги-->
+    <integer name="gift">86</integer> <!--Даром-->
+    <integer name="others">54</integer> <!--Разное-->
 
 </resources>

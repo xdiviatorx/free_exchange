@@ -26,6 +26,9 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
+import com.technologies.mobile.free_exchange.MyApplication;
 import com.technologies.mobile.free_exchange.R;
 import com.technologies.mobile.free_exchange.adapters.RecyclerAddedImagesAdapter;
 import com.technologies.mobile.free_exchange.rest.SendAsyncTask;
@@ -46,7 +49,12 @@ import java.util.Map;
  */
 public class AddFragment extends Fragment implements View.OnClickListener {
 
-    private static final String LOG_TAG = "myLogsAddFragment";
+    private static final String LOG_TAG = "instance";
+
+    public static final String ADD_FRAGMENT_TAG = "ADD_FRAGMENT_TAG";
+
+    private static final String GIVES = "GIVES";
+    private static final String GETS = "GETS";
 
     private static final int GALLERY_REQUEST = 347;
     private static final int CAMERA_REQUEST = 719;
@@ -84,9 +92,17 @@ public class AddFragment extends Fragment implements View.OnClickListener {
 
     private Uri mJustPhoto;
 
+    private Tracker mTracker;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //restore(savedInstanceState);
+        mTracker = ((MyApplication) getActivity().getApplication()).getDefaultTracker();
+        mTracker.setScreenName(MyApplication.ADDING_CATEGORY);
+        mTracker.send(new HitBuilders.EventBuilder()
+                .setCategory(MyApplication.ADDING_CATEGORY)
+                .setAction(MyApplication.LAUNCHED_ACTION).build());
     }
 
     @Nullable
@@ -100,6 +116,37 @@ public class AddFragment extends Fragment implements View.OnClickListener {
         super.onViewCreated(view, savedInstanceState);
 
         initViews(view);
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        Log.e(LOG_TAG,"ON RESTORE FRAGMENT");
+    }
+
+    private void restore(Bundle savedInstanceState){
+        if( savedInstanceState != null ){
+            Log.e(LOG_TAG,savedInstanceState.getString("key","no"));
+            ArrayList<String> gives = savedInstanceState.getStringArrayList(GIVES);
+            if( gives != null ) {
+                Log.e(LOG_TAG, "GIVES LENGTH = " + gives.size());
+                mGiveTagsLayout.addTags(savedInstanceState.getStringArrayList(GIVES));
+                for( String s : gives ){
+                    Log.e(LOG_TAG,s);
+                }
+            }
+
+            //mGetTagsLayout.addTags(savedInstanceState.getStringArrayList(GETS));
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        Log.e(LOG_TAG,"SAVING ADD FRAGMENT INSTANCE");
+        outState.putString("key","value");
+        outState.putStringArrayList(GIVES,getGives());
+        outState.putStringArrayList(GETS,getGets());
+        super.onSaveInstanceState(outState);
     }
 
     public void initViews(View view) {
@@ -156,7 +203,10 @@ public class AddFragment extends Fragment implements View.OnClickListener {
             @Override
             public void afterTextChanged(Editable editable) {
                 String text = editable.toString();
-                if (text.length() != 0 && text.charAt(text.length() - 1) == ',') {
+                if (text.length() != 0 &&
+                        ( text.charAt(text.length() - 1) == ','
+                                || text.charAt(text.length() - 1) == '.'
+                                || text.charAt(text.length() - 1) == ' ' ) ) {
                     String tag = mEtGives.getText().toString().substring(0, text.length() - 1);
                     mEtGives.setText("");
                     mGiveTagsLayout.addTag(tag);
@@ -190,7 +240,9 @@ public class AddFragment extends Fragment implements View.OnClickListener {
             @Override
             public void afterTextChanged(Editable editable) {
                 String text = editable.toString();
-                if (text.length() != 0 && text.charAt(text.length() - 1) == ',') {
+                if (text.length() != 0 && ( text.charAt(text.length() - 1) == ','
+                        || text.charAt(text.length() - 1) == '.'
+                        || text.charAt(text.length() - 1) == ' ' ) ) {
                     String tag = mEtGets.getText().toString().substring(0, text.length() - 1);
                     mEtGets.setText("");
                     mGetTagsLayout.addTag(tag);
@@ -319,6 +371,9 @@ public class AddFragment extends Fragment implements View.OnClickListener {
                 if( validate() ) {
                     SendAsyncTask send = new SendAsyncTask(this);
                     send.execute();
+                    mTracker.send(new HitBuilders.EventBuilder()
+                            .setCategory(MyApplication.ADDING_CATEGORY)
+                            .setAction(MyApplication.ADDING_ACTION).build());
                 }else{
                     Toast.makeText(getContext(),R.string.fields_missed,Toast.LENGTH_LONG).show();
                 }

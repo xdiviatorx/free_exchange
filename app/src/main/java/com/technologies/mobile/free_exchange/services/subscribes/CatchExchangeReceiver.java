@@ -57,9 +57,11 @@ public class CatchExchangeReceiver extends BroadcastReceiver{
         client.getNewOffersByUid(uid,ExchangeClient.apiKey).enqueue(new Callback<NewOffersByUidResponse>() {
             @Override
             public void onResponse(Call<NewOffersByUidResponse> call, Response<NewOffersByUidResponse> response) {
-                if( response.body().getResponse().getCount() != 0 ){
+                if( response != null && response.body() != null &&
+                        response.body().getResponse() != null  && response.body().getResponse().getCount() != 0 ){
                     for(SubscribeOffers subscribeOffers : response.body().getResponse().getLists()){
                         if( subscribeOffers.getCount() != 0 && subscribeOffers.getNotification() != 0){
+                            Log.e(LOG_TAG,"BEGIN NOTIFICATION IN LIST " + subscribeOffers.getListId());
                             SubscribeNotificator notificator = new SubscribeNotificator(mContext);
                             notificator.notificatePreparing(subscribeOffers);
                         }

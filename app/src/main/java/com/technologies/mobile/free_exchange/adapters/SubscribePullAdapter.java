@@ -61,10 +61,10 @@ public class SubscribePullAdapter extends SearchPullAdapter {
                     item.put(GIVE, searchExtraditionItem.getGive());
                     item.put(CATEGORY, searchExtraditionItem.getCategory());
                     item.put(TEXT, searchExtraditionItem.getText());
-                    if (searchExtraditionItem.getPhotosList() != null &&
-                            searchExtraditionItem.getPhotosList().length != 0 &&
-                            searchExtraditionItem.getPhotosList()[0].getPhoto807() != null) {
-                        item.put(IMAGE, searchExtraditionItem.getPhotosList()[0].getPhoto807());
+                    if (searchExtraditionItem.getPhotosArray() != null &&
+                            searchExtraditionItem.getPhotosArray().length != 0 &&
+                            !searchExtraditionItem.getPhotosArray()[0].isEmpty()) {
+                        item.put(IMAGE, searchExtraditionItem.getPhotosArray()[0]);
                     } else {
                         item.put(IMAGE, "");
                     }

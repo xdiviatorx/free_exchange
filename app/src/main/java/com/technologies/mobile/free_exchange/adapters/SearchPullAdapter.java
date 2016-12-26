@@ -1,9 +1,15 @@
 package com.technologies.mobile.free_exchange.adapters;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,6 +28,11 @@ import com.technologies.mobile.free_exchange.R;
 import com.technologies.mobile.free_exchange.activities.ExchangeMoreActivity;
 import com.technologies.mobile.free_exchange.activities.ImagePreviewActivity;
 import com.technologies.mobile.free_exchange.activities.MainActivity;
+import com.technologies.mobile.free_exchange.fragments.DialogFragment;
+import com.technologies.mobile.free_exchange.listeners.OnIconClickListener;
+import com.technologies.mobile.free_exchange.listeners.OnImageClickListener;
+import com.technologies.mobile.free_exchange.listeners.OnSearchBeginListener;
+import com.technologies.mobile.free_exchange.listeners.OnSearchPerformListener;
 import com.technologies.mobile.free_exchange.logic.TextFormatter;
 import com.technologies.mobile.free_exchange.rest.ExchangeClient;
 import com.technologies.mobile.free_exchange.rest.RetrofitService;
@@ -29,6 +40,7 @@ import com.technologies.mobile.free_exchange.rest.model.Photo;
 import com.technologies.mobile.free_exchange.rest.model.Search;
 import com.technologies.mobile.free_exchange.rest.model.SearchExtraditionItem;
 import com.technologies.mobile.free_exchange.rest.model.SearchResponse;
+import com.technologies.mobile.free_exchange.views.AutomaticPhotoLayout;
 
 import java.lang.reflect.Array;
 import java.text.DateFormat;
@@ -69,6 +81,12 @@ public class SearchPullAdapter extends SimpleAdapter {
 
     protected boolean uploading = false;
 
+    protected OnSearchPerformListener onSearchPerformListener = null;
+
+    protected OnIconClickListener onIconClickListener = null;
+
+    protected OnSearchBeginListener onSearchBeginListener = null;
+
     Context context;
 
     ArrayList<HashMap<String, Object>> data;
@@ -99,6 +117,9 @@ public class SearchPullAdapter extends SimpleAdapter {
         TextView tvDate;
         ImageView ivComments;
         TextView tvCommentsCount;
+        TextView tvName;
+        AutomaticPhotoLayout aplPhotos;
+        ImageView ivMessage;
     }
 
     @Override
@@ -120,12 +141,15 @@ public class SearchPullAdapter extends SimpleAdapter {
             viewHolder.tvDate = (TextView) convertView.findViewById(R.id.date);
             viewHolder.ivComments = (ImageView) convertView.findViewById(R.id.ivComments);
             viewHolder.tvCommentsCount = (TextView) convertView.findViewById(R.id.tvCommentsCount);
+            viewHolder.tvName = (TextView) convertView.findViewById(R.id.tvName);
+            viewHolder.aplPhotos = (AutomaticPhotoLayout) convertView.findViewById(R.id.aplPhotos);
+            viewHolder.ivMessage = (ImageView) convertView.findViewById(R.id.ivMessage);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        String imageUrl = (String) data.get(position).get(IMAGE);
+        /*String imageUrl = (String) data.get(position).get(IMAGE);
 
         if (!imageUrl.isEmpty()) {
             Glide.with(context)
@@ -135,7 +159,13 @@ public class SearchPullAdapter extends SimpleAdapter {
             viewHolder.roundedImageView.setImageResource(R.drawable.no_photo);
         }
 
-        viewHolder.roundedImageView.setOnClickListener(new OnImageClickListener(position));
+        viewHolder.roundedImageView.setOnClickListener(new OnImageClickListener(position));*/
+
+        viewHolder.aplPhotos.removeAll();
+        if( getItem(position).getPhotosArray() != null ) {
+            viewHolder.aplPhotos.addPhotos(Arrays.asList(getItem(position).getPhotosArray()));
+        }
+        viewHolder.aplPhotos.setOnImageClickListener(new OnImageClickListener(position));
 
         //SPANNING
 
@@ -143,18 +173,13 @@ public class SearchPullAdapter extends SimpleAdapter {
 
         HashMap<String, Object> item = data.get(position);
 
-        String gives = formatter.highlight(item.get(GIVE).toString(), itemsGive);
-        String gets = formatter.highlight(item.get(GET).toString(), itemsGet);
+        //String gives = formatter.highlight(item.get(GIVE).toString(), itemsGive);
+        //String gets = formatter.highlight(item.get(GET).toString(), itemsGet);
         //String place = formatter.highlight(item.get(GIVE).toString(),itemsGive);
         //String contacts = formatter.highlight(item.get(GIVE).toString(),itemsGive);
 
-        if (android.os.Build.VERSION.SDK_INT < 24) {
-            viewHolder.tvGives.setText(Html.fromHtml(gives));
-            viewHolder.tvGets.setText(Html.fromHtml(gets));
-        } else {
-            viewHolder.tvGives.setText(Html.fromHtml(gives, Html.FROM_HTML_MODE_LEGACY));
-            viewHolder.tvGets.setText(Html.fromHtml(gets, Html.FROM_HTML_MODE_LEGACY));
-        }
+        viewHolder.tvGets.setText(metaData.get(position).getFormattedGet());
+        viewHolder.tvGives.setText(metaData.get(position).getFormattedGive());
 
         viewHolder.tvDate.setText(item.get(DATE).toString());
         viewHolder.tvPlace.setText(item.get(PLACE).toString());
@@ -165,13 +190,13 @@ public class SearchPullAdapter extends SimpleAdapter {
             Log.e(LOG_TAG,"create new count");
         }
 
-        if (getItem(position).getCommentsCount() != 0) {
-            viewHolder.tvCommentsCount.setText(String.valueOf(getItem(position).getCommentsCount()));
-        } else {
-            viewHolder.tvCommentsCount.setText("");
-        }
+        viewHolder.tvCommentsCount.setText(String.valueOf(getItem(position).getCommentsCount()));
 
-        viewHolder.ivComments.setOnClickListener(new OnImageClickListener(position));
+        //viewHolder.ivComments.setOnClickListener(new OnImageClickListener(position));
+
+        viewHolder.tvName.setText(getItem(position).getUserData().getName());
+
+        viewHolder.ivMessage.setOnClickListener(new OnImageClickListener(position));
 
         return convertView;
     }
@@ -180,7 +205,7 @@ public class SearchPullAdapter extends SimpleAdapter {
         return data;
     }
 
-    private class OnImageClickListener implements View.OnClickListener {
+    private class OnImageClickListener implements View.OnClickListener, com.technologies.mobile.free_exchange.listeners.OnImageClickListener {
 
         int position;
 
@@ -191,25 +216,35 @@ public class SearchPullAdapter extends SimpleAdapter {
         @Override
         public void onClick(View view) {
             switch (view.getId()) {
-                case R.id.image: {
-                    Intent intent = new Intent(context, ImagePreviewActivity.class);
-                    String[] images = (String[]) data.get(position).get(IMAGES);
-                    intent.putExtra(IMAGES, images);
-                    context.startActivity(intent);
+                case R.id.aplPhotos: {
                     break;
                 }
                 case R.id.ivComments: {
-                    Intent intent = new Intent(context, ExchangeMoreActivity.class);
-                    intent.putExtra(ExchangeMoreActivity.EXCHANGE, getItem(position));
-                    context.startActivity(intent);
                     break;
                 }
+                case R.id.ivMessage:{
+                    if( onIconClickListener != null ){
+                        onIconClickListener.onIconClick(view, position);
+                    }
+                }
             }
+        }
+
+        @Override
+        public void onImageClicked(int imageIndex) {
+            Intent intent = new Intent(context, ImagePreviewActivity.class);
+            String[] images = (String[]) data.get(position).get(IMAGES);
+            intent.putExtra(ImagePreviewActivity.IMAGES, images);
+            intent.putExtra(ImagePreviewActivity.ITEM,imageIndex);
+            context.startActivity(intent);
         }
     }
 
     public void initialUploading() {
         Loader.showProgressBar(context);
+        if( onSearchBeginListener != null ){
+            onSearchBeginListener.onSearchBegun();
+        }
         uploading = true;
         performListQuery(0, UPLOAD_LENGTH);
     }
@@ -227,6 +262,10 @@ public class SearchPullAdapter extends SimpleAdapter {
         this.category = category;
     }
 
+    public void setUploadingParams(int category) {
+        this.category = category;
+    }
+
     protected void performListQuery(final int offset, final int count) {
         ExchangeClient client = RetrofitService.createService(ExchangeClient.class);
 
@@ -235,50 +274,61 @@ public class SearchPullAdapter extends SimpleAdapter {
         searchCall.enqueue(new Callback<Search>() {
             @Override
             public void onResponse(Call<Search> call, Response<Search> response) {
-                Search search = response.body();
-                SearchResponse searchResponse = search.getSearchResponse();
-                SearchExtraditionItem[] searchExtraditionItems = searchResponse.getSearchExtraditionItems();
+                if( response.body() != null ) {
+                    Log.e(LOG_TAG, "MAIN LIST SUCCESS = " + response.body().toString());
+                    Log.e(LOG_TAG, "MAIN LIST SUCCESS COUNT = " + response.body().getSearchResponse().getCount());
+                    Search search = response.body();
+                    SearchResponse searchResponse = search.getSearchResponse();
+                    SearchExtraditionItem[] searchExtraditionItems = searchResponse.getSearchExtraditionItems();
 
-                metaData.addAll(Arrays.asList(searchExtraditionItems));
+                    metaData.addAll(Arrays.asList(searchExtraditionItems));
 
-                for (int i = 0; i < searchExtraditionItems.length; i++) {
-                    SearchExtraditionItem searchExtraditionItem = searchExtraditionItems[i];
+                    for (int i = 0; i < searchExtraditionItems.length; i++) {
+                        SearchExtraditionItem searchExtraditionItem = searchExtraditionItems[i];
 
-                    if (searchExtraditionItem == null) {
-                        continue;
+                        if (searchExtraditionItem == null) {
+                            continue;
+                        }
+
+                        HashMap<String, Object> item = new HashMap<>();
+                        item.put(GET, searchExtraditionItem.getGet());
+                        item.put(GIVE, searchExtraditionItem.getGive());
+                        item.put(CATEGORY, searchExtraditionItem.getCategory());
+                        item.put(TEXT, searchExtraditionItem.getText());
+                        if (searchExtraditionItem.getPhotosArray() != null &&
+                                searchExtraditionItem.getPhotosArray().length != 0 &&
+                                !searchExtraditionItem.getPhotosArray()[0].isEmpty()) {
+                            item.put(IMAGE, searchExtraditionItem.getPhotosArray()[0]);
+                        } else {
+                            item.put(IMAGE, "");
+                        }
+                        item.put(IMAGES, searchExtraditionItem.getPhotosArray());
+                        item.put(PLACE, searchExtraditionItem.getPlace());
+                        item.put(CONTACTS, searchExtraditionItem.getContacts());
+                        item.put(UID, searchExtraditionItem.getUid());
+                        item.put(VK_ID, searchExtraditionItem.getUserData().getVkId());
+
+                        String authorName = searchExtraditionItem.getUserData().getName();
+                        if (authorName == null) {
+                            authorName = context.getString(R.string.dialog);
+                        }
+                        item.put(AUTHOR_NAME, authorName);
+                        item.put(COMMENTS_COUNT, searchExtraditionItem.getCommentsCount());
+                        item.put(DATE, searchExtraditionItem.getDate());
+
+                        data.add(item);
                     }
-
-                    HashMap<String, Object> item = new HashMap<>();
-                    item.put(GET, searchExtraditionItem.getGet());
-                    item.put(GIVE, searchExtraditionItem.getGive());
-                    item.put(CATEGORY, searchExtraditionItem.getCategory());
-                    item.put(TEXT, searchExtraditionItem.getText());
-                    if (searchExtraditionItem.getPhotosList() != null &&
-                            searchExtraditionItem.getPhotosList().length != 0 &&
-                            searchExtraditionItem.getPhotosList()[0].getPhoto807() != null) {
-                        item.put(IMAGE, searchExtraditionItem.getPhotosList()[0].getPhoto807());
-                    } else {
-                        item.put(IMAGE, "");
-                    }
-                    item.put(IMAGES, searchExtraditionItem.getPhotosArray());
-                    item.put(PLACE, searchExtraditionItem.getPlace());
-                    item.put(CONTACTS, searchExtraditionItem.getContacts());
-                    item.put(UID, searchExtraditionItem.getUid());
-                    item.put(VK_ID, searchExtraditionItem.getUserData().getVkId());
-
-                    String authorName = searchExtraditionItem.getUserData().getName();
-                    if (authorName == null) {
-                        authorName = context.getString(R.string.dialog);
-                    }
-                    item.put(AUTHOR_NAME, authorName);
-                    item.put(COMMENTS_COUNT, searchExtraditionItem.getCommentsCount());
-                    item.put(DATE, searchExtraditionItem.getDate());
-
-                    data.add(item);
                 }
                 notifyDataSetChanged();
                 uploading = false;
                 Loader.hideProgressBar(context);
+                if( onSearchPerformListener != null ){
+                    if( response.body() != null ) {
+                        onSearchPerformListener.onSearchPerformed(response.body().getSearchResponse().getCount());
+                    }else{
+                        onSearchPerformListener.onSearchPerformed(0);
+                    }
+                }
             }
 
             @Override
@@ -297,4 +347,15 @@ public class SearchPullAdapter extends SimpleAdapter {
         });
     }
 
+    public void setOnSearchPerformListener(OnSearchPerformListener onSearchPerformListener) {
+        this.onSearchPerformListener = onSearchPerformListener;
+    }
+
+    public void setOnIconClickListener(OnIconClickListener onIconClickListener) {
+        this.onIconClickListener = onIconClickListener;
+    }
+
+    public void setOnSearchBeginListener(OnSearchBeginListener onSearchBeginListener) {
+        this.onSearchBeginListener = onSearchBeginListener;
+    }
 }

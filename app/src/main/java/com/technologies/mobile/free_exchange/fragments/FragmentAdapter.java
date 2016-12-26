@@ -14,7 +14,7 @@ import com.technologies.mobile.free_exchange.activities.SearchActivity;
 /**
  * Created by diviator on 25.08.2016.
  */
-public class FragmentAdapter{
+public class FragmentAdapter {
 
     public static final int MESSAGE = 3;
     public static final int SUBSCRIBES = 4;
@@ -23,58 +23,85 @@ public class FragmentAdapter{
     private Activity activity;
     private FragmentManager fragmentManager;
 
-    public FragmentAdapter(Activity activity){
+    private int currentFragmentIndex = -1;
+
+    private final Fragment home = new HomeFragment();
+    private final Fragment add = new AddFragment();
+    private final Fragment message = new MessageFragment();
+    private final Fragment subscribes = new SubscribesFragment();
+    private final Fragment dialog = new DialogFragment();
+
+    public FragmentAdapter(Activity activity) {
         this.activity = activity;
-        this.fragmentManager = ((AppCompatActivity)activity).getSupportFragmentManager();
+        this.fragmentManager = ((AppCompatActivity) activity).getSupportFragmentManager();
     }
 
-    public void initDefaultFragment(){
+    public void initDefaultFragment() {
         initFragment(0);
     }
 
-    public void initFragment(int index){
+    public void initFragment(int index) {
         Fragment fragment;
         boolean backStack = false;
-        switch ( index ){
-            case 0:{
-                fragment = new HomeFragment();
+        switch (index) {
+            case 0: {
+                if (currentFragmentIndex == 0) {
+                    return;
+                }
+                fragment = home;
+                fragment.setRetainInstance(true);
+                currentFragmentIndex = 0;
                 break;
             }
-            case 1:{
+            case 1: {
                 //fragment = new SearchFragment();
                 Intent intent = new Intent(activity, SearchActivity.class);
                 activity.startActivity(intent);
                 return;
             }
-            case 2:{
-                fragment = new AddFragment();
+            case 2: {
+                fragment = add;
+                currentFragmentIndex = 2;
                 break;
             }
-            case MESSAGE:{
-                fragment = new MessageFragment();
+            case MESSAGE: {
+                fragment = message;
+                currentFragmentIndex = MESSAGE;
                 break;
             }
-            case SUBSCRIBES:{
-                fragment = new SubscribesFragment();
+            case SUBSCRIBES: {
+                fragment = subscribes;
+                currentFragmentIndex = SUBSCRIBES;
                 break;
             }
-            case DIALOG:{
-                fragment = new DialogFragment();
+            case DIALOG: {
+                fragment = dialog;
                 backStack = true;
+                currentFragmentIndex = DIALOG;
                 break;
             }
-            default:
-                fragment = new HomeFragment();
+            default: {
+                fragment = home;
+                currentFragmentIndex = 0;
+            }
         }
 
         FragmentTransaction transaction = fragmentManager.beginTransaction();
-        if( !backStack) {
+        if (!backStack) {
             fragmentManager.popBackStack();
-            transaction.replace(R.id.content,fragment).commit();
-        }else{
-            transaction.add(R.id.content,fragment).addToBackStack(null).commit();
+            fragmentManager.popBackStack();
+            fragmentManager.popBackStack();
+            fragmentManager.popBackStack();
+            fragmentManager.popBackStack();
+            transaction.replace(R.id.content, fragment).commit();
+        } else {
+            transaction.add(R.id.content, fragment).addToBackStack(null).commit();
         }
         String[] titles = activity.getResources().getStringArray(R.array.fragments);
         activity.setTitle(titles[index]);
+    }
+
+    public int getCurrentFragmentIndex() {
+        return currentFragmentIndex;
     }
 }

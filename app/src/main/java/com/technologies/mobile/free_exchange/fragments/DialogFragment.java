@@ -19,6 +19,9 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
+import com.technologies.mobile.free_exchange.MyApplication;
 import com.technologies.mobile.free_exchange.R;
 import com.technologies.mobile.free_exchange.activities.LoginActivity;
 import com.technologies.mobile.free_exchange.adapters.ChatMessage;
@@ -80,6 +83,8 @@ public class DialogFragment extends Fragment implements View.OnClickListener, Ab
     @Nullable private String interlocutorName;
     @Nullable private String interlocutorVkId;
 
+    private Tracker mTracker;
+
     public DialogFragment(){
 
     }
@@ -101,6 +106,19 @@ public class DialogFragment extends Fragment implements View.OnClickListener, Ab
         }
 
         interlocutorVkId = getArguments().getString(INTERLOCUTOR_VK_ID,null);
+
+        mTracker = ((MyApplication) getActivity().getApplication()).getDefaultTracker();
+        mTracker.setScreenName(MyApplication.MESSAGING_CATEGORY);
+        mTracker.send(new HitBuilders.EventBuilder()
+                .setCategory(MyApplication.MESSAGING_CATEGORY)
+                .setAction(MyApplication.LAUNCHED_ACTION).build());
+
+        if( interlocutorName != null ){
+            mTracker.send(new HitBuilders.EventBuilder()
+                    .setCategory(MyApplication.MESSAGING_CATEGORY)
+                    .setAction(MyApplication.CONVERSATION_ACTION)
+                    .setLabel(interlocutorName).build());
+        }
 
         //Notificator notificator = new Notificator(getContext());
         //notificator.cancelNotification();

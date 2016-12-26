@@ -8,6 +8,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 /**
  * Created by diviator on 23.09.2016.
  */
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class UserId {
 
     @JsonProperty("status")

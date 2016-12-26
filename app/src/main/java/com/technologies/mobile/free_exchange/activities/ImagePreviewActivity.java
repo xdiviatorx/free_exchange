@@ -19,6 +19,9 @@ import com.technologies.mobile.free_exchange.fragments.ImageFragment;
 
 public class ImagePreviewActivity extends AppCompatActivity {
 
+    public static final String ITEM = "ITEM";
+    public static final String IMAGES = "IMAGES";
+
     public static String LOG_TAG = "logs";
 
     ViewPager viewPager;
@@ -32,16 +35,18 @@ public class ImagePreviewActivity extends AppCompatActivity {
         setContentView(R.layout.activity_image_preview);
 
         Intent data = getIntent();
-        String[] imageUrls = data.getStringArrayExtra(SearchPullAdapter.IMAGES);
+        String[] imageUrls = data.getStringArrayExtra(IMAGES);
+        int item = data.getIntExtra(ITEM,0);
         int count = imageUrls.length;
         count = Math.max(1,count);
 
         viewPager = (ViewPager) findViewById(R.id.viewPager);
         pagerAdapter = new ImagePagerAdapter(getSupportFragmentManager(),count,imageUrls);
         viewPager.setAdapter(pagerAdapter);
+        viewPager.setCurrentItem(item);
 
         mTvCount = (TextView) findViewById(R.id.tvCount);
-        mTvCount.setText(1+"/"+String.valueOf(pagerAdapter.getCount()));
+        mTvCount.setText(item+1+"/"+String.valueOf(pagerAdapter.getCount()));
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override

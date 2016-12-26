@@ -2,15 +2,11 @@ package com.technologies.mobile.free_exchange.activities;
 
 import android.animation.Animator;
 import android.content.Intent;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatSpinner;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -20,18 +16,24 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
+import com.technologies.mobile.free_exchange.MyApplication;
 import com.technologies.mobile.free_exchange.R;
 import com.technologies.mobile.free_exchange.adapters.CategorySpinnerAdapter;
 import com.technologies.mobile.free_exchange.adapters.SearchPullAdapter;
 import com.technologies.mobile.free_exchange.fragments.DialogFragment;
+import com.technologies.mobile.free_exchange.listeners.OnIconClickListener;
+import com.technologies.mobile.free_exchange.listeners.OnSearchPerformListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class SearchActivity extends AppCompatActivity implements View.OnClickListener, TextWatcher, AbsListView.OnScrollListener, AdapterView.OnItemSelectedListener, AdapterView.OnItemClickListener{
+public class SearchActivity extends AppCompatActivity implements View.OnClickListener,
+        TextWatcher, AbsListView.OnScrollListener, AdapterView.OnItemSelectedListener,
+        AdapterView.OnItemClickListener, OnSearchPerformListener, OnIconClickListener {
 
     private String LOG_TAG = "mySearch";
 
@@ -59,13 +61,21 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
     private AppCompatSpinner appCompatSpinner;
     private CategorySpinnerAdapter spinnerAdapter;
 
+    private Tracker mTracker;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
 
+        mTracker = ((MyApplication) getApplication()).getDefaultTracker();
+        mTracker.setScreenName(MyApplication.SEARCH_CATEGORY);
+        mTracker.send(new HitBuilders.EventBuilder()
+                .setCategory(MyApplication.SEARCH_CATEGORY)
+                .setAction(MyApplication.LAUNCHED_ACTION).build());
+
         translation = getResources().getDimension(R.dimen.search_bar_animation);
-        translation*=-1;
+        translation *= -1;
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
@@ -76,7 +86,7 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
         setDefaultToolbarState();
     }
 
-    private void initToolbar(){
+    private void initToolbar() {
         initCategorySpinner();
 
         down = (ImageButton) findViewById(R.id.maximize);
@@ -104,14 +114,14 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
         up.setOnClickListener(this);
     }
 
-    private void initCategorySpinner(){
+    private void initCategorySpinner() {
         appCompatSpinner = (AppCompatSpinner) findViewById(R.id.category);
 
         String[] from = {CategorySpinnerAdapter.NAME};
         int[] to = {R.id.tv};
-        ArrayList<HashMap<String,Object>> data = new ArrayList<>();
+        ArrayList<HashMap<String, Object>> data = new ArrayList<>();
 
-        spinnerAdapter = new CategorySpinnerAdapter(this,data,R.layout.spinner_item,from,to);
+        spinnerAdapter = new CategorySpinnerAdapter(this, data, R.layout.spinner_item, from, to);
         spinnerAdapter.initSpinner();
 
         appCompatSpinner.setAdapter(spinnerAdapter);
@@ -119,14 +129,16 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
         appCompatSpinner.setOnItemSelectedListener(this);
     }
 
-    private void initViews(){
+    private void initViews() {
         lv = (ListView) findViewById(R.id.lv);
 
-        String[] from = {SearchPullAdapter.GIVE,SearchPullAdapter.GET,SearchPullAdapter.PLACE,SearchPullAdapter.CONTACTS,SearchPullAdapter.DATE};
-        int[] to = {R.id.gives,R.id.gets,R.id.place,R.id.contacts,R.id.date};
-        ArrayList<HashMap<String,Object>> data = new ArrayList<>();
+        String[] from = {SearchPullAdapter.GIVE, SearchPullAdapter.GET, SearchPullAdapter.PLACE, SearchPullAdapter.CONTACTS, SearchPullAdapter.DATE};
+        int[] to = {R.id.gives, R.id.gets, R.id.place, R.id.contacts, R.id.date};
+        ArrayList<HashMap<String, Object>> data = new ArrayList<>();
 
-        lvAdapter = new SearchPullAdapter(this,data,R.layout.exchange_item,from,to);
+        lvAdapter = new SearchPullAdapter(this, data, R.layout.exchange_item, from, to);
+        lvAdapter.setOnSearchPerformListener(this);
+        lvAdapter.setOnIconClickListener(this);
 
         lv.setAdapter(lvAdapter);
 
@@ -137,7 +149,7 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
         lvAdapter.initialUploading();
     }
 
-    private void setDefaultToolbarState(){
+    private void setDefaultToolbarState() {
         tvSearch.setAlpha(0);
         down.animate().setDuration(0).alpha(0).start();
         down.setVisibility(View.GONE);
@@ -175,23 +187,23 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
             }
         }).start();
 
-        back.animate().setDuration(0).translationY(-1*translation).start();
-        clear.animate().setDuration(0).translationY(-1*translation).start();
+        back.animate().setDuration(0).translationY(-1 * translation).start();
+        clear.animate().setDuration(0).translationY(-1 * translation).start();
         clear.animate().setDuration(0).alpha(0).start();
 
         //LET'S MAXIMIZE
         maximize();
     }
 
-    public void onClearPressed(){
+    public void onClearPressed() {
         etGets.setText("");
         etGives.setText("");
-        if( spinnerAdapter.getData().size() != 0 ) {
+        if (spinnerAdapter.getData().size() != 0) {
             appCompatSpinner.setSelection(0);
         }
     }
 
-    public void setPreviews(){
+    public void setPreviews() {
         TextView tvGives = (TextView) findViewById(R.id.preview_gives);
         TextView tvGets = (TextView) findViewById(R.id.preview_gets);
         TextView tvCategory = (TextView) findViewById(R.id.preview_category);
@@ -199,15 +211,15 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
         tvGives.setText(etGives.getText().toString());
         tvGets.setText(etGets.getText().toString());
         String categoryName;
-        if( spinnerAdapter.getData().size() != 0  ) {
+        if (spinnerAdapter.getData().size() != 0) {
             categoryName = spinnerAdapter.getData().get(appCompatSpinner.getSelectedItemPosition()).get(CategorySpinnerAdapter.NAME).toString();
-        }else{
+        } else {
             categoryName = getResources().getString(R.string.no_category);
         }
         tvCategory.setText(categoryName);
     }
 
-    public void minimize(){
+    public void minimize() {
         setPreviews();
 
         toolbar.animate().setDuration(500).translationY(translation).start();
@@ -244,12 +256,12 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
             }
         }).start();
 
-        back.animate().setDuration(500).translationY(-1*translation).start();
-        clear.animate().setDuration(500).translationY(-1*translation).start();
+        back.animate().setDuration(500).translationY(-1 * translation).start();
+        clear.animate().setDuration(500).translationY(-1 * translation).start();
         clear.animate().setDuration(200).alpha(0).start();
     }
 
-    public void maximize(){
+    public void maximize() {
         toolbar.animate().setDuration(500).translationY(0).start();
 
         //up.animate().setDuration(500).translationY(0).start();
@@ -292,31 +304,31 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
-            case R.id.back:{
+        switch (view.getId()) {
+            case R.id.back: {
                 finish();
                 break;
             }
-            case R.id.minimize:{
+            case R.id.minimize: {
                 minimize();
                 break;
             }
-            case R.id.maximize:{
+            case R.id.maximize: {
                 maximize();
                 break;
             }
-            case R.id.tvSearch:{
+            case R.id.tvSearch: {
                 maximize();
                 break;
             }
-            case R.id.clear:{
+            case R.id.clear: {
                 onClearPressed();
                 break;
             }
         }
     }
 
-    private void hideKeyboard(){
+    private void hideKeyboard() {
         InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
         //Find the currently focused view, so we can grab the correct window token from it.
         View view = getCurrentFocus();
@@ -348,7 +360,7 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
 
     @Override
     public void onScrollStateChanged(AbsListView absListView, int i) {
-        if( lastFirstVisibleItem < absListView.getFirstVisiblePosition() ) {
+        if (lastFirstVisibleItem < absListView.getFirstVisiblePosition()) {
             minimize();
         }
         lastFirstVisibleItem = absListView.getFirstVisiblePosition();
@@ -356,25 +368,36 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
 
     @Override
     public void onScroll(AbsListView absListView, int i, int i1, int i2) {
-        if( i >= Math.max(i2-10,10) ) {
+        if (i >= Math.max(i2 - 10, 10)) {
             lvAdapter.additionalUploading(i2);
         }
     }
 
-    private void newSearch(){
-        String[] from = {SearchPullAdapter.GIVE,SearchPullAdapter.GET,SearchPullAdapter.PLACE,SearchPullAdapter.CONTACTS,SearchPullAdapter.DATE};
-        int[] to = {R.id.gives,R.id.gets,R.id.place,R.id.contacts,R.id.date};
-        ArrayList<HashMap<String,Object>> data = new ArrayList<>();
+    private void newSearch() {
+        hideTryAgainMessage();
 
-        lvAdapter = new SearchPullAdapter(this,data,R.layout.exchange_item,from,to);
+        mTracker.send(new HitBuilders.EventBuilder()
+                .setCategory(MyApplication.SEARCH_CATEGORY)
+                .setAction(MyApplication.SEARCHING_ACTION)
+                .set("даю:", etGives.getText().toString())
+                .set("получаю:", etGets.getText().toString())
+                .build());
+
+        String[] from = {SearchPullAdapter.GIVE, SearchPullAdapter.GET, SearchPullAdapter.PLACE, SearchPullAdapter.CONTACTS, SearchPullAdapter.DATE};
+        int[] to = {R.id.gives, R.id.gets, R.id.place, R.id.contacts, R.id.date};
+        ArrayList<HashMap<String, Object>> data = new ArrayList<>();
+
+        lvAdapter = new SearchPullAdapter(this, data, R.layout.exchange_item, from, to);
+        lvAdapter.setOnSearchPerformListener(this);
+        lvAdapter.setOnIconClickListener(this);
         lv.setAdapter(lvAdapter);
 
         int category = 0;
-        if( spinnerAdapter.getData().size() != 0 ){
+        if (spinnerAdapter.getData().size() != 0) {
             category = (int) spinnerAdapter.getData().get(appCompatSpinner.getSelectedItemPosition()).get(CategorySpinnerAdapter.ID);
         }
 
-        lvAdapter.setUploadingParams(etGives.getText().toString(),etGets.getText().toString(),category);
+        lvAdapter.setUploadingParams(etGives.getText().toString(), etGets.getText().toString(), category);
         lvAdapter.initialUploading();
 
         lastFirstVisibleItem = 0;
@@ -392,16 +415,41 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        Intent intent = new Intent(this,DialogActivity.class);
+        Intent intent = new Intent(this, ExchangeMoreActivity.class);
+        intent.putExtra(ExchangeMoreActivity.EXCHANGE, lvAdapter.getItem(i));
+        startActivity(intent);
+    }
+
+    @Override
+    public void onIconClick(View view, int i) {
+        Intent intent = new Intent(this, DialogActivity.class);
 
         int authorId = (int) lvAdapter.getData().get(i).get(SearchPullAdapter.UID);
         String authorName = (String) lvAdapter.getData().get(i).get(SearchPullAdapter.AUTHOR_NAME);
         String authorVkId = (String) lvAdapter.getData().get(i).get(SearchPullAdapter.VK_ID);
 
-        intent.putExtra(DialogFragment.INTERLOCUTOR_ID,String.valueOf(authorId));
-        intent.putExtra(DialogFragment.INTERLOCUTOR_NAME,authorName);
-        intent.putExtra(DialogFragment.INTERLOCUTOR_VK_ID,authorVkId);
+        intent.putExtra(DialogFragment.INTERLOCUTOR_ID, String.valueOf(authorId));
+        intent.putExtra(DialogFragment.INTERLOCUTOR_NAME, authorName);
+        intent.putExtra(DialogFragment.INTERLOCUTOR_VK_ID, authorVkId);
 
         startActivity(intent);
     }
+
+    @Override
+    public void onSearchPerformed(int count) {
+        if (count == 0) {
+            showTryAgainMessage();
+        } else {
+            hideTryAgainMessage();
+        }
+    }
+
+    private void showTryAgainMessage() {
+        findViewById(R.id.itemTryAgain).setVisibility(View.VISIBLE);
+    }
+
+    private void hideTryAgainMessage() {
+        findViewById(R.id.itemTryAgain).setVisibility(View.GONE);
+    }
+
 }

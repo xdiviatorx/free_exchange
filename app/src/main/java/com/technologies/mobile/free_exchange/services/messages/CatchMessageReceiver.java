@@ -53,7 +53,10 @@ public class CatchMessageReceiver extends BroadcastReceiver {
             @Override
             public void onResponse(Call<NewMessagesResponse> call, Response<NewMessagesResponse> response) {
                 int i = 0;
-                if( response.body().getResponse().getMessages().length != 0 ){
+                if( response.body() != null
+                        && response.body().getResponse() != null
+                        && response.body().getResponse().getMessages() != null
+                        && response.body().getResponse().getMessages().length != 0 ){
                     for( NewMessage message : response.body().getResponse().getMessages() ){
                         Log.e(LOG_TAG,"\t***");
                         Log.e(LOG_TAG,"D " + i + " = " + message.getDialogId());

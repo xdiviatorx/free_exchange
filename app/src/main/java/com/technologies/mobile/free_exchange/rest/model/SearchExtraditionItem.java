@@ -3,7 +3,12 @@ package com.technologies.mobile.free_exchange.rest.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
+import android.text.Html;
+import android.text.Spanned;
 
+import com.fasterxml.jackson.annotation.JacksonInject;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -19,59 +24,68 @@ import java.util.List;
 /**
  * Created by diviator on 17.08.2016.
  */
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class SearchExtraditionItem implements Parcelable {
 
-    public SearchExtraditionItem() {
-
-    }
-
-    @JsonProperty("id")
     int id;
-
-    @JsonProperty("pid")
     int pid;
-
-    @JsonProperty("uid")
     int uid;
-
-    @JsonProperty("text")
     String text;
-
-    @JsonProperty("photos")
     String photos;
-
-    @JsonProperty("give")
     String give;
-
-    @JsonProperty("get")
     String get;
-
-    @JsonProperty("contacts")
     String contacts;
-
-    @JsonProperty("place")
     String place;
-
-    @JsonProperty("created")
     long created;
-
-    @JsonProperty("published")
-    int published;
-
-    @JsonProperty("type")
+    String published;
     String type;
-
-    @JsonProperty("category")
     int category;
-
-    @JsonProperty("hidden")
     int hidden;
-
-    @JsonProperty("udata")
     User userData;
-
-    @JsonProperty("comments")
     int commentsCount;
+
+    String[] photosArray;
+    Spanned formattedGet;
+    Spanned formattedGive;
+
+    @JsonCreator
+    public SearchExtraditionItem(@JsonProperty("id") int id,
+                                 @JsonProperty("pid") int pid,
+                                 @JsonProperty("uid") int uid,
+                                 @JsonProperty("text") String text,
+                                 @JsonProperty("photos") String photos,
+                                 @JsonProperty("give") String give,
+                                 @JsonProperty("get") String get,
+                                 @JsonProperty("contacts") String contacts,
+                                 @JsonProperty("place") String place,
+                                 @JsonProperty("created") long created,
+                                 @JsonProperty("published") String published,
+                                 @JsonProperty("type") String type,
+                                 @JsonProperty("category") int category,
+                                 @JsonProperty("hidden") int hidden,
+                                 @JsonProperty("udata") User userData,
+                                 @JsonProperty("comments") int commentsCount) {
+        this.id = id;
+        this.pid = pid;
+        this.uid = uid;
+        this.text = text;
+        this.photos = photos;
+        this.give = give;
+        this.get = get;
+        this.contacts = contacts;
+        this.place = place;
+        this.created = created;
+        this.published = published;
+        this.type = type;
+        this.category = category;
+        this.hidden = hidden;
+        this.userData = userData;
+        this.commentsCount = commentsCount;
+
+        createPhotosArray();
+        formatGiveGet();
+    }
 
     protected SearchExtraditionItem(Parcel in) {
         id = in.readInt();
@@ -84,12 +98,15 @@ public class SearchExtraditionItem implements Parcelable {
         contacts = in.readString();
         place = in.readString();
         created = in.readLong();
-        published = in.readInt();
+        published = in.readString();
         type = in.readString();
         category = in.readInt();
         hidden = in.readInt();
         userData = in.readParcelable(User.class.getClassLoader());
         commentsCount = in.readInt();
+
+        createPhotosArray();
+        formatGiveGet();
     }
 
     public static final Creator<SearchExtraditionItem> CREATOR = new Creator<SearchExtraditionItem>() {
@@ -125,7 +142,7 @@ public class SearchExtraditionItem implements Parcelable {
     }
 
     @Nullable
-    public Photo[] getPhotosList() {
+    private Photo[] getPhotosList() {
         ObjectMapper mapper = new ObjectMapper();
         TypeFactory typeFactory = mapper.getTypeFactory();
         try {
@@ -136,21 +153,62 @@ public class SearchExtraditionItem implements Parcelable {
         }
     }
 
-    @Nullable
-    public String[] getPhotosArray() {
+    private void createPhotosArray() {
         Photo[] photos = getPhotosList();
-        if( photos == null ){
-            return null;
+        if (photos == null) {
+            photosArray = new String[0];
+            return;
         }
         String[] res = new String[photos.length];
         for (int i = 0; i < photos.length; i++) {
-            if( photos[i].getPhoto807() != null ) {
+            if (photos[i].getPhoto2560() != null) {
+                res[i] = photos[i].getPhoto2560();
+            } else if (photos[i].getPhoto1280() != null) {
+                res[i] = photos[i].getPhoto1280();
+            } else if (photos[i].getPhoto807() != null) {
                 res[i] = photos[i].getPhoto807();
-            }else{
+            } else if (photos[i].getPhoto604() != null) {
+                res[i] = photos[i].getPhoto604();
+            } else if (photos[i].getPhoto130() != null) {
+                res[i] = photos[i].getPhoto130();
+            } else if (photos[i].getPhoto75() != null) {
+                res[i] = photos[i].getPhoto75();
+            } else {
                 res[i] = "";
             }
         }
-        return res;
+        photosArray = res;
+    }
+
+    private void formatGiveGet(){
+        if (android.os.Build.VERSION.SDK_INT < 24) {
+            if( give != null ) {
+                formattedGive = Html.fromHtml(give);
+            }else{
+                formattedGive = Html.fromHtml("");
+            }
+            if( get != null ) {
+                formattedGet = Html.fromHtml(get);
+            }else{
+                formattedGet = Html.fromHtml("");
+            }
+        } else {
+            if( give != null) {
+                formattedGive = Html.fromHtml(give, Html.FROM_HTML_MODE_LEGACY);
+            }else{
+                formattedGive = Html.fromHtml("", Html.FROM_HTML_MODE_LEGACY);
+            }
+            if( get != null ) {
+                formattedGet = Html.fromHtml(get, Html.FROM_HTML_MODE_LEGACY);
+            }else{
+                formattedGet = Html.fromHtml("", Html.FROM_HTML_MODE_LEGACY);
+            }
+        }
+    }
+
+    @Nullable
+    public String[] getPhotosArray() {
+        return photosArray;
     }
 
     public String getGive() {
@@ -192,11 +250,19 @@ public class SearchExtraditionItem implements Parcelable {
     public String getDate() {
         long timestamp = getCreated();
         timestamp *= 1000;
-        DateFormat df = new SimpleDateFormat("dd.MM.yyyy HH:mm");
+        DateFormat df = new SimpleDateFormat("HH:mm dd.MM");
         return df.format(new Date(timestamp));
     }
 
-    public int isPublished() {
+    public Spanned getFormattedGet() {
+        return formattedGet;
+    }
+
+    public Spanned getFormattedGive() {
+        return formattedGive;
+    }
+
+    public String getPublished() {
         return published;
     }
 
@@ -237,7 +303,7 @@ public class SearchExtraditionItem implements Parcelable {
         parcel.writeString(contacts);
         parcel.writeString(place);
         parcel.writeLong(created);
-        parcel.writeInt(published);
+        parcel.writeString(published);
         parcel.writeString(type);
         parcel.writeInt(category);
         parcel.writeInt(hidden);

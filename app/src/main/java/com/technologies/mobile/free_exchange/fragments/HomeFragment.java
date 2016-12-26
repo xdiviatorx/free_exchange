@@ -1,10 +1,14 @@
 package com.technologies.mobile.free_exchange.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +20,11 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 
 import com.technologies.mobile.free_exchange.R;
+import com.technologies.mobile.free_exchange.activities.ExchangeMoreActivity;
+import com.technologies.mobile.free_exchange.activities.MainActivity;
+import com.technologies.mobile.free_exchange.adapters.CategoriesPagerAdapter;
 import com.technologies.mobile.free_exchange.adapters.SearchPullAdapter;
+import com.technologies.mobile.free_exchange.listeners.OnIconClickListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,35 +32,28 @@ import java.util.HashMap;
 /**
  * Created by diviator on 24.08.2016.
  */
-public class HomeFragment extends Fragment implements AbsListView.OnScrollListener, AdapterView.OnItemClickListener{
+public class HomeFragment extends Fragment implements AbsListView.OnScrollListener{
 
     public static String LOG_TAG = "logs";
 
-    private ListView lv;
-    private SearchPullAdapter lvAdapter;
-    private ArrayList<HashMap<String,Object>> data;
-
     private ImageButton floatingAdd;
-
     boolean isFABVisible = false;
 
-    private FragmentAdapter fragmentAdapter;
-
     private int lastFirstVisibleItem = 0;
+
+    TabLayout tabLayout;
+    ViewPager viewPager;
+    PagerAdapter pagerAdapter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        fragmentAdapter = new FragmentAdapter(getActivity());
-
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_home,container,false);
-
-        return view;
+        return inflater.inflate(R.layout.fragment_home,container,false);
     }
 
     @Override
@@ -63,21 +64,16 @@ public class HomeFragment extends Fragment implements AbsListView.OnScrollListen
     }
 
     private void initViews(View view){
-        lv = (ListView) view.findViewById(R.id.lv);
+        tabLayout = (TabLayout) view.findViewById(R.id.tabs);
 
-        String[] from = {SearchPullAdapter.GIVE,SearchPullAdapter.GET,SearchPullAdapter.PLACE,SearchPullAdapter.CONTACTS,SearchPullAdapter.DATE};
-        int[] to = {R.id.gives,R.id.gets,R.id.place,R.id.contacts,R.id.date};
-        ArrayList<HashMap<String,Object>> data = new ArrayList<>();
+        viewPager = (ViewPager) view.findViewById(R.id.vpLists);
+        viewPager.setOffscreenPageLimit(getResources().getIntArray(R.array.categoriesIds).length);
 
-        lvAdapter = new SearchPullAdapter(getContext(),data,R.layout.exchange_item,from,to);
+        pagerAdapter = new CategoriesPagerAdapter(getChildFragmentManager(),getContext());
 
-        lv.setAdapter(lvAdapter);
+        viewPager.setAdapter(pagerAdapter);
 
-        lv.setOnScrollListener(this);
-        lv.setOnItemClickListener(this);
-
-        lvAdapter.initialUploading();
-
+        tabLayout.setupWithViewPager(viewPager);
     }
 
     @Override
@@ -93,10 +89,6 @@ public class HomeFragment extends Fragment implements AbsListView.OnScrollListen
     @Override
     public void onScroll(AbsListView absListView, int i, int i1, int i2) {
 
-        if( i >= Math.max(i2-10,10) ) {
-            lvAdapter.additionalUploading(i2);
-        }
-
     }
 
 
@@ -106,7 +98,7 @@ public class HomeFragment extends Fragment implements AbsListView.OnScrollListen
         floatingAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                fragmentAdapter.initFragment(2);
+                ((MainActivity)getActivity()).getFragmentAdapter().initFragment(2);
             }
         });
     }
@@ -171,23 +163,9 @@ public class HomeFragment extends Fragment implements AbsListView.OnScrollListen
         }
     }
 
-
     @Override
-    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        Fragment dialogFragment = new DialogFragment();
-        Bundle args = new Bundle();
-
-        int uid = (int) lvAdapter.getData().get(i).get(SearchPullAdapter.UID);
-        String authorName = (String) lvAdapter.getData().get(i).get(SearchPullAdapter.AUTHOR_NAME);
-        String authorVkId = (String) lvAdapter.getData().get(i).get(SearchPullAdapter.VK_ID);
-
-        args.putString(DialogFragment.INTERLOCUTOR_ID,String.valueOf(uid));
-        args.putString(DialogFragment.INTERLOCUTOR_NAME,authorName);
-        args.putString(DialogFragment.INTERLOCUTOR_VK_ID,authorVkId);
-        dialogFragment.setArguments(args);
-
-        FragmentManager fragmentManager = getFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.add(R.id.content,dialogFragment,DialogFragment.TAG).addToBackStack(null).commit();
+    protected void finalize() throws Throwable {
+        super.finalize();
+        viewPager.destroyDrawingCache();
     }
 }

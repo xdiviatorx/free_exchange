@@ -5,34 +5,39 @@
     android:layout_height="wrap_content"
     android:padding="5dp">
 
-    <TextView
-        android:id="@+id/tvTag"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@color/colorAccent"
-        android:text=""
-        android:minWidth="20dp"
-        android:maxLines="1"
-        android:maxEms="8"
-        android:lines="1"
-        android:ellipsize="end"
-        android:textColor="@color/colorWhite"
-        android:padding="5dp"
-        android:layout_weight="1"/>
+        android:background="@drawable/tag_background">
 
-    <View
-        android:layout_width="1px"
-        android:layout_height="match_parent"
-        android:background="@color/colorWhite"/>
+        <TextView
+            android:id="@+id/tvTag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:minWidth="20dp"
+            android:maxLines="1"
+            android:maxEms="8"
+            android:lines="1"
+            android:ellipsize="end"
+            android:textColor="@color/colorWhite"
+            android:padding="5dp"
+            android:layout_weight="1"/>
 
-    <TextView
-        android:id="@+id/bDeleteTag"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:text="x"
-        android:padding="5dp"
-        android:background="@color/colorAccent"
-        android:textColor="@color/colorWhite"
-        android:clickable="true"/>
+        <View
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="@color/colorMediumGray"/>
+
+        <TextView
+            android:id="@+id/bDeleteTag"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="x"
+            android:padding="5dp"
+            android:textColor="@color/colorWhite"
+            android:clickable="true"/>
+
+    </LinearLayout>
 
 </LinearLayout>
