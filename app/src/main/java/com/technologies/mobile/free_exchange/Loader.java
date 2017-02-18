@@ -3,6 +3,7 @@ package com.technologies.mobile.free_exchange;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v7.app.AlertDialog;
@@ -39,6 +40,8 @@ public class Loader {
         return dialog;
     }
 
+    private static boolean isAlertDialogShown = false;
+
     private static AlertDialog createAlertDialog(Context context){
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle(R.string.conn_error)
@@ -46,6 +49,12 @@ public class Loader {
                 .setCancelable(true)
                 .setPositiveButton(R.string.close,null)
                 .setIcon(R.drawable.error);
+        builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialogInterface) {
+                isAlertDialogShown = false;
+            }
+        });
         return builder.create();
     }
 
@@ -69,9 +78,7 @@ public class Loader {
         ProgressBar mProgressBar = (ProgressBar) ((Activity) context).findViewById(R.id.pb);
         ProgressBar dialogProgressBar = (ProgressBar) ((Activity) context).findViewById(R.id.pb_dialog);
         ProgressBar subsExsProgressBar = (ProgressBar) ((Activity) context).findViewById(R.id.pb_subs_exs);
-        if( !isOnline(context) ){
-            createAlertDialog(context).show();
-        }
+        alertIfNoInternet(context);
         if( mProgressBar != null ) {
             mProgressBar.setVisibility(View.VISIBLE);
             Log.e("progress","NOT NULL mProgressBar");
@@ -85,6 +92,13 @@ public class Loader {
             Log.e("progress","NOT NULL dialogProgressBar");
         }
         //Log.e("progress","show");
+    }
+
+    public static void alertIfNoInternet(Context context){
+        if( !isOnline(context) && !isAlertDialogShown){
+            createAlertDialog(context).show();
+            isAlertDialogShown = true;
+        }
     }
 
     public static void hideProgressBar(Context context){

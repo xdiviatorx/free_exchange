@@ -2,14 +2,10 @@ package com.technologies.mobile.free_exchange.activities;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.GradientDrawable;
-import android.os.PersistableBundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -22,16 +18,16 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
-import com.makeramen.roundedimageview.RoundedImageView;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
+import com.technologies.mobile.free_exchange.AppSingle;
 import com.technologies.mobile.free_exchange.MyApplication;
 import com.technologies.mobile.free_exchange.R;
 import com.technologies.mobile.free_exchange.adapters.NavigationRVAdapter;
-import com.technologies.mobile.free_exchange.fragments.AddFragment;
 import com.technologies.mobile.free_exchange.fragments.CreateSubscribeFragment;
 import com.technologies.mobile.free_exchange.fragments.DialogFragment;
 import com.technologies.mobile.free_exchange.fragments.FragmentAdapter;
@@ -41,15 +37,6 @@ import com.technologies.mobile.free_exchange.logic.BitmapUtil;
 import com.technologies.mobile.free_exchange.services.messages.MessageCatcherService;
 import com.technologies.mobile.free_exchange.services.subscribes.SubscribeExchangeCatcherService;
 import com.vk.sdk.VKSdk;
-import com.vk.sdk.api.VKApi;
-import com.vk.sdk.api.VKApiConst;
-import com.vk.sdk.api.VKParameters;
-import com.vk.sdk.api.VKRequest;
-import com.vk.sdk.api.VKResponse;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -106,13 +93,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        fragmentAdapter.initFragment(savedInstanceState.getInt(STORED_FRAGMENT_INDEX,0));
+        fragmentAdapter.initFragment(savedInstanceState.getInt(STORED_FRAGMENT_INDEX, 0));
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        Log.e(LOG_TAG,"SAVING");
-        outState.putInt(STORED_FRAGMENT_INDEX,fragmentAdapter.getCurrentFragmentIndex());
+        Log.e(LOG_TAG, "SAVING");
+        outState.putInt(STORED_FRAGMENT_INDEX, fragmentAdapter.getCurrentFragmentIndex());
         super.onSaveInstanceState(outState);
     }
 
@@ -157,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
         String photoUrl = PreferenceManager.getDefaultSharedPreferences(this).getString(LoginActivity.PHOTO, null);
         Log.e(LOG_TAG, "BEGIN PHOTO AND NAME");
         if (name != null && photoUrl != null) {
-            Log.e(LOG_TAG,"PHOTO AND NAME " + name + " " + photoUrl);
+            Log.e(LOG_TAG, "PHOTO AND NAME " + name + " " + photoUrl);
             adapter.setPersonalData(name, photoUrl);
             adapter.notifyDataSetChanged();
         }
@@ -239,16 +226,16 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    protected void initMenuItemAvatar(){
-        if( menu == null ){
+    protected void initMenuItemAvatar() {
+        if (menu == null) {
             return;
         }
 
-        target = new Target(){
+        target = new Target() {
             @Override
             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                 Bitmap nBitmap = BitmapUtil.getRoundedCornerBitmap(bitmap);
-                BitmapDrawable bitmapDrawable = new BitmapDrawable(getResources(),nBitmap);
+                BitmapDrawable bitmapDrawable = new BitmapDrawable(getResources(), nBitmap);
 
                 menu.findItem(R.id.action_avatar).setIcon(bitmapDrawable);
             }
@@ -298,27 +285,51 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    private boolean doubleBackPressed = false;
+
     @Override
     public void onBackPressed() {
         FragmentManager fm = getSupportFragmentManager();
+        int currFragment = AppSingle.getInstance().getCurrFragmentIndex();
+        if (currFragment == FragmentAdapter.HOME
+                || currFragment == FragmentAdapter.ADD
+                || currFragment == FragmentAdapter.MESSAGE
+                || currFragment == FragmentAdapter.SUBSCRIBES) {
+            if (doubleBackPressed) {
+                AppSingle.getInstance().setCurrFragmentIndex(-1,false);
+                super.onBackPressed();
+            } else {
+                doubleBackPressed = true;
+                Toast.makeText(this, R.string.press_back_twice_for_exit, Toast.LENGTH_SHORT).show();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        doubleBackPressed = false;
+                    }
+                }, 2000);
+            }
 
-        CreateSubscribeFragment createSubscribeFragment = (CreateSubscribeFragment) fm.findFragmentByTag(CreateSubscribeFragment.TAG);
-        if (createSubscribeFragment != null && createSubscribeFragment.isVisible()) {
-            createSubscribeFragment.setLastTitle();
+        } else {
+            CreateSubscribeFragment createSubscribeFragment = (CreateSubscribeFragment) fm.findFragmentByTag(CreateSubscribeFragment.TAG);
+            if (createSubscribeFragment != null && createSubscribeFragment.isVisible()) {
+                createSubscribeFragment.setLastTitle();
+            }
+
+            SubscribeExchangesFragment subscribeExchangesFragment =
+                    (SubscribeExchangesFragment) fm.findFragmentByTag(SubscribeExchangesFragment.TAG);
+            if (subscribeExchangesFragment != null && subscribeExchangesFragment.isVisible()) {
+                subscribeExchangesFragment.setLastTitle();
+            }
+
+            DialogFragment dialogFragment = (DialogFragment) fm.findFragmentByTag(DialogFragment.TAG);
+            if (dialogFragment != null && dialogFragment.isVisible()) {
+                dialogFragment.setLastTitle();
+            }
+
+            AppSingle.getInstance().popBackStack();
+
+            super.onBackPressed();
         }
-
-        SubscribeExchangesFragment subscribeExchangesFragment =
-                (SubscribeExchangesFragment) fm.findFragmentByTag(SubscribeExchangesFragment.TAG);
-        if (subscribeExchangesFragment != null && subscribeExchangesFragment.isVisible()) {
-            subscribeExchangesFragment.setLastTitle();
-        }
-
-        DialogFragment dialogFragment = (DialogFragment) fm.findFragmentByTag(DialogFragment.TAG);
-        if (dialogFragment != null && dialogFragment.isVisible()) {
-            dialogFragment.setLastTitle();
-        }
-
-        super.onBackPressed();
     }
 
     public FragmentAdapter getFragmentAdapter() {

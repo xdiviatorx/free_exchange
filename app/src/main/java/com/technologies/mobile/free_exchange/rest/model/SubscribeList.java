@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 
 /**
  * Created by diviator on 04.10.2016.
@@ -51,6 +52,10 @@ public class SubscribeList {
 
     public JSONArray getCategories() {
         return categories;
+    }
+
+    public int getCategory() throws JSONException{
+        return getCategories().getInt(0);
     }
 
     public String getIsNewExchanges() {

@@ -15,6 +15,8 @@ import android.widget.TextView;
 import com.technologies.mobile.free_exchange.Loader;
 import com.technologies.mobile.free_exchange.R;
 import com.technologies.mobile.free_exchange.activities.LoginActivity;
+import com.technologies.mobile.free_exchange.model.CategoriesManager;
+import com.technologies.mobile.free_exchange.model.Category;
 import com.technologies.mobile.free_exchange.rest.ExchangeClient;
 import com.technologies.mobile.free_exchange.rest.RetrofitService;
 import com.technologies.mobile.free_exchange.rest.model.GetSubscribeListsResponse;
@@ -44,6 +46,7 @@ public class SubscribesAdapter extends SimpleAdapter {
     public static final String ITEMS_GET = "ITEMS_GET";
     public static final String ITEMS_GIVE = "ITEMS_GIVE";
     public static final String CATEGORIES = "CATEGORIES";
+    public static final String CATEGORY = "CATEGORY";
     public static final String NOTIFICATION = "NOTIFICATION";
 
     private int UPLOAD_LENGTH = 20;
@@ -88,6 +91,12 @@ public class SubscribesAdapter extends SimpleAdapter {
                     item.put(ITEMS_GET, subscribeList.getItemsGet());
                     item.put(ITEMS_GIVE, subscribeList.getItemsGive());
                     item.put(CATEGORIES, subscribeList.getCategories());
+                    try {
+                        item.put(CATEGORY, subscribeList.getCategory());
+                    } catch (JSONException e) {
+                        item.put(CATEGORY, 0);
+                        e.printStackTrace();
+                    }
                     item.put(NOTIFICATION, subscribeList.getNotification());
                     data.add(item);
                 }
@@ -156,6 +165,11 @@ public class SubscribesAdapter extends SimpleAdapter {
                 break;
             }
         }
+
+        TextView tvCategory = (TextView) view.findViewById(R.id.tvCategory);
+        CategoriesManager categoriesManager = new CategoriesManager();
+        Category category = categoriesManager.getById(context,(int)data.get(position).get(CATEGORY));
+        tvCategory.setText(category.getName());
 
         return view;
     }

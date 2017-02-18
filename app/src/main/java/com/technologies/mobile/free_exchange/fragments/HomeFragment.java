@@ -1,12 +1,9 @@
 package com.technologies.mobile.free_exchange.fragments;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
@@ -15,19 +12,11 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AbsListView;
-import android.widget.AdapterView;
 import android.widget.ImageButton;
-import android.widget.ListView;
 
 import com.technologies.mobile.free_exchange.R;
-import com.technologies.mobile.free_exchange.activities.ExchangeMoreActivity;
 import com.technologies.mobile.free_exchange.activities.MainActivity;
 import com.technologies.mobile.free_exchange.adapters.CategoriesPagerAdapter;
-import com.technologies.mobile.free_exchange.adapters.SearchPullAdapter;
-import com.technologies.mobile.free_exchange.listeners.OnIconClickListener;
-
-import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * Created by diviator on 24.08.2016.
@@ -67,7 +56,7 @@ public class HomeFragment extends Fragment implements AbsListView.OnScrollListen
         tabLayout = (TabLayout) view.findViewById(R.id.tabs);
 
         viewPager = (ViewPager) view.findViewById(R.id.vpLists);
-        viewPager.setOffscreenPageLimit(getResources().getIntArray(R.array.categoriesIds).length);
+        viewPager.setOffscreenPageLimit(getResources().getIntArray(R.array.viewPagerCategoriesIds).length);
 
         pagerAdapter = new CategoriesPagerAdapter(getChildFragmentManager(),getContext());
 
@@ -163,9 +152,5 @@ public class HomeFragment extends Fragment implements AbsListView.OnScrollListen
         }
     }
 
-    @Override
-    protected void finalize() throws Throwable {
-        super.finalize();
-        viewPager.destroyDrawingCache();
-    }
+
 }

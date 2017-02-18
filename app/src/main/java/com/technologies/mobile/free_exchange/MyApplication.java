@@ -28,6 +28,7 @@ public class MyApplication extends Application {
 
     private Tracker mTracker;
 
+
     @Override
     public void onCreate() {
         super.onCreate();

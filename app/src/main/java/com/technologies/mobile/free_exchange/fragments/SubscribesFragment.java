@@ -14,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ListView;
 
+import com.technologies.mobile.free_exchange.AppSingle;
 import com.technologies.mobile.free_exchange.R;
 import com.technologies.mobile.free_exchange.adapters.ActivityActions;
 import com.technologies.mobile.free_exchange.adapters.SubscribesAdapter;
@@ -90,6 +91,8 @@ public class SubscribesFragment extends Fragment implements AbsListView.OnScroll
             public void onClick(View view) {
                 Fragment createSubscribeFragment = new CreateSubscribeFragment();
 
+                AppSingle.getInstance().setCurrFragmentIndex(FragmentAdapter.CREATE_EDIT_SUBSCRIBE, true);
+
                 FragmentManager fragmentManager = getFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 fragmentTransaction
@@ -165,7 +168,11 @@ public class SubscribesFragment extends Fragment implements AbsListView.OnScroll
         }
         args.putStringArrayList(CreateSubscribeFragment.ITEMS_GIVE,itemsGive);
 
+        args.putInt(CreateSubscribeFragment.CATEGORY,(int)subscribesAdapter.getData().get(position).get(SubscribesAdapter.CATEGORY));
+
         createSubscribeFragment.setArguments(args);
+
+        AppSingle.getInstance().setCurrFragmentIndex(FragmentAdapter.CREATE_EDIT_SUBSCRIBE, true);
 
         fragmentManager.beginTransaction().add(R.id.content,createSubscribeFragment,CreateSubscribeFragment.TAG)
                 .addToBackStack(null).commit();
@@ -178,6 +185,8 @@ public class SubscribesFragment extends Fragment implements AbsListView.OnScroll
         Bundle args = new Bundle();
         args.putString(SubscribeExchangesFragment.LIST_ID,(String)subscribesAdapter.getData().get(i).get(SubscribesAdapter.LIST_ID));
         subscribeExchangesFragment.setArguments(args);
+
+        AppSingle.getInstance().setCurrFragmentIndex(FragmentAdapter.OFFERS_IN_SUBSCRIBE, true);
 
         getActivity().getSupportFragmentManager().beginTransaction()
                 .add(R.id.content,subscribeExchangesFragment,SubscribeExchangesFragment.TAG)

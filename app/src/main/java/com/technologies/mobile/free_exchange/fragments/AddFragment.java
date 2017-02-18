@@ -2,15 +2,13 @@ package com.technologies.mobile.free_exchange.fragments;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.FileProvider;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.LinearLayoutManager;
@@ -24,19 +22,20 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.technologies.mobile.free_exchange.MyApplication;
 import com.technologies.mobile.free_exchange.R;
+import com.technologies.mobile.free_exchange.adapters.CategorySpinnerAdapter;
 import com.technologies.mobile.free_exchange.adapters.RecyclerAddedImagesAdapter;
 import com.technologies.mobile.free_exchange.rest.SendAsyncTask;
 import com.technologies.mobile.free_exchange.views.WrappingRelativeLayout;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -89,6 +88,9 @@ public class AddFragment extends Fragment implements View.OnClickListener {
     EditText mEtOther;
 
     AppCompatButton mBSend;
+
+    Spinner mSCategories;
+    CategorySpinnerAdapter spinnerAdapter;
 
     private Uri mJustPhoto;
 
@@ -176,6 +178,12 @@ public class AddFragment extends Fragment implements View.OnClickListener {
                 }
             }
         });
+
+        //Categories
+        spinnerAdapter = new CategorySpinnerAdapter(getContext(),R.layout.spinner_item);
+        mSCategories = (Spinner) view.findViewById(R.id.sCategory);
+        mSCategories.setAdapter(spinnerAdapter);
+        spinnerAdapter.initSpinner();
 
         // image buttons
         mAddGiveTag = (ImageButton) view.findViewById(R.id.bAddGiveTag);
@@ -350,8 +358,11 @@ public class AddFragment extends Fragment implements View.OnClickListener {
                 break;
             }
             case R.id.bGetFromGallery: {
-                Intent intent = new Intent(Intent.ACTION_PICK);
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                 intent.setType("image/*");
+                if(Build.VERSION.SDK_INT >= 18 ) {
+                    intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+                }
                 startActivityForResult(intent, GALLERY_REQUEST);
                 break;
             }
@@ -382,14 +393,23 @@ public class AddFragment extends Fragment implements View.OnClickListener {
         }
     }
 
+    public int getCategory(){
+        return spinnerAdapter.getData().get(mSCategories.getSelectedItemPosition()).getId();
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case GALLERY_REQUEST: {
                 if (resultCode == Activity.RESULT_OK) {
-                    Uri imageUri = data.getData();
-                    mRecyclerAdapter.addPhoto(imageUri);
+                    if( data.getClipData() != null ){
+                        for( int i = 0; i < data.getClipData().getItemCount(); i++ ){
+                            mRecyclerAdapter.addPhoto(data.getClipData().getItemAt(i).getUri());
+                        }
+                    }else{
+                        mRecyclerAdapter.addPhoto(data.getData());
+                    }
                 }
                 break;
             }

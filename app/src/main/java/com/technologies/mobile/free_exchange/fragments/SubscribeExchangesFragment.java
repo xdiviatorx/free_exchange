@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,11 +14,13 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.technologies.mobile.free_exchange.AppSingle;
 import com.technologies.mobile.free_exchange.R;
 import com.technologies.mobile.free_exchange.activities.ExchangeMoreActivity;
 import com.technologies.mobile.free_exchange.adapters.SearchPullAdapter;
 import com.technologies.mobile.free_exchange.adapters.SubscribePullAdapter;
 import com.technologies.mobile.free_exchange.listeners.OnIconClickListener;
+import com.technologies.mobile.free_exchange.listeners.OnSearchPerformListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,13 +29,17 @@ import java.util.HashMap;
  * Created by diviator on 07.10.2016.
  */
 
-public class SubscribeExchangesFragment extends Fragment implements AdapterView.OnItemClickListener, AbsListView.OnScrollListener, OnIconClickListener{
+public class SubscribeExchangesFragment extends Fragment implements AdapterView.OnItemClickListener,
+        AbsListView.OnScrollListener, OnIconClickListener, SwipeRefreshLayout.OnRefreshListener, OnSearchPerformListener{
 
     public static final String TAG = "subscribeExchangeTag";
     public static final String LIST_ID = "LIST_ID";
 
     ListView lvExchanges;
     SubscribePullAdapter spAdapter;
+    SwipeRefreshLayout srl;
+
+    @Nullable View view;
 
     String lastTitle;
 
@@ -62,6 +69,8 @@ public class SubscribeExchangesFragment extends Fragment implements AdapterView.
     }
 
     private void initViews(View view){
+        this.view = view;
+
         lvExchanges = (ListView) view.findViewById(R.id.lv);
 
         String[] from = {SearchPullAdapter.GIVE,SearchPullAdapter.GET,SearchPullAdapter.PLACE,SearchPullAdapter.CONTACTS,SearchPullAdapter.DATE};
@@ -69,6 +78,7 @@ public class SubscribeExchangesFragment extends Fragment implements AdapterView.
         ArrayList<HashMap<String,Object>> data = new ArrayList<>();
 
         spAdapter = new SubscribePullAdapter(getContext(),data,R.layout.exchange_item,from,to);
+        spAdapter.setOnSearchPerformListener(this);
 
         lvExchanges.setAdapter(spAdapter);
 
@@ -78,6 +88,9 @@ public class SubscribeExchangesFragment extends Fragment implements AdapterView.
         spAdapter.setListId(listId);
         spAdapter.initialUploading();
         spAdapter.setOnIconClickListener(this);
+
+        srl = (SwipeRefreshLayout) view.findViewById(R.id.srl);
+        srl.setOnRefreshListener(this);
     }
 
     private void setTitle() {
@@ -113,6 +126,8 @@ public class SubscribeExchangesFragment extends Fragment implements AdapterView.
         args.putString(DialogFragment.INTERLOCUTOR_VK_ID,authorVkId);
         dialogFragment.setArguments(args);
 
+        AppSingle.getInstance().setCurrFragmentIndex(FragmentAdapter.DIALOG,true);
+
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.add(R.id.content,dialogFragment,DialogFragment.TAG).addToBackStack(null).commit();
@@ -128,5 +143,22 @@ public class SubscribeExchangesFragment extends Fragment implements AdapterView.
         if( i >= Math.max(i2-10,10) ) {
             spAdapter.additionalUploading(i2);
         }
+    }
+
+    @Override
+    public void onRefresh() {
+        spAdapter.initialUploadingWithoutProgressBar();
+    }
+
+    @Override
+    public void onSearchPerformed(int count) {
+        if (view != null && view.findViewById(R.id.pbOfferList) != null) {
+            view.findViewById(R.id.pbOfferList).setVisibility(View.GONE);
+        }
+        if (count == 0 && view != null && view.findViewById(R.id.itemTryAgain) != null) {
+            view.findViewById(R.id.itemTryAgain).setVisibility(View.VISIBLE);
+        }
+
+        srl.setRefreshing(false);
     }
 }

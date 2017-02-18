@@ -30,8 +30,8 @@ public class CatchExchangeReceiver extends BroadcastReceiver{
 
     private static final String LOG_TAG = "ecService";
 
-    private static final int DELAY = 10000;
-    private static final int ERROR_DELAY = 30000;
+    private static final int NEXT_CATCH_DELAY = 5*60*1000;
+    private static final int NEXT_CATCH_DELAY_IF_ERROR = 10*60*1000;
 
     private AlarmManager alarmManager;
     private Context mContext;
@@ -47,7 +47,7 @@ public class CatchExchangeReceiver extends BroadcastReceiver{
         Log.e(LOG_TAG,"CATCH EXCHANGE");
         final String uid = PreferenceManager.getDefaultSharedPreferences(mContext).getString(LoginActivity.ID,null);
         if( uid == null ) {
-            nextCatchRegister(ERROR_DELAY);
+            nextCatchRegister(NEXT_CATCH_DELAY_IF_ERROR);
             Log.e(LOG_TAG," UID is NULL");
             return;
         }
@@ -67,12 +67,12 @@ public class CatchExchangeReceiver extends BroadcastReceiver{
                         }
                     }
                 }
-                nextCatchRegister(DELAY);
+                nextCatchRegister(NEXT_CATCH_DELAY);
             }
 
             @Override
             public void onFailure(Call<NewOffersByUidResponse> call, Throwable t) {
-                nextCatchRegister(ERROR_DELAY);
+                nextCatchRegister(NEXT_CATCH_DELAY_IF_ERROR);
                 Log.e(LOG_TAG,"ERROR " + t.toString());
             }
         });

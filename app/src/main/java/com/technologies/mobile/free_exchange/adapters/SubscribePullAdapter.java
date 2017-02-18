@@ -88,6 +88,9 @@ public class SubscribePullAdapter extends SearchPullAdapter {
                 }
                 notifyDataSetChanged();
                 uploading = false;
+                if( onSearchPerformListener != null ){
+                    onSearchPerformListener.onSearchPerformed(response.body().getResponse().getCount());
+                }
                 Loader.hideProgressBar(context);
             }
 
@@ -96,6 +99,9 @@ public class SubscribePullAdapter extends SearchPullAdapter {
                 Log.e(LOG_TAG, "ERROR SUBSCRIBE OFFERS LIST " + t.toString());
                 t.printStackTrace();
                 uploading = false;
+                if( onSearchPerformListener != null ){
+                    onSearchPerformListener.onSearchPerformed(0);
+                }
                 Loader.hideProgressBar(context);
             }
         });

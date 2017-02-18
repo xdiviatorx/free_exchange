@@ -3,7 +3,6 @@ package com.technologies.mobile.free_exchange.activities;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,11 +13,8 @@ import android.widget.Toast;
 import com.technologies.mobile.free_exchange.R;
 import com.technologies.mobile.free_exchange.rest.ExchangeClient;
 import com.technologies.mobile.free_exchange.rest.RetrofitService;
-import com.technologies.mobile.free_exchange.rest.VKClient;
 import com.technologies.mobile.free_exchange.rest.model.AddUserResponse;
 import com.technologies.mobile.free_exchange.rest.model.GetUserResponse;
-import com.technologies.mobile.free_exchange.rest.model.PersonalData;
-import com.technologies.mobile.free_exchange.rest.model.PersonalDataResponse;
 import com.vk.sdk.VKAccessToken;
 import com.vk.sdk.VKCallback;
 import com.vk.sdk.VKScope;
@@ -51,7 +47,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        startEmpathy();
+
         initViews();
+    }
+
+    private void startEmpathy(){
+        Intent intent = new Intent(this, EmpathyActivity.class);
+        startActivity(intent);
     }
 
     private void initViews() {

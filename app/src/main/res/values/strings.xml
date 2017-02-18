@@ -119,24 +119,57 @@
     <string name="detailed">Подробно</string>
 
     <!-- VIEW PAGER CATEGORIES -->
-    <string name="all">Все</string>
-    <string name="women_closes">Женская одежда</string>
-    <string name="men_closes">Мужская одежда</string>
-    <string name="tech">Техника</string>
-    <string name="children">Детское</string>
-    <string name="for_pretty">Все для красоты</string>
+    <string name="all">Всё</string>
+    <string name="without_category">Без категории</string>
+    <string name="closes">Одежда</string>
+    <string name="shoes">Обувь</string>
+    <string name="for_children">Детское</string>
+    <string name="all_for_beauty">Всё для красоты</string>
+    <string name="technique">Техника</string>
+    <string name="all_for_home">Всё для дома</string>
     <string name="books">Книги</string>
-    <string name="gift">Даром</string>
-    <string name="others">Разное</string>
+    <string name="auto_and_moto">Авто / Мото</string>
+    <string name="others">Сборная солянка</string>
+    <string name="services">Услуги</string>
 
-    <integer name="all">0</integer> <!--Все-->
-    <integer name="women_closes">51</integer> <!--Женская одежда-->
-    <integer name="men_closes">55</integer> <!--Мужская одежда-->
-    <integer name="tech">52</integer> <!--Техника-->
-    <integer name="children">56</integer> <!--Детское-->
-    <integer name="for_pretty">57</integer> <!--Все для красоты-->
-    <integer name="books">100</integer> <!--Книги-->
-    <integer name="gift">86</integer> <!--Даром-->
-    <integer name="others">54</integer> <!--Разное-->
+    <integer name="all">-1</integer>
+    <integer name="without_category">0</integer>
+    <integer name="closes">1</integer>
+    <integer name="shoes">2</integer>
+    <integer name="for_children">3</integer>
+    <integer name="all_for_beauty">4</integer>
+    <integer name="technique">5</integer>
+    <integer name="all_for_home">6</integer>
+    <integer name="books">7</integer>
+    <integer name="auto_and_moto">8</integer>
+    <integer name="others">9</integer>
+    <integer name="services">10</integer>
+
+    <!-- NEW CATEGORIES -->
+
+    
+    <!-- ЭМПАТИЯ -->
+    
+    <string name="emp1_slogan">Никаких денег</string>
+    <string name="emp1_text">Привет! Мы FREESHOP и мы не являемся торговой площадкой торгующей за деньги</string>
+    <string name="emp1_button">Приступить</string>
+
+    <string name="emp2_slogan">ИЩУ</string>
+    <string name="emp2_text">Размещайте Ваши объявления о поиске нужных вещей, продуктов или услуг</string>
+    <string name="emp2_button">Исследовать</string>
+
+    <string name="emp3_slogan">ДАЮ</string>
+    <string name="emp3_text">Продавайте, а точнее меняйте вещи на нужные Вам вещи или услуги</string>
+    <string name="emp3_button">Начать</string>
+
+    <string name="emp4_slogan">Обмен</string>
+    <string name="emp4_text">Лайкайте товары и ищите по тегам интересущие Вас обмены</string>
+    <string name="emp4_button">Попробовать</string>
+
+    <!-- BACK PRESS -->
+
+    <string name="press_back_twice_for_exit">Чтобы выйти из приложения нажмите \"назад\" еще раз</string>
+
+
 
 </resources>

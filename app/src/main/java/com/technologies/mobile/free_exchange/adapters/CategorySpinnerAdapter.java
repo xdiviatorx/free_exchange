@@ -2,94 +2,83 @@ package com.technologies.mobile.free_exchange.adapters;
 
 import android.content.Context;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import com.technologies.mobile.free_exchange.R;
-import com.technologies.mobile.free_exchange.rest.ExchangeClient;
-import com.technologies.mobile.free_exchange.rest.RetrofitService;
-import com.technologies.mobile.free_exchange.rest.model.Categories;
-import com.technologies.mobile.free_exchange.rest.model.CategoriesResponse;
-import com.technologies.mobile.free_exchange.rest.model.Category;
+import com.technologies.mobile.free_exchange.model.CategoriesManager;
+import com.technologies.mobile.free_exchange.model.Category;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 /**
  * Created by diviator on 26.08.2016.
  */
-public class CategorySpinnerAdapter extends SimpleAdapter {
+public class CategorySpinnerAdapter extends BaseAdapter {
 
     private String LOG_TAG = "mySpinnerAdapter";
 
     public static String NAME = "NAME";
     public static String ID = "ID";
 
-    ArrayList<HashMap<String,Object>> data;
+    ArrayList<Category> mData;
 
-    private Context context;
+    private Context mContext;
+    private int mResource;
 
-    public CategorySpinnerAdapter(Context context, ArrayList<HashMap<String,Object>> data, int resource, String[] from, int[] to) {
-        super(context, data, resource, from, to);
-        this.data = data;
-        this.context = context;
-    }
-
-    public ArrayList<HashMap<String, Object>> getData() {
-        return data;
-    }
-
-    public void initSpinner(){
-        ExchangeClient client = RetrofitService.createService(ExchangeClient.class);
-
-        Call<Categories> categoriesCall = client.getCategoriesList(ExchangeClient.apiKey);
-
-        categoriesCall.enqueue(new Callback<Categories>() {
-            @Override
-            public void onResponse(Call<Categories> call, Response<Categories> response) {
-                Categories categories = response.body();
-                CategoriesResponse categoriesResponse = categories.getCategoriesResponse();
-                Category[] categoriesArray = categoriesResponse.getCategories();
-
-                for( Category category : categoriesArray ){
-
-                    //if( category.getDisplay() == 1 ) {
-                        HashMap<String, Object> item = new HashMap<>();
-                        item.put(NAME,category.getName());
-                        item.put(ID,category.getId());
-                        data.add(item);
-                    //}
-
-                }
-                notifyDataSetChanged();
-                Log.e(LOG_TAG,"SUCCESS");
-            }
-
-            @Override
-            public void onFailure(Call<Categories> call, Throwable t) {
-                Log.e(LOG_TAG,"FAILURE");
-                Log.e(LOG_TAG,t.toString());
-            }
-        });
+    public CategorySpinnerAdapter(Context context, int resource) {
+        this.mContext = context;
+        this.mResource = resource;
+        mData = new ArrayList<>();
     }
 
     @Override
-    public View getDropDownView(int position, View convertView, ViewGroup parent) {
-        View view = View.inflate(context, R.layout.spinner_dropdown_item, null);
+    public int getCount() {
+        return mData.size();
+    }
+
+    @Override
+    public Category getItem(int i) {
+        return mData.get(i);
+    }
+
+    @Override
+    public long getItemId(int i) {
+        return getItem(i).getId();
+    }
+
+    public ArrayList<Category> getData() {
+        return mData;
+    }
+
+    @Override
+    public View getView(int pos, View convertView, ViewGroup parent) {
+        View view = LayoutInflater.from(mContext).inflate(mResource,parent,false);
 
         TextView name = (TextView) view.findViewById(R.id.tv);
-        name.setText(data.get(position).get(NAME).toString());
+        name.setText(getItem(pos).getName());
 
-        LinearLayout divider = new LinearLayout(context);
+        return view;
+    }
+
+    public void initSpinner(){
+        CategoriesManager categoriesManager = new CategoriesManager();
+        mData.addAll(categoriesManager.getCategories(mContext));
+        notifyDataSetChanged();
+    }
+
+    @Override
+    public View getDropDownView(int pos, View convertView, ViewGroup parent) {
+        View view = View.inflate(mContext, R.layout.spinner_dropdown_item, null);
+
+        TextView name = (TextView) view.findViewById(R.id.tv);
+        name.setText(getItem(pos).getName());
+
+        LinearLayout divider = new LinearLayout(mContext);
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,1);
         divider.setBackgroundResource(R.color.colorMediumGray);
         divider.setLayoutParams(lp);

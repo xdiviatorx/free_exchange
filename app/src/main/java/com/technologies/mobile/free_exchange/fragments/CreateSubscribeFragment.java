@@ -14,11 +14,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.technologies.mobile.free_exchange.Loader;
 import com.technologies.mobile.free_exchange.R;
 import com.technologies.mobile.free_exchange.activities.LoginActivity;
+import com.technologies.mobile.free_exchange.adapters.CategorySpinnerAdapter;
+import com.technologies.mobile.free_exchange.model.CategoriesManager;
 import com.technologies.mobile.free_exchange.rest.ExchangeClient;
 import com.technologies.mobile.free_exchange.rest.RetrofitService;
 import com.technologies.mobile.free_exchange.rest.model.AddSubscribeListResponse;
@@ -49,6 +52,7 @@ public class CreateSubscribeFragment extends Fragment implements View.OnClickLis
     public static final String ITEMS_GET = "ITEMS_GET";
     public static final String NOTIFICATION = "NOTIFICATION";
     public static final String LIST_ID = "LIST_ID";
+    public static final String CATEGORY = "CATEGORY";
 
     EditText mEtGives;
     EditText mEtGets;
@@ -65,6 +69,9 @@ public class CreateSubscribeFragment extends Fragment implements View.OnClickLis
 
     String lastTitle;
 
+    Spinner mSpinnerCategory;
+    CategorySpinnerAdapter mSpinnerAdapter;
+
     @Nullable
     private String listId;
     private int notification;
@@ -72,6 +79,7 @@ public class CreateSubscribeFragment extends Fragment implements View.OnClickLis
     private ArrayList<String> itemsGive;
     @Nullable
     private ArrayList<String> itemsGet;
+    private int category;
 
     public CreateSubscribeFragment() {
 
@@ -86,6 +94,7 @@ public class CreateSubscribeFragment extends Fragment implements View.OnClickLis
             notification = getArguments().getInt(NOTIFICATION);
             itemsGet = getArguments().getStringArrayList(ITEMS_GET);
             itemsGive = getArguments().getStringArrayList(ITEMS_GIVE);
+            category = getArguments().getInt(CATEGORY);
         }
 
     }
@@ -109,6 +118,11 @@ public class CreateSubscribeFragment extends Fragment implements View.OnClickLis
             bApply.setText(R.string.subs_update);
         }
         bApply.setOnClickListener(this);
+
+        mSpinnerAdapter = new CategorySpinnerAdapter(getContext(),R.layout.spinner_item);
+        mSpinnerAdapter.initSpinner();
+        mSpinnerCategory = (Spinner) view.findViewById(R.id.sCategory);
+        mSpinnerCategory.setAdapter(mSpinnerAdapter);
 
         mAddGiveTag = (ImageButton) view.findViewById(R.id.bAddGiveTag);
         mAddGiveTag.setOnClickListener(this);
@@ -219,6 +233,9 @@ public class CreateSubscribeFragment extends Fragment implements View.OnClickLis
                     break;
                 }
             }
+            CategoriesManager categoriesManager = new CategoriesManager();
+            int catsIndex = categoriesManager.getIndexInSpinnerById(getContext(),category);
+            mSpinnerCategory.setSelection(catsIndex);
         }
     }
 
@@ -270,7 +287,7 @@ public class CreateSubscribeFragment extends Fragment implements View.OnClickLis
 
         JSONArray categories;
         try {
-            categories = new JSONArray("[\"0\"]");
+            categories = new JSONArray("["+mSpinnerAdapter.getData().get(mSpinnerCategory.getSelectedItemPosition()).getId()+"]");
         } catch (JSONException e) {
             e.printStackTrace();
             throwError();

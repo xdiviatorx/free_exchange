@@ -31,4 +31,10 @@
 
     <color name="shadow">#e1dbdb</color>
     <color name="stroke">#cfcfcf</color>
+
+
+    <color name="colorEmpathy1">#57abef</color>
+    <color name="colorEmpathy2">#319739</color>
+    <color name="colorEmpathy3">#d94162</color>
+    <color name="colorEmpathy4">#ffb20b</color>
 </resources>

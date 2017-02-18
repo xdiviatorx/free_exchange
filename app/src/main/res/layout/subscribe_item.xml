@@ -86,6 +86,23 @@
                             style="@style/SearchPullText"/>
                     </TableRow>
 
+                    <TableRow>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/category"
+                            style="@style/SearchPullCategoriesText"
+                            />
+                        <TextView
+                            android:id="@+id/tvCategory"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:text="@string/sample"
+
+                            style="@style/SearchPullText"/>
+                    </TableRow>
+
                 </TableLayout>
 
             </LinearLayout>

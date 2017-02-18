@@ -1,5 +1,6 @@
 package com.technologies.mobile.free_exchange.activities;
 
+import android.content.Intent;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -20,6 +21,7 @@ import com.squareup.picasso.Picasso;
 import com.technologies.mobile.free_exchange.CommentsCountManager;
 import com.technologies.mobile.free_exchange.R;
 import com.technologies.mobile.free_exchange.adapters.CommentAdapter;
+import com.technologies.mobile.free_exchange.listeners.OnImageClickListener;
 import com.technologies.mobile.free_exchange.rest.ExchangeClient;
 import com.technologies.mobile.free_exchange.rest.RetrofitService;
 import com.technologies.mobile.free_exchange.rest.model.AddCommentResponse;
@@ -36,7 +38,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ExchangeMoreActivity extends AppCompatActivity implements AbsListView.OnScrollListener, View.OnClickListener {
+public class ExchangeMoreActivity extends AppCompatActivity implements AbsListView.OnScrollListener, View.OnClickListener, OnImageClickListener {
 
     public static final String LOG_TAG = "commentsActivity";
 
@@ -107,6 +109,7 @@ public class ExchangeMoreActivity extends AppCompatActivity implements AbsListVi
 
         if (curItem.getPhotosArray() != null && curItem.getPhotosArray().length != 0 && !curItem.getPhotosArray()[0].isEmpty()) {
             aplPhotos.addPhotos(Arrays.asList(curItem.getPhotosArray()));
+            aplPhotos.setOnImageClickListener(this);
         }
 
         tvName.setText(curItem.getUserData().getName());
@@ -195,4 +198,12 @@ public class ExchangeMoreActivity extends AppCompatActivity implements AbsListVi
     }
 
 
+    @Override
+    public void onImageClicked(int imageIndex) {
+        Intent intent = new Intent(this, ImagePreviewActivity.class);
+        String[] images = curItem.getPhotosArray();
+        intent.putExtra(ImagePreviewActivity.IMAGES, images);
+        intent.putExtra(ImagePreviewActivity.ITEM,imageIndex);
+        startActivity(intent);
+    }
 }

@@ -201,6 +201,11 @@ public class SearchPullAdapter extends SimpleAdapter {
         return convertView;
     }
 
+    @Override
+    public int getCount() {
+        return data.size();
+    }
+
     public ArrayList<HashMap<String, Object>> getData() {
         return data;
     }
@@ -226,6 +231,7 @@ public class SearchPullAdapter extends SimpleAdapter {
                     if( onIconClickListener != null ){
                         onIconClickListener.onIconClick(view, position);
                     }
+                    break;
                 }
             }
         }
@@ -240,13 +246,26 @@ public class SearchPullAdapter extends SimpleAdapter {
         }
     }
 
-    public void initialUploading() {
-        Loader.showProgressBar(context);
+    private void init(){
+        data = new ArrayList<>();
+        metaData = new ArrayList<>();
+        notifyDataSetChanged();
+
         if( onSearchBeginListener != null ){
             onSearchBeginListener.onSearchBegun();
         }
         uploading = true;
         performListQuery(0, UPLOAD_LENGTH);
+    }
+
+    public void initialUploading() {
+        init();
+        Loader.showProgressBar(context);
+    }
+
+    public void initialUploadingWithoutProgressBar() {
+        init();
+        Loader.alertIfNoInternet(context);
     }
 
     public void additionalUploading(int start) {
@@ -339,7 +358,9 @@ public class SearchPullAdapter extends SimpleAdapter {
                 builder.setNeutralButton("Закрыть",null);
                 builder.setMessage(t.toString());
                 builder.create().show();*/
-
+                if( onSearchPerformListener != null ){
+                    onSearchPerformListener.onSearchPerformed(0);
+                }
                 t.printStackTrace();
                 uploading = false;
                 Loader.hideProgressBar(context);

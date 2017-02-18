@@ -5,12 +5,19 @@
     android:layout_height="match_parent"
     android:background="@color/colorWindowBackground">
 
-    <ListView
-        android:id="@+id/lv"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/srl"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:divider="@null"
-        android:dividerHeight="0dp"/>
+        android:layout_height="match_parent">
+
+        <ListView
+            android:id="@+id/lv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:divider="@null"
+            android:dividerHeight="0dp"/>
+
+    </android.support.v4.widget.SwipeRefreshLayout>
 
     <!--
     <LinearLayout
@@ -36,6 +43,14 @@
         android:id="@+id/pb_subs_exs"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="visible"/>
+
+    <include
+        android:id="@+id/itemTryAgain"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        layout="@layout/item_try_again"
         android:layout_centerInParent="true"
         android:visibility="gone"/>
 

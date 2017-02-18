@@ -14,6 +14,7 @@ import com.technologies.mobile.free_exchange.rest.model.GetCommentsResponse;
 import com.technologies.mobile.free_exchange.rest.model.GetOffersByListResponse;
 import com.technologies.mobile.free_exchange.rest.model.GetSubscribeListsResponse;
 import com.technologies.mobile.free_exchange.rest.model.GetUserResponse;
+import com.technologies.mobile.free_exchange.rest.model.IpUrl;
 import com.technologies.mobile.free_exchange.rest.model.ListDialogsResponse;
 import com.technologies.mobile.free_exchange.rest.model.NewMessagesResponse;
 import com.technologies.mobile.free_exchange.rest.model.NewOffersByUidResponse;
@@ -72,14 +73,14 @@ public interface ExchangeClient {
     Call<AddResponse> addPost(@Field("id") String id, @Field("post_id") int postId,
                               @Field("ItemsPut") String itemsGive, @Field("ItemsGet") String itemsGet,
                               @Field("ContactsPM") String pm, @Field("ContactsPhone") String phone, @Field("Geo") String place,
-                              @Field("Images") JSONArray JSONImagesArray, @Field("APIKey") String apiKey);
+                              @Field("Images") JSONArray JSONImagesArray, @Field("category") int category, @Field("APIKey") String apiKey);
 
     @FormUrlEncoded
     @POST("API/Add")
     Call<AddResponse> addPost(@Field("id") String id,
                               @Field("ItemsPut") String itemsGive, @Field("ItemsGet") String itemsGet,
                               @Field("ContactsPM") String pm, @Field("ContactsPhone") String phone, @Field("Geo") String place,
-                              @Field("Images") JSONArray JSONImagesArray, @Field("APIKey") String apiKey);
+                              @Field("Images") JSONArray JSONImagesArray, @Field("category") int category, @Field("APIKey") String apiKey);
 
     @FormUrlEncoded
     @POST("API/GetDialogs")
@@ -152,4 +153,8 @@ public interface ExchangeClient {
     @POST("API/addComment")
     Call<AddCommentResponse> addComment(@Field("offer_id") String offerId, @Field("uid") String uid,
                                         @Field("text") String text, @Field("APIKey") String apiKey);
+
+    @FormUrlEncoded
+    @POST("API/getIPUrl")
+    Call<IpUrl> getIpUrl(@Field("APIKey") String apiKey);
 }

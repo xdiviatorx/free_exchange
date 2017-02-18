@@ -16,8 +16,6 @@ import android.widget.AbsListView;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
-import android.widget.TextView;
 
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
@@ -26,27 +24,13 @@ import com.technologies.mobile.free_exchange.R;
 import com.technologies.mobile.free_exchange.activities.LoginActivity;
 import com.technologies.mobile.free_exchange.adapters.ChatMessage;
 import com.technologies.mobile.free_exchange.adapters.MessageListAdapter;
-import com.technologies.mobile.free_exchange.logic.TextFormatter;
-import com.technologies.mobile.free_exchange.notification.Notificator;
 import com.technologies.mobile.free_exchange.rest.ExchangeClient;
 import com.technologies.mobile.free_exchange.rest.RetrofitService;
 import com.technologies.mobile.free_exchange.rest.model.AddMessageResponse;
-import com.technologies.mobile.free_exchange.rest.model.DialogMessage;
-import com.technologies.mobile.free_exchange.rest.model.DialogMessagesResponse;
 import com.technologies.mobile.free_exchange.rest.model.ListDialogsResponse;
-import com.vk.sdk.api.VKApi;
 import com.vk.sdk.api.VKError;
 import com.vk.sdk.api.VKRequest;
 import com.vk.sdk.api.VKResponse;
-import com.vk.sdk.api.methods.VKApiFriends;
-import com.vk.sdk.api.methods.VKApiMessages;
-import com.vk.sdk.api.methods.VKApiUsers;
-
-import java.security.spec.ECField;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;

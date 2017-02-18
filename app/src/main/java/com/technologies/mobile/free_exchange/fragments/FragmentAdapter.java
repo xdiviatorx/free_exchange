@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 
+import com.technologies.mobile.free_exchange.AppSingle;
 import com.technologies.mobile.free_exchange.R;
 import com.technologies.mobile.free_exchange.activities.SearchActivity;
 
@@ -16,41 +17,45 @@ import com.technologies.mobile.free_exchange.activities.SearchActivity;
  */
 public class FragmentAdapter {
 
+    public static final int HOME = 0;
+    public static final int ADD = 2;
     public static final int MESSAGE = 3;
     public static final int SUBSCRIBES = 4;
     public static final int DIALOG = 5;
+    public static final int CREATE_EDIT_SUBSCRIBE = 6; // in SubscribesFragment
+    public static final int OFFERS_IN_SUBSCRIBE = 7; // in SubscribesFragment
 
     private Activity activity;
     private FragmentManager fragmentManager;
 
-    private int currentFragmentIndex = -1;
-
-    private final Fragment home = new HomeFragment();
-    private final Fragment add = new AddFragment();
-    private final Fragment message = new MessageFragment();
-    private final Fragment subscribes = new SubscribesFragment();
-    private final Fragment dialog = new DialogFragment();
+    private Fragment home;
+    private Fragment add;
+    private Fragment message;
+    private Fragment subscribes;
+    private Fragment dialog;
 
     public FragmentAdapter(Activity activity) {
         this.activity = activity;
         this.fragmentManager = ((AppCompatActivity) activity).getSupportFragmentManager();
+
+        home = new HomeFragment();
+        add = new AddFragment();
+        message = new MessageFragment();
+        subscribes = new SubscribesFragment();
+        dialog = new DialogFragment();
     }
 
     public void initDefaultFragment() {
-        initFragment(0);
+        initFragment(HOME);
     }
 
     public void initFragment(int index) {
         Fragment fragment;
         boolean backStack = false;
         switch (index) {
-            case 0: {
-                if (currentFragmentIndex == 0) {
-                    return;
-                }
+            case HOME: {
                 fragment = home;
-                fragment.setRetainInstance(true);
-                currentFragmentIndex = 0;
+                setCurrentFragmentIndex(HOME, backStack);
                 break;
             }
             case 1: {
@@ -59,30 +64,30 @@ public class FragmentAdapter {
                 activity.startActivity(intent);
                 return;
             }
-            case 2: {
+            case ADD: {
                 fragment = add;
-                currentFragmentIndex = 2;
+                setCurrentFragmentIndex(ADD, backStack);
                 break;
             }
             case MESSAGE: {
                 fragment = message;
-                currentFragmentIndex = MESSAGE;
+                setCurrentFragmentIndex(MESSAGE, backStack);
                 break;
             }
             case SUBSCRIBES: {
                 fragment = subscribes;
-                currentFragmentIndex = SUBSCRIBES;
+                setCurrentFragmentIndex(SUBSCRIBES, backStack);
                 break;
             }
             case DIALOG: {
                 fragment = dialog;
                 backStack = true;
-                currentFragmentIndex = DIALOG;
+                setCurrentFragmentIndex(DIALOG, backStack);
                 break;
             }
             default: {
                 fragment = home;
-                currentFragmentIndex = 0;
+                setCurrentFragmentIndex(HOME, backStack);
             }
         }
 
@@ -101,7 +106,11 @@ public class FragmentAdapter {
         activity.setTitle(titles[index]);
     }
 
+    public void setCurrentFragmentIndex(int index, boolean backStack){
+        AppSingle.getInstance().setCurrFragmentIndex(index, backStack);
+    }
+
     public int getCurrentFragmentIndex() {
-        return currentFragmentIndex;
+        return AppSingle.getInstance().getCurrFragmentIndex();
     }
 }

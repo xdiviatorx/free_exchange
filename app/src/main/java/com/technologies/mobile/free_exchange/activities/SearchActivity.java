@@ -2,6 +2,7 @@ package com.technologies.mobile.free_exchange.activities;
 
 import android.animation.Animator;
 import android.content.Intent;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatSpinner;
@@ -33,7 +34,7 @@ import java.util.HashMap;
 
 public class SearchActivity extends AppCompatActivity implements View.OnClickListener,
         TextWatcher, AbsListView.OnScrollListener, AdapterView.OnItemSelectedListener,
-        AdapterView.OnItemClickListener, OnSearchPerformListener, OnIconClickListener {
+        AdapterView.OnItemClickListener, OnSearchPerformListener, OnIconClickListener, SwipeRefreshLayout.OnRefreshListener{
 
     private String LOG_TAG = "mySearch";
 
@@ -55,6 +56,7 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
 
     private ListView lv;
     private SearchPullAdapter lvAdapter;
+    private SwipeRefreshLayout srl;
 
     private int lastFirstVisibleItem = 0;
 
@@ -117,11 +119,7 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
     private void initCategorySpinner() {
         appCompatSpinner = (AppCompatSpinner) findViewById(R.id.category);
 
-        String[] from = {CategorySpinnerAdapter.NAME};
-        int[] to = {R.id.tv};
-        ArrayList<HashMap<String, Object>> data = new ArrayList<>();
-
-        spinnerAdapter = new CategorySpinnerAdapter(this, data, R.layout.spinner_item, from, to);
+        spinnerAdapter = new CategorySpinnerAdapter(this, R.layout.spinner_item);
         spinnerAdapter.initSpinner();
 
         appCompatSpinner.setAdapter(spinnerAdapter);
@@ -147,6 +145,9 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
         lv.setOnItemClickListener(this);
 
         lvAdapter.initialUploading();
+
+        srl = (SwipeRefreshLayout) findViewById(R.id.srl);
+        srl.setOnRefreshListener(this);
     }
 
     private void setDefaultToolbarState() {
@@ -212,7 +213,7 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
         tvGets.setText(etGets.getText().toString());
         String categoryName;
         if (spinnerAdapter.getData().size() != 0) {
-            categoryName = spinnerAdapter.getData().get(appCompatSpinner.getSelectedItemPosition()).get(CategorySpinnerAdapter.NAME).toString();
+            categoryName = spinnerAdapter.getData().get(appCompatSpinner.getSelectedItemPosition()).getName();
         } else {
             categoryName = getResources().getString(R.string.no_category);
         }
@@ -394,7 +395,7 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
 
         int category = 0;
         if (spinnerAdapter.getData().size() != 0) {
-            category = (int) spinnerAdapter.getData().get(appCompatSpinner.getSelectedItemPosition()).get(CategorySpinnerAdapter.ID);
+            category = spinnerAdapter.getData().get(appCompatSpinner.getSelectedItemPosition()).getId();
         }
 
         lvAdapter.setUploadingParams(etGives.getText().toString(), etGets.getText().toString(), category);
@@ -442,6 +443,7 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
         } else {
             hideTryAgainMessage();
         }
+        srl.setRefreshing(false);
     }
 
     private void showTryAgainMessage() {
@@ -452,4 +454,10 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
         findViewById(R.id.itemTryAgain).setVisibility(View.GONE);
     }
 
+    @Override
+    public void onRefresh() {
+        minimize();
+        hideTryAgainMessage();
+        lvAdapter.initialUploadingWithoutProgressBar();
+    }
 }

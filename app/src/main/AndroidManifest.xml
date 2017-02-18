@@ -113,7 +113,10 @@
         <activity
             android:name=".activities.SubscribeExchangeActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".activities.Empathy"></activity>
+        <activity
+            android:name=".activities.EmpathyActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
     </application>
 
 </manifest>

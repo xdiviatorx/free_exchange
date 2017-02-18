@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -249,8 +250,20 @@ public class SendAsyncTask extends AsyncTask<Void, Void, Integer> {
         ExchangeClient client = RetrofitService.createService(ExchangeClient.class);
         JSONArray JSONImagesArray;
         try {
-            JSONImagesArray = new JSONArray(images);
-        } catch (JSONException e) {
+            if(Build.VERSION.SDK_INT >= 19 ){
+                JSONImagesArray = new JSONArray(images);
+            }else {
+                String json = "[";
+                for (int i = 0; i < images.length; i++) {
+                    if (i > 0) {
+                        json += ",";
+                    }
+                    json += "\"" + images[i] + "\"";
+                }
+                json += "]";
+                JSONImagesArray = new JSONArray(json);
+            }
+        } catch (Exception e) {
             e.printStackTrace();
             Loader.hideSender();
             Toast.makeText(mFragment.getContext(), R.string.post_error, Toast.LENGTH_LONG).show();
@@ -267,10 +280,10 @@ public class SendAsyncTask extends AsyncTask<Void, Void, Integer> {
 
         if (isPostIdValid) {
             addResponseCall = client.addPost(uid, postId,
-                    getServerGive(), getServerGet(), getServerPM(), getPhone(), mFragment.getPlace(), JSONImagesArray, ExchangeClient.apiKey);
+                    getServerGive(), getServerGet(), getServerPM(), getPhone(), mFragment.getPlace(), JSONImagesArray, mFragment.getCategory(), ExchangeClient.apiKey);
         } else {
             addResponseCall = client.addPost(uid,
-                    getServerGive(), getServerGet(), getServerPM(), getPhone(), mFragment.getPlace(), JSONImagesArray, ExchangeClient.apiKey);
+                    getServerGive(), getServerGet(), getServerPM(), getPhone(), mFragment.getPlace(), JSONImagesArray, mFragment.getCategory(), ExchangeClient.apiKey);
         }
 
         Log.e(LOG_TAG, "JsonImages" + JSONImagesArray.toString());
@@ -393,7 +406,7 @@ public class SendAsyncTask extends AsyncTask<Void, Void, Integer> {
 
     public void success() {
         FragmentAdapter fragmentAdapter = new FragmentAdapter(mFragment.getActivity());
-        fragmentAdapter.initFragment(0);
+        fragmentAdapter.initDefaultFragment();
     }
 
 }

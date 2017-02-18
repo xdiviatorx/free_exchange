@@ -14,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
+import com.technologies.mobile.free_exchange.AppSingle;
 import com.technologies.mobile.free_exchange.R;
 import com.technologies.mobile.free_exchange.adapters.DialogListAdapter;
 import com.technologies.mobile.free_exchange.rest.ExchangeClient;
@@ -102,6 +103,8 @@ public class MessageFragment extends Fragment implements AbsListView.OnScrollLis
         args.putString(DialogFragment.DIALOG_ID,dialogId);
         args.putString(DialogFragment.INTERLOCUTOR_VK_ID,interlocutorVkId);
         dialogFragment.setArguments(args);
+
+        AppSingle.getInstance().setCurrFragmentIndex(FragmentAdapter.DIALOG,true);
 
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();

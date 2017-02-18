@@ -25,6 +25,10 @@ import retrofit2.Response;
  */
 public class CatchMessageReceiver extends BroadcastReceiver {
 
+    private static final int NEXT_CATCH_DELAY = 3*60*1000;
+    private static final int NEXT_CATCH_DELAY_IF_RECEIVED = 30*1000;
+    private static final int NEXT_CATCH_DELAY_IF_ERROR = 10*60*1000;
+
     private static final String LOG_TAG = "mCservice";
 
     private AlarmManager alarmManager;
@@ -41,7 +45,7 @@ public class CatchMessageReceiver extends BroadcastReceiver {
         Log.e(LOG_TAG,"CATCH MESSAGE");
         final String uid = PreferenceManager.getDefaultSharedPreferences(mContext).getString(LoginActivity.ID,null);
         if( uid == null ) {
-            nextCatchRegister(20000);
+            nextCatchRegister(NEXT_CATCH_DELAY_IF_ERROR);
             Log.e(LOG_TAG," UID is NULL");
             return;
         }
@@ -70,15 +74,15 @@ public class CatchMessageReceiver extends BroadcastReceiver {
                     Notificator notificator = new Notificator(mContext);
                     notificator.notificate(uid);
 
-                    nextCatchRegister(3000);
+                    nextCatchRegister(NEXT_CATCH_DELAY_IF_RECEIVED);
                 }else{
-                    nextCatchRegister(5000);
+                    nextCatchRegister(NEXT_CATCH_DELAY);
                 }
             }
 
             @Override
             public void onFailure(Call<NewMessagesResponse> call, Throwable t) {
-                nextCatchRegister(20000);
+                nextCatchRegister(NEXT_CATCH_DELAY_IF_ERROR);
                 Log.e(LOG_TAG,"ERROR " + t.toString());
             }
         });
