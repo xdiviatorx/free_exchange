@@ -52,13 +52,11 @@ public class RetrofitService {
                     request = requestBuilder
                             .post(RequestBody.create(MediaType.parse("application/x-www-form-urlencoded;charset=UTF-8"), postBodyString))
                             .build();
-                    Log.e(TAG, "intercept: URL = " + request.url().toString());
 
                     Response response = chain.proceed(request);
 
                     retrofit2.Response<IpUrl> ipUrlResponse = null;
 
-                    Log.e(TAG, "CODE = " + response.code());
                     if (response.code() != 200) {
                         builder = getBuilder(DOMAIN);
                         ipUrlResponse = createService(ExchangeClient.class).getIpUrl(ExchangeClient.apiKey).execute();

@@ -89,9 +89,11 @@ public class CityChooseDialog extends DialogFragment implements View.OnClickList
         switch (view.getId()){
             case R.id.acbOk:{
                 CityManager.setGlobalCity(getContext(), cityAdapter.getCurrentCity());
+                getDialog().dismiss();
                 if( onDialogListener != null ){
                     onDialogListener.onDismiss(true);
                 }
+                break;
             }
             case R.id.acbCancel:{
                 getDialog().dismiss();
