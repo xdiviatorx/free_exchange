@@ -83,6 +83,10 @@
         <item name="colorButtonNormal">@color/colorTransparent</item>
     </style>
 
+    <style name="CustomPrimaryImageButtonTheme">
+        <item name="colorButtonNormal">@color/colorPrimary</item>
+    </style>
+
     <style name="DeletePopupButtonTheme">
         <item name="colorButtonNormal">@color/loginButtonColor</item>
     </style>

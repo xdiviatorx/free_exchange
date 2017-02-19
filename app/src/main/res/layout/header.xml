@@ -1,36 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
-    <ImageView
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:src="@drawable/wall"
-        android:scaleType="fitXY"/>
+        android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/headerName"
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/wall" />
+
+        <TextView
+            android:id="@+id/headerName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/headerPhoto"
+            android:layout_marginBottom="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
+            android:textColor="@color/colorWhite"
+            android:textSize="14dp"
+            android:textStyle="bold" />
+
+        <com.makeramen.roundedimageview.RoundedImageView
+            android:id="@+id/headerPhoto"
+            android:layout_width="78dp"
+            android:layout_height="78dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
+            android:scaleType="centerCrop"
+            app:riv_oval="true" />
+
+    </RelativeLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/headerPhoto"
-        android:layout_marginBottom="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="16dp"
-        android:textSize="14dp"
-        android:textStyle="bold"
-        android:textColor="@color/colorWhite" />
+        android:layout_height="42dp"
+        android:orientation="horizontal">
 
-    <com.makeramen.roundedimageview.RoundedImageView
-        android:id="@+id/headerPhoto"
-        android:layout_width="78dp"
-        android:layout_height="78dp"
-        app:riv_oval="true"
-        android:scaleType="centerCrop"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="16dp"
-        />
+        <TextView
+            android:id="@+id/tvCityName"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:paddingLeft="16dp"
+            android:textColor="@color/colorPrimary"
+            android:textSize="14sp"
+            android:textStyle="bold" />
 
-</RelativeLayout>
+        <ImageButton
+            android:id="@+id/ibChooseCity"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginRight="4dp"
+            android:paddingBottom="8dp"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp"
+            android:paddingTop="8dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/edit"
+            android:theme="@style/CustomTransparentImageButtonTheme" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        android:background="@color/colorMediumGray" />
+
+</LinearLayout>

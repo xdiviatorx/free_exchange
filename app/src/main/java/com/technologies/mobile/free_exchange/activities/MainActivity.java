@@ -1,5 +1,6 @@
 package com.technologies.mobile.free_exchange.activities;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -28,17 +29,19 @@ import com.technologies.mobile.free_exchange.AppSingle;
 import com.technologies.mobile.free_exchange.MyApplication;
 import com.technologies.mobile.free_exchange.R;
 import com.technologies.mobile.free_exchange.adapters.NavigationRVAdapter;
+import com.technologies.mobile.free_exchange.fragments.CityChooseDialog;
 import com.technologies.mobile.free_exchange.fragments.CreateSubscribeFragment;
 import com.technologies.mobile.free_exchange.fragments.DialogFragment;
 import com.technologies.mobile.free_exchange.fragments.FragmentAdapter;
 import com.technologies.mobile.free_exchange.fragments.SubscribeExchangesFragment;
+import com.technologies.mobile.free_exchange.listeners.OnDialogListener;
 import com.technologies.mobile.free_exchange.listeners.RecyclerViewOnItemClickListener;
 import com.technologies.mobile.free_exchange.logic.BitmapUtil;
 import com.technologies.mobile.free_exchange.services.messages.MessageCatcherService;
 import com.technologies.mobile.free_exchange.services.subscribes.SubscribeExchangeCatcherService;
 import com.vk.sdk.VKSdk;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements NavigationRVAdapter.NavigationListener {
 
     public static String LOG_TAG = "instance";
 
@@ -56,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
 
     private DrawerLayout drawerLayout;
     private RecyclerView recyclerView;
-    private NavigationRVAdapter adapter;
+    private NavigationRVAdapter navigationAdapter;
     private RecyclerView.LayoutManager layoutManager;
 
     private ActionBarDrawerToggle drawerToggle;
@@ -134,8 +137,9 @@ public class MainActivity extends AppCompatActivity {
 
         final String[] categories = getResources().getStringArray(R.array.navigations);
 
-        adapter = new NavigationRVAdapter(this, categories, icons, photo, name);
-        recyclerView.setAdapter(adapter);
+        navigationAdapter = new NavigationRVAdapter(this, categories, icons, photo, name);
+        navigationAdapter.setNavigationListener(this);
+        recyclerView.setAdapter(navigationAdapter);
 
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
@@ -145,8 +149,8 @@ public class MainActivity extends AppCompatActivity {
         Log.e(LOG_TAG, "BEGIN PHOTO AND NAME");
         if (name != null && photoUrl != null) {
             Log.e(LOG_TAG, "PHOTO AND NAME " + name + " " + photoUrl);
-            adapter.setPersonalData(name, photoUrl);
-            adapter.notifyDataSetChanged();
+            navigationAdapter.setPersonalData(name, photoUrl);
+            navigationAdapter.notifyDataSetChanged();
         }
 
         drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open_drawer, R.string.close_drawer) {
@@ -178,8 +182,8 @@ public class MainActivity extends AppCompatActivity {
                     String photoUrl = jsonObject.getString("photo_200");
                     //Log.e(LOG_TAG, "NAME = " + name);
                     //Log.e(LOG_TAG, "PHOTO = " + photoUrl);
-                    adapter.setPersonalData(name,photoUrl);
-                    adapter.notifyDataSetChanged();
+                    navigationAdapter.setPersonalData(name,photoUrl);
+                    navigationAdapter.notifyDataSetChanged();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -204,6 +208,21 @@ public class MainActivity extends AppCompatActivity {
         }));
     }
 
+    @Override
+    public void onChooseCityClicked() {
+        CityChooseDialog cityChooseDialog = new CityChooseDialog();
+        cityChooseDialog.setOnDialogListener(new OnDialogListener() {
+            @Override
+            public void onDismiss(boolean isChanged) {
+                if (isChanged) {
+                    navigationAdapter.notifyDataSetChanged();
+
+                }
+            }
+        });
+        cityChooseDialog.show(getSupportFragmentManager(), "");
+        drawerLayout.closeDrawers();
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -296,7 +315,7 @@ public class MainActivity extends AppCompatActivity {
                 || currFragment == FragmentAdapter.MESSAGE
                 || currFragment == FragmentAdapter.SUBSCRIBES) {
             if (doubleBackPressed) {
-                AppSingle.getInstance().setCurrFragmentIndex(-1,false);
+                AppSingle.getInstance().setCurrFragmentIndex(-1, false);
                 super.onBackPressed();
             } else {
                 doubleBackPressed = true;
@@ -335,4 +354,5 @@ public class MainActivity extends AppCompatActivity {
     public FragmentAdapter getFragmentAdapter() {
         return fragmentAdapter;
     }
+
 }

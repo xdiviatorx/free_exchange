@@ -170,6 +170,14 @@
 
     <string name="press_back_twice_for_exit">Чтобы выйти из приложения нажмите \"назад\" еще раз</string>
 
+    <!-- CITY -->
+
+    <string name="default_city">Ростов-на-Дону</string>
+    <integer name="default_city">15</integer>
+
+    <string name="cancel">Отмена</string>
+    <string name="choose">Выбрать</string>
+    <string name="choose_city">Выбор города</string>
 
 
 </resources>

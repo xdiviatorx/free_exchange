@@ -6,6 +6,7 @@ import android.preference.PreferenceManager;
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
+import com.technologies.mobile.free_exchange.model.CityManager;
 import com.vk.sdk.VKAccessToken;
 import com.vk.sdk.VKAccessTokenTracker;
 import com.vk.sdk.VKSdk;
@@ -39,6 +40,7 @@ public class MyApplication extends Application {
         //int appId = getResources().getInteger(R.integer.com_vk_sdk_AppId);
         //String apiVersion = getResources().getString(R.string.api_version);
         //VKSdk.customInitialize(this,appId,apiVersion);
+        CityManager.build(this);
     }
 
     synchronized public Tracker getDefaultTracker() {

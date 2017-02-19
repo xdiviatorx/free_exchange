@@ -1,12 +1,12 @@
 package com.technologies.mobile.free_exchange.rest;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.technologies.mobile.free_exchange.rest.model.AddCommentResponse;
 import com.technologies.mobile.free_exchange.rest.model.AddMessageResponse;
 import com.technologies.mobile.free_exchange.rest.model.AddResponse;
 import com.technologies.mobile.free_exchange.rest.model.AddSubscribeListResponse;
 import com.technologies.mobile.free_exchange.rest.model.AddUserResponse;
 import com.technologies.mobile.free_exchange.rest.model.Categories;
+import com.technologies.mobile.free_exchange.rest.model.GetCitiesResponse;
 import com.technologies.mobile.free_exchange.rest.model.DeleteSubscribeListResponse;
 import com.technologies.mobile.free_exchange.rest.model.DialogMessagesResponse;
 import com.technologies.mobile.free_exchange.rest.model.EditSubscribeListResponse;
@@ -19,7 +19,6 @@ import com.technologies.mobile.free_exchange.rest.model.ListDialogsResponse;
 import com.technologies.mobile.free_exchange.rest.model.NewMessagesResponse;
 import com.technologies.mobile.free_exchange.rest.model.NewOffersByUidResponse;
 import com.technologies.mobile.free_exchange.rest.model.Search;
-import com.technologies.mobile.free_exchange.rest.model.SearchResponse;
 import com.technologies.mobile.free_exchange.rest.model.SetNotifiedResponse;
 import com.technologies.mobile.free_exchange.rest.model.SetViewedResponse;
 import com.technologies.mobile.free_exchange.rest.model.VkGroupIdResponse;
@@ -30,7 +29,6 @@ import org.json.JSONObject;
 
 import retrofit2.Call;
 import retrofit2.http.Field;
-import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.POST;
 
@@ -157,4 +155,9 @@ public interface ExchangeClient {
     @FormUrlEncoded
     @POST("API/getIPUrl")
     Call<IpUrl> getIpUrl(@Field("APIKey") String apiKey);
+
+    @FormUrlEncoded
+    @POST("API/getCities")
+    Call<GetCitiesResponse> getCities(@Field("APIKey") String apiKey);
+
 }
